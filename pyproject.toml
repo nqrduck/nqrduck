@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "NQRduck"
+version = "0.0.1"
+authors = [
+  { name="Julia Pfitzer", email="git@jupfi.me" },
+]
+
+description = "Simple Python script to interact with various python modules used for NQR spectroscopy."
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.8"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "matplotlib",
+    "pyqt5",
+]
+
