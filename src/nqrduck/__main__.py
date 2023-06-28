@@ -18,7 +18,7 @@ class NQRduck(QApplication):
 
         # Here the modules are loaded and signals connected
         self._main_controller.load_modules(self._main_view)
-        self._main_model.active_module = self._main_model.loaded_modules["Spectrometer"]
+        self._main_model.active_module = self._main_model.loaded_modules["nqrduck-broadband"]
 
         self._main_view.show()
 

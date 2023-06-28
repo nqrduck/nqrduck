@@ -41,15 +41,15 @@ class MainController(QObject):
     def _load_module(self, module_name, main_view):
         # Install the module via subprocess
         logger.debug("Installing module: %s", module_name)
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "--force-reinstall", "nqrduck[%s]" % module_name])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "nqrduck[%s]" % module_name])
         
         # Reset logging level to default
         logger.setLevel(logging.DEBUG)
 
         # Import the module
         logger.debug("Importing Module: %s", module_name)
-        imported_module = importlib.import_module(module_name)
-        logger.debug("Imported module path: %s", imported_module.__path__[0])
+        import_module = importlib.import_module(module_name.replace("-", "_"))
+        logger.debug("Imported module path: %s", import_module.__path__[0])
 
         module = Module()
 
@@ -57,7 +57,7 @@ class MainController(QObject):
         config = configparser.ConfigParser(allow_no_value=True)
         # Make config parser case sensitive
         config.optionxform = str
-        config_path = os.path.join(os.getcwd(), imported_module.__path__[0])
+        config_path = os.path.join(os.getcwd(), import_module.__path__[0])
         config_path = os.path.join(config_path, self.MODULE_CONFIG_PATH)
         logger.debug("Attempting to load module config file: %s", config_path)
 
@@ -75,10 +75,7 @@ class MainController(QObject):
 
         # Gets the information about the model class from the config file
         # Imports the according model and instantiates it
-        model_file = os.path.splitext(config["MVC"]["model_file"])[0]
-        model_class_name = config["MVC"]["model_class"]
-        import_module = importlib.import_module(model_file,  module_name)
-        model_class = getattr(import_module, model_class_name)
+        model_class = getattr(import_module, "Model")
         model = model_class()
         module.model = model
 
@@ -91,23 +88,13 @@ class MainController(QObject):
 
         # Gets the information about the controller class from the config file
         # Imports the according controller and instantiates it
-        controller_file = os.path.splitext(config["MVC"]["controller_file"])[0]
-        controller_class_name = config["MVC"]["controller_class"]
-        import_module = importlib.import_module(
-            ".%s" % (controller_file), "modules.%s" % (module_name)
-        )
-        controller_class = getattr(import_module, controller_class_name)
+        controller_class = getattr(import_module, "Controller")
         controller = controller_class(model)
         module.controller = controller
 
         # Gets the information about the view class from the config file
         # Imports the according view and instantiates it
-        view_file = os.path.splitext(config["MVC"]["view_file"])[0]
-        view_class_name = config["MVC"]["view_class"]
-        import_module = importlib.import_module(
-            ".%s" % (view_file), "modules.%s" % (module_name)
-        )
-        view_class = getattr(import_module, view_class_name)
+        view_class = getattr(import_module, "View")
         view = view_class(model, controller)
         module.view = view
 
