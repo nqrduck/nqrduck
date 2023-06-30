@@ -33,7 +33,7 @@ class MainView(QMainWindow):
 
     def on_module_loaded(self, module):
         tool_button = QToolButton()
-        tool_button.setText(module.model.name)
+        tool_button.setText(module.model.toolbar_name)
         tool_button.clicked.connect(lambda: self.on_tool_button_clicked(module.model.name))
         self._toolbox.addWidget(tool_button)
         logger.debug("Added module to toolbar:%s", module.model.name)

@@ -84,7 +84,7 @@ class MainController(QObject):
         # Sets parameters of the model from the config file
         model.name = config["META"]["name"]
         model.tooltip = config["META"]["tooltip"]
-        # model.category = config["META"]["category"]
+        model.toolbar_name = config["META"]["toolbar_name"]
 
         # Gets the information about the controller class from the config file
         # Imports the according controller and instantiates it

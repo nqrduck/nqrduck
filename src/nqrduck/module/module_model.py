@@ -11,9 +11,13 @@ class ModuleModel(QObject):
     def name(self, value):
         self._name = value
 
-    @name.setter
-    def name(self, value):
-        self._name = value
+    @property
+    def toolbar_name(self):
+        return self._toolbox_name
+    
+    @toolbar_name.setter
+    def toolbar_name(self, value):
+        self._toolbox_name = value
 
     @property
     def category(self):
