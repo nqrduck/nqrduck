@@ -1,4 +1,4 @@
 
 class ModuleController():
-    def __init__(self, model):
-        self._model = model
+    def __init__(self, module):
+        self._module = module

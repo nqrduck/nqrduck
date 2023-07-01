@@ -1,8 +1,19 @@
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import pyqtSignal, QObject
 
 
 class ModuleView(QWidget):
-    def __init__(self, model, controller):
+    widget_changed = pyqtSignal(QObject)
+
+    def __init__(self,  module):
         super().__init__()
-        self._model = model
-        self._controller = controller
+        self._module = module
+
+    @property
+    def widget(self):
+        return self._widget
+
+    @widget.setter
+    def widget(self, value):
+        self._widget = value
+        self.widget_changed.emit(value)

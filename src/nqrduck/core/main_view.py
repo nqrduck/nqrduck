@@ -24,7 +24,7 @@ class MainView(QMainWindow):
         self._layout = self._ui.centralwidget.layout()
 
     def on_active_module_changed(self, module):
-        self._ui.stackedWidget.setCurrentWidget(module.model.widget)
+        self._ui.stackedWidget.setCurrentWidget(module.view)
 
     def on_module_widget_changed(self, widget):
         logger.debug("Adding module widget to stacked widget: %s", widget)
@@ -37,6 +37,7 @@ class MainView(QMainWindow):
         tool_button.clicked.connect(lambda: self.on_tool_button_clicked(module.model.name))
         self._toolbox.addWidget(tool_button)
         logger.debug("Added module to toolbar:%s", module.model.name)
+        self.on_module_widget_changed(module.view)
 
     def on_tool_button_clicked(self, module_name):
         logger.debug("Active module changed to: %s", module_name)
