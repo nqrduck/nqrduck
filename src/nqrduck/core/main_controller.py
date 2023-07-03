@@ -19,19 +19,20 @@ class MainController(QObject):
         super().__init__()
         self._main_model = main_model
 
-
     def load_modules(self, main_view):
-
         # Get the modules with entry points in the nqrduck group
         modules = self._get_modules()
         logger.debug("Found modules: %s", modules)
 
         for module_name, module in modules.items():
+            if module.view is None:
+                logger.debug("Module has no view: %s ... skipping", module_name)
+                continue
+
             # Import the module
             logger.debug("Loading Module: %s", module_name)
             module._model.widget_changed.connect(main_view.on_module_widget_changed)
-
-            # Add the module to the main model object
+            logger.debug("Adding module to main model: %s", module_name)
             self._main_model.add_module(module._model.name, module)
 
     @staticmethod

@@ -49,3 +49,8 @@ class ModuleModel(QObject):
     @config.setter
     def config(self, value):
         self._config = value
+
+    @property
+    def module_type(self):
+        return self._module_type
+    

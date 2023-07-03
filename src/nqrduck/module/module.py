@@ -14,7 +14,8 @@ class Module():
     def __init__(self, model, view, controller):
         self._model = model(self)
         self._controller = controller(self)
-        self._view = view(self)
+        if view:
+            self._view = view(self)
 
         # Read module config file
         config = configparser.ConfigParser(allow_no_value=True)

@@ -40,6 +40,7 @@ class MainView(QMainWindow):
         tool_button.clicked.connect(lambda: self.on_tool_button_clicked(module.model.name))
         self._toolbox.addWidget(tool_button)
         logger.debug("Added module to toolbar:%s", module.model.name)
+        
         self.on_module_widget_changed(module.view)
 
     def on_tool_button_clicked(self, module_name):
