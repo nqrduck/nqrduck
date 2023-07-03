@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QMenu
 from PyQt5.QtCore import pyqtSignal, QObject
 
 

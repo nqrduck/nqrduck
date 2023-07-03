@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Module():
     MODULE_CONFIG_PATH = "resources"
 
-    def __init__(self, model, controller, view):
+    def __init__(self, model, view, controller):
         self._model = model(self)
         self._controller = controller(self)
         self._view = view(self)
@@ -40,7 +40,6 @@ class Module():
         self._model.name = config["META"]["name"]
         self._model.tooltip = config["META"]["tooltip"]
         self._model.toolbar_name = config["META"]["toolbar_name"]
-
 
     @property
     def model(self):
