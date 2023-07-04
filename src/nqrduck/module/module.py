@@ -2,6 +2,8 @@
 import glob
 import logging
 import yaml
+import os
+import sys
 import configparser
 import inspect
 import pathlib
@@ -26,14 +28,13 @@ class Module(QObject):
         config.optionxform = str
         
         # Get path of module config file - we need the first frame in the stack that provides a config file
-        for frame in inspect.stack()[::-1]:
-            config_path = pathlib.Path(frame.filename).parent
-            config_path = config_path / self.MODULE_CONFIG_PATH
-            logger.debug("Attempting to load module config file: %s", config_path)
+        
+        config_path = pathlib.Path(inspect.getfile(model)).parent
+        config_path = config_path / self.MODULE_CONFIG_PATH
+        logger.debug("Attempting to load module config file: %s", config_path)
 
-            config_file = list(config_path.glob("*.ini"))
-            if config_file:
-                break
+        config_file = list(config_path.glob("*.ini"))
+
         
 
         if config_file:
