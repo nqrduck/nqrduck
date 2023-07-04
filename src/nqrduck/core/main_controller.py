@@ -35,6 +35,11 @@ class MainController(QObject):
             logger.debug("Adding module to main model: %s", module_name)
             self._main_model.add_module(module._model.name, module)
 
+            # On loading of the modules the signal for adding a menu entry is connected to the according slot in the main view
+            module.view.add_menubar_item.connect(main_view.on_menu_bar_item_added)    
+
+            module.controller.on_loading()
+
     @staticmethod
     def _get_modules():
         """

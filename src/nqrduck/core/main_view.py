@@ -1,7 +1,8 @@
 import logging
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QToolButton, QMenu
+from PyQt5.QtWidgets import QMainWindow, QToolButton, QMenu, QAction
 from .main_window import Ui_MainWindow
+from ..module.module import Module
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +25,6 @@ class MainView(QMainWindow):
 
         self._layout = self._ui.centralwidget.layout()
 
-        # On loading of the modules the signal for adding a menu entry is connected to the according slot in the main view
-
     def on_active_module_changed(self, module):
         self._ui.stackedWidget.setCurrentWidget(module.view)
 
@@ -47,6 +46,14 @@ class MainView(QMainWindow):
         logger.debug("Active module changed to: %s", module_name)
         self._main_model.active_module = self._main_model.loaded_modules[module_name]
 
-    @pyqtSlot(QMenu)
-    def on_menu_bar_item_added(self, menu_file):
-        self._ui.menubar.addMenu(menu_file)
+    @pyqtSlot(str, list)
+    def on_menu_bar_item_added(self, menu_name, actions):
+        logger.debug("Adding menu bar item to main view: %s", menu_name)
+        qmenu = QMenu(menu_name, self)
+        for action in actions:
+            logger.debug("Adding action to menu bar: %s", action.text())
+            action.setParent(self)
+            qmenu.addAction(action)
+
+        self._ui.menubar.addMenu(qmenu)
+        

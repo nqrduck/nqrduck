@@ -5,13 +5,16 @@ import yaml
 import configparser
 import inspect
 import pathlib
+from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtWidgets import QMenu
 
 logger = logging.getLogger(__name__)
 
-class Module():
+class Module(QObject):
     MODULE_CONFIG_PATH = "resources"
 
     def __init__(self, model, view, controller):
+        super().__init__()
         self._model = model(self)
         self._controller = controller(self)
         if view:
@@ -21,11 +24,17 @@ class Module():
         config = configparser.ConfigParser(allow_no_value=True)
         # Make config parser case sensitive
         config.optionxform = str
-        config_path =pathlib.Path(inspect.stack()[1].filename).parent
-        config_path = config_path / self.MODULE_CONFIG_PATH
-        logger.debug("Attempting to load module config file: %s", config_path)
+        
+        # Get path of module config file - we need the first frame in the stack that provides a config file
+        for frame in inspect.stack()[::-1]:
+            config_path = pathlib.Path(frame.filename).parent
+            config_path = config_path / self.MODULE_CONFIG_PATH
+            logger.debug("Attempting to load module config file: %s", config_path)
 
-        config_file = config_path.glob("**/*.ini")
+            config_file = list(config_path.glob("*.ini"))
+            if config_file:
+                break
+        
 
         if config_file:
             logger.debug("Found config file: %s", config_file)
@@ -33,7 +42,7 @@ class Module():
             logger.error("No config file found for module: %s", config_path)
             return -1
 
-        config.read(config_file)
+        config.read(config_file[0])
 
         logger.debug(yaml.dump(config._sections))
 

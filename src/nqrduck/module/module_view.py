@@ -4,6 +4,7 @@ from PyQt5.QtCore import pyqtSignal, QObject
 
 class ModuleView(QWidget):
     widget_changed = pyqtSignal(QObject)
+    add_menubar_item = pyqtSignal(str, list)
 
     def __init__(self,  module):
         super().__init__()
