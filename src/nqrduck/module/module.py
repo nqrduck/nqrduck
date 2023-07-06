@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 class Module(QObject):
     MODULE_CONFIG_PATH = "resources"
 
+    nqrduck_signal = pyqtSignal(str, str)
+
     def __init__(self, model, view, controller):
         super().__init__()
         self._model = model(self)

@@ -8,7 +8,7 @@ import yaml
 import configparser
 import subprocess
 import importlib
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, pyqtSlot
 from ..module.module import Module
 
 logger = logging.getLogger(__name__)
@@ -39,6 +39,14 @@ class MainController(QObject):
             module.view.add_menubar_item.connect(main_view.on_menu_bar_item_added)    
 
             module.controller.on_loading()
+
+            # Connect the nqrduck_signal to the dispatch_signals slot
+            module.nqrduck_signal.connect(self.dispatch_signals)
+
+    @pyqtSlot(str, str)
+    def dispatch_signals(self, key: str, value: str):
+        for module in self._main_model.loaded_modules.values():
+            module.controller.process_signals(key, value)
 
     @staticmethod
     def _get_modules():
