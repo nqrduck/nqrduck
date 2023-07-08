@@ -1,13 +1,9 @@
-import glob
 import logging
 import yaml
-import os
-import sys
 import configparser
 import inspect
 import pathlib
 from PyQt6.QtCore import pyqtSignal, QObject
-from PyQt6.QtWidgets import QMenu
 
 logger = logging.getLogger(__name__)
 
