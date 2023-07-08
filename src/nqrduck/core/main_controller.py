@@ -8,7 +8,7 @@ import yaml
 import configparser
 import subprocess
 import importlib
-from PyQt5.QtCore import QObject, pyqtSlot
+from PyQt6.QtCore import QObject, pyqtSlot
 from ..module.module import Module
 
 logger = logging.getLogger(__name__)

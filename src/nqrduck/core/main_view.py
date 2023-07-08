@@ -1,6 +1,7 @@
 import logging
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QToolButton, QMenu, QAction
+from PyQt6.QtCore import pyqtSlot, pyqtSignal
+from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu
+from PyQt6.QtGui import QAction
 from .main_window import Ui_MainWindow
 from ..module.module import Module
 

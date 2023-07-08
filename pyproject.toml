@@ -25,7 +25,7 @@ classifiers = [
 
 dependencies = [
     "matplotlib",
-    "pyqt5",
+    "pyqt6",
     "pyyaml",
 ]
 

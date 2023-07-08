@@ -1,5 +1,5 @@
 import logging
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
 import matplotlib
@@ -10,7 +10,7 @@ import matplotlib
 # License: https://creativecommons.org/licenses/by-sa/3.0/
 
 # Ensure using PyQt5 backend
-matplotlib.use("QT5Agg")
+# matplotlib.use("QT5Agg")
 
 
 # Matplotlib canvas class to create figure
@@ -19,9 +19,9 @@ class MplCanvas(Canvas):
         self.fig = Figure()
         self.ax = self.fig.add_subplot(111)
         Canvas.__init__(self, self.fig)
-        Canvas.setSizePolicy(
-            self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
-        )
+        # Canvas.setSizePolicy(
+        #     self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        # )
         Canvas.updateGeometry(self)
 
 

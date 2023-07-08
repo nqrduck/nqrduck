@@ -1,7 +1,6 @@
 import sys
 import logging
-import configparser
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 from .core.main_model import MainModel
 from .core.main_controller import MainController
 from .core.main_view import MainView
@@ -46,7 +45,7 @@ def main():
     logger.debug("Starting QApplication ...")
     
     application = NQRduck(sys.argv)
-    sys.exit(application.exec_())
+    sys.exit(application.exec())
 
 if __name__ == '__main__':
     main()

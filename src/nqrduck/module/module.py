@@ -1,4 +1,3 @@
-
 import glob
 import logging
 import yaml
@@ -7,8 +6,8 @@ import sys
 import configparser
 import inspect
 import pathlib
-from PyQt5.QtCore import pyqtSignal, QObject
-from PyQt5.QtWidgets import QMenu
+from PyQt6.QtCore import pyqtSignal, QObject
+from PyQt6.QtWidgets import QMenu
 
 logger = logging.getLogger(__name__)
 

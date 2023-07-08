@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QMenu
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt6.QtWidgets import QWidget, QMenu
+from PyQt6.QtCore import pyqtSignal, QObject
 
 
 class ModuleView(QWidget):
