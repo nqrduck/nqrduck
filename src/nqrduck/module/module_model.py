@@ -8,7 +8,15 @@ class ModuleModel(QObject):
 
     def __init__(self, module) -> None:
         super().__init__()
-        self._module = module
+        self.module = module
+
+    @property
+    def module(self):
+        return self._module
+    
+    @module.setter
+    def module(self, value):
+        self._module = value
 
     @property
     def name(self):

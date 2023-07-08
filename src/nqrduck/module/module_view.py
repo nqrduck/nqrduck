@@ -8,7 +8,7 @@ class ModuleView(QWidget):
 
     def __init__(self,  module):
         super().__init__()
-        self._module = module
+        self.module = module
 
     @property
     def widget(self):
@@ -18,3 +18,11 @@ class ModuleView(QWidget):
     def widget(self, value):
         self._widget = value
         self.widget_changed.emit(value)
+
+    @property
+    def module(self):
+        return self._module
+    
+    @module.setter
+    def module(self, value):
+        self._module = value

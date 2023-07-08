@@ -23,6 +23,8 @@ class Module(QObject):
         self._controller = controller(self)
         if view:
             self._view = view(self)
+        else:
+            self._view = None
 
         # Read module config file
         config = configparser.ConfigParser(allow_no_value=True)

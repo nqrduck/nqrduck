@@ -35,6 +35,7 @@ all = [
     "nqrduck[nqrduck-broadband]",
     "nqrduck[nqrduck-spectrometer-limenqr]",
     "nqrduck[nqrduck-spectrometer-scout]",
+    "nqrduck[nqrduck-pulseprogrammer]",
 ]
 nqrduck-spectrometer = [
     "nqrduck-spectrometer @ git+https://github.com/jupfi/nqrduck-spectrometer.git",
@@ -47,6 +48,9 @@ nqrduck-spectrometer-limenqr = [
 ]
 nqrduck-spectrometer-scout = [
     "nqrduck-spectrometer-scout @ git+https://github.com/jupfi/nqrduck-spectrometer-scout.git",
+]
+nqrduck-pulseprogrammer = [
+    "nqrduck-pulseprogrammer @ git+https://github.com/jupfi/nqrduck-pulseprogrammer.git",
 ]
 
 [project.gui-scripts]
