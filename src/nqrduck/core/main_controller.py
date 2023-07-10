@@ -1,15 +1,9 @@
-import os
-import sys
 import logging
-import glob
 import importlib
 import importlib.metadata
-import yaml
-import configparser
-import subprocess
+
 import importlib
 from PyQt6.QtCore import QObject, pyqtSlot
-from ..module.module import Module
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +30,7 @@ class MainController(QObject):
             self._main_model.add_module(module._model.name, module)
 
             # On loading of the modules the signal for adding a menu entry is connected to the according slot in the main view
-            module.view.add_menubar_item.connect(main_view.on_menu_bar_item_added)    
+            module.view.add_menubar_item.connect(main_view.on_menu_bar_item_added)
 
             module.controller.on_loading()
 

@@ -1,15 +1,12 @@
 import logging
-from PyQt6.QtCore import pyqtSlot, pyqtSignal
+from PyQt6.QtCore import pyqtSlot
 from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu
-from PyQt6.QtGui import QAction
 from .main_window import Ui_MainWindow
-from ..module.module import Module
 
 logger = logging.getLogger(__name__)
 
 
 class MainView(QMainWindow):
-
     def __init__(self, main_model, main_controller):
         super().__init__()
 
@@ -37,10 +34,12 @@ class MainView(QMainWindow):
     def on_module_loaded(self, module):
         tool_button = QToolButton()
         tool_button.setText(module.model.toolbar_name)
-        tool_button.clicked.connect(lambda: self.on_tool_button_clicked(module.model.name))
+        tool_button.clicked.connect(
+            lambda: self.on_tool_button_clicked(module.model.name)
+        )
         self._toolbox.addWidget(tool_button)
         logger.debug("Added module to toolbar:%s", module.model.name)
-        
+
         self.on_module_widget_changed(module.view)
 
     def on_tool_button_clicked(self, module_name):
@@ -57,4 +56,3 @@ class MainView(QMainWindow):
             qmenu.addAction(action)
 
         self._ui.menubar.addMenu(qmenu)
-        
