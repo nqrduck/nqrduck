@@ -19,6 +19,10 @@ class NQRduck(QApplication):
         self._main_controller.load_modules(self._main_view)
         self._main_model.active_module = self._main_model.loaded_modules["nqrduck-broadband"]
 
+        screen = self.primaryScreen()
+        size = screen.size()
+        self._main_view.setWindowTitle("NQRduck")
+        self._main_view.resize(size.width(), size.height())
         self._main_view.show()
 
 
