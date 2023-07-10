@@ -23,9 +23,10 @@ class MainController(QObject):
                 logger.debug("Module has no view: %s ... skipping", module_name)
                 continue
 
+            logger.debug("View of module: %s", module.view)
             # Import the module
             logger.debug("Loading Module: %s", module_name)
-            module._model.widget_changed.connect(main_view.on_module_widget_changed)
+            module.model.widget_changed.connect(main_view.on_module_widget_changed)
             logger.debug("Adding module to main model: %s", module_name)
             self._main_model.add_module(module._model.name, module)
 

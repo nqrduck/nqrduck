@@ -16,7 +16,7 @@ class Module(QObject):
         super().__init__()
         self._model = model(self)
         self._controller = controller(self)
-        if view:
+        if view is not None:
             self._view = view(self)
         else:
             self._view = None
