@@ -1,5 +1,8 @@
 import logging
+from pathlib import Path
+from PyQt6.QtGui import QFont, QFontDatabase
 from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtGui import QPixmap, QIcon
 from ..module.module import Module
 
 logger = logging.getLogger(__name__)
@@ -14,6 +17,17 @@ class MainModel(QObject):
     def __init__(self):
         super().__init__()
         self._loaded_modules = dict()
+
+        # Set Logo
+        self_path = Path(__file__).parent
+        logo_path = self_path / "resources/logo.png"
+        self.logo = QIcon(QPixmap(str(logo_path)))
+
+        # Set Font
+        font_path = self_path / "resources/font/AsepriteFont.ttf"
+        font_id = QFontDatabase.addApplicationFont(str(font_path))
+        font_families = QFontDatabase.applicationFontFamilies(font_id)
+        self.font = font_families[0]
 
     @property
     def active_module(self):

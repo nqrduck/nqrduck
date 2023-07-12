@@ -21,6 +21,12 @@ class MainView(QMainWindow):
         self._main_model.module_added.connect(self.on_module_loaded)
         self._main_model.active_module_changed.connect(self.on_active_module_changed)
 
+
+        self.setWindowIcon(self._main_model.logo)
+
+        # Set font for the whole application via the stylesheet
+        self.setStyleSheet((f"font: 25pt '{self._main_model.font}'"))
+
         self._layout = self._ui.centralwidget.layout()
 
     def on_active_module_changed(self, module):
