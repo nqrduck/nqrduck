@@ -19,6 +19,9 @@ class MainController(QObject):
         logger.debug("Found modules: %s", modules)
 
         for module_name, module in modules.items():
+            # Connect the nqrduck_signal to the dispatch_signals slot
+            module.nqrduck_signal.connect(self.dispatch_signals)
+
             if module.view is None:
                 logger.debug("Module has no view: %s ... skipping", module_name)
                 continue
@@ -35,12 +38,10 @@ class MainController(QObject):
 
             module.controller.on_loading()
 
-            # Connect the nqrduck_signal to the dispatch_signals slot
-            module.nqrduck_signal.connect(self.dispatch_signals)
-
-    @pyqtSlot(str, str)
-    def dispatch_signals(self, key: str, value: str):
+    @pyqtSlot(str, object)
+    def dispatch_signals(self, key: str, value: object):
         for module in self._main_model.loaded_modules.values():
+            logger.debug("Dispatching signal %s to module: %s", key, module)
             module.controller.process_signals(key, value)
 
     @staticmethod
