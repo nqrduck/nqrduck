@@ -17,7 +17,8 @@ class NQRduck(QApplication):
 
         # Here the modules are loaded and signals connected
         self._main_controller.load_modules(self._main_view)
-        self._main_model.active_module = self._main_model.loaded_modules["nqrduck-broadband"]
+        # Get the first loaded module and set it as active
+        self._main_model.active_module = self._main_model.loaded_modules[list(self._main_model.loaded_modules.keys())[0]]
 
         screen = self.primaryScreen()
         size = screen.size()
