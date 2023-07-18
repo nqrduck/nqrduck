@@ -1,6 +1,6 @@
 import logging
-from PyQt6.QtCore import pyqtSlot
-from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu
+from PyQt6.QtCore import pyqtSlot, Qt
+from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 from .main_window import Ui_MainWindow
 
 logger = logging.getLogger(__name__)
@@ -21,6 +21,11 @@ class MainView(QMainWindow):
         self._main_model.module_added.connect(self.on_module_loaded)
         self._main_model.active_module_changed.connect(self.on_active_module_changed)
 
+        self._main_model.statusbar_message_changed.connect(
+            self._ui.statusbar.showMessage
+        )
+
+        self._main_controller.create_notification_dialog.connect(self.create_notification_dialog)
 
         self.setWindowIcon(self._main_model.logo)
 
@@ -28,6 +33,10 @@ class MainView(QMainWindow):
         self.setStyleSheet((f"font: 25pt '{self._main_model.font}'"))
 
         self._layout = self._ui.centralwidget.layout()
+
+    @pyqtSlot(list)
+    def create_notification_dialog(self, notification):
+        NotificationDialog(notification, self)
 
     def on_active_module_changed(self, module):
         self._ui.stackedWidget.setCurrentWidget(module.view)
@@ -62,3 +71,42 @@ class MainView(QMainWindow):
             qmenu.addAction(action)
 
         self._ui.menubar.addMenu(qmenu)
+
+class NotificationDialog(QDialog):
+    """This class provides a simple dialog for displaying notifications by the different modules.
+    It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog."""
+    def __init__(self, notification, parent=None):
+        super().__init__(parent)
+
+        type = notification[0]
+        message = notification[1]
+
+        self.setWindowTitle(type)
+        self.layout = QVBoxLayout()
+            
+        if type == 'Info':
+            self.color = Qt.GlobalColor.blue
+            # self.icon = QIcon('path_to_info_icon')
+        elif type == 'Warning':
+            self.color = Qt.GlobalColor.yellow
+            # self.icon = QIcon('path_to_warning_icon')
+        elif type == 'Error':
+            self.color = Qt.GlobalColor.red
+            # self.icon = QIcon('path_to_error_icon')
+                
+        self.messageLabel = QLabel(message)
+        self.messageLabel.setStyleSheet("QLabel { color : %s }" % self.color.name)
+        # self.iconLabel = QLabel()
+        # self.iconLabel.setPixmap(self.icon.pixmap(32, 32))
+            
+        self.layout.addWidget(self.messageLabel)
+        # self.layout.addWidget(self.iconLabel)
+            
+        self.setLayout(self.layout)
+
+        # Add an OK button to the dialog
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.accepted.connect(self.accept)
+        self.layout.addWidget(self.buttonBox)
+
+        self.exec()

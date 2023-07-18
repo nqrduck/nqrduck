@@ -13,6 +13,7 @@ class MainModel(QObject):
 
     module_added = pyqtSignal(Module)
     active_module_changed = pyqtSignal(Module)
+    statusbar_message_changed = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -28,6 +29,9 @@ class MainModel(QObject):
         font_id = QFontDatabase.addApplicationFont(str(font_path))
         font_families = QFontDatabase.applicationFontFamilies(font_id)
         self.font = font_families[0]
+
+        # Set default status bar message
+        self.statusbar_message = "Ready"
 
     @property
     def active_module(self):
@@ -46,3 +50,13 @@ class MainModel(QObject):
         self._loaded_modules[name] = module
         logger.debug("Added module: %s", name)
         self.module_added.emit(module)
+
+    @property
+    def statusbar_message(self):
+        return self._statusbar_message
+    
+    @statusbar_message.setter
+    def statusbar_message(self, value):
+        self._statusbar_message = value
+        logger.debug("Status bar message changed to: %s", value)
+        self.statusbar_message_changed.emit(value)

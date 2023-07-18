@@ -3,15 +3,17 @@ import importlib
 import importlib.metadata
 
 import importlib
-from PyQt6.QtCore import QObject, pyqtSlot
+from PyQt6.QtCore import QObject, pyqtSlot, pyqtSignal
 
 logger = logging.getLogger(__name__)
 
 
 class MainController(QObject):
+    create_notification_dialog = pyqtSignal(list)
+
     def __init__(self, main_model):
         super().__init__()
-        self._main_model = main_model
+        self.main_model = main_model
 
     def load_modules(self, main_view):
         # Get the modules with entry points in the nqrduck group
@@ -31,7 +33,7 @@ class MainController(QObject):
             logger.debug("Loading Module: %s", module_name)
             module.model.widget_changed.connect(main_view.on_module_widget_changed)
             logger.debug("Adding module to main model: %s", module_name)
-            self._main_model.add_module(module._model.name, module)
+            self.main_model.add_module(module._model.name, module)
 
             # On loading of the modules the signal for adding a menu entry is connected to the according slot in the main view
             module.view.add_menubar_item.connect(main_view.on_menu_bar_item_added)
@@ -40,7 +42,16 @@ class MainController(QObject):
 
     @pyqtSlot(str, object)
     def dispatch_signals(self, key: str, value: object):
-        for module in self._main_model.loaded_modules.values():
+        for module in self.main_model.loaded_modules.values():
+            if key == "statusbar_message":
+                logger.debug("Setting status bar message: %s", value)
+                self.main_model.statusbar_message = value
+                break
+            elif key == "notification":
+                logger.debug("Showing notification: %s", value)
+                self.create_notification_dialog.emit(value)
+                break
+
             logger.debug("Dispatching signal %s to module: %s", key, module)
             module.controller.process_signals(key, value)
 
