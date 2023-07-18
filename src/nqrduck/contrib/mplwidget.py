@@ -2,6 +2,7 @@ import logging
 from PyQt6 import QtWidgets
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib as mpl
 from matplotlib import font_manager
 from pathlib import Path
@@ -33,7 +34,18 @@ class MplWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)  # Inherit from QWidget
         self.canvas = MplCanvas()  # Create canvas object
-        self.vbl = QtWidgets.QVBoxLayout()  # Set box for plotting
+        self.vbl = QtWidgets.QVBoxLayout()  # Set box for plottingg
+        
+        # Add navigation bar
+        self.toolbar = NavigationToolbar(self.canvas, self)
+        # Create a horizontal layout to include the navigation toolbar and spacers
+        hlayout = QtWidgets.QHBoxLayout()
+        hlayout.addStretch(1)
+        hlayout.addWidget(self.toolbar)
+        hlayout.addStretch(1)
+
+        self.vbl.addLayout(hlayout)
+
         self.vbl.addWidget(self.canvas)
         self.setLayout(self.vbl)
         
