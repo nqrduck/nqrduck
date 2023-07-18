@@ -8,12 +8,13 @@ class SignalProcessing():
         pass
 
     @classmethod
-    def fft(cls, tdx : np.array, tdy: np.array) -> tuple[np.array, np.array]:
+    def fft(cls, tdx : np.array, tdy: np.array, freq_shift : float = 0) -> tuple[np.array, np.array]:
         """This method calculates the FFT of the time domain data.
         
         Args:
             tdx (np.array): Time domain x data in seconds.
             tdy (np.array): Time domain magnitude y data.
+            freq_shift (float): Frequency shift in MHz - this can be useful if the spectrometer has it's frequency data in the IF band.
         
         Returns:
             np.array: Frequency domain x data in MHz.
@@ -22,9 +23,19 @@ class SignalProcessing():
         
         dwell_time = (tdx[1] - tdx[0])
             
-        N = len(tdx) 
+        N = len(tdx)
+
+        if freq_shift != 0:
+            # Create the complex exponential to shift the frequency
+            shift_signal = np.exp(-2j * np.pi * freq_shift * tdx)
+
+            # Apply the shift by multiplying the time domain signal
+            tdy_shift = np.abs(tdy * shift_signal)
+            ydf = fftshift(fft(tdy_shift, axis=0), axes=0) 
         
-        ydf = fftshift(fft(tdy, axis=0), axes=0)
+        else:
+            ydf = fftshift(fft(tdy, axis=0), axes=0)
+        
         xdf = fftshift(fftfreq(N, dwell_time))
-        
+
         return xdf, ydf
