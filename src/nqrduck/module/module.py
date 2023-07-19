@@ -14,12 +14,12 @@ class Module(QObject):
 
     def __init__(self, model, view, controller):
         super().__init__()
-        self._model = model(self)
-        self._controller = controller(self)
+        self.model = model(self)
+        self.controller = controller(self)
         if view is not None:
-            self._view = view(self)
+            self.view = view(self)
         else:
-            self._view = None
+            self.view = None
 
         # Read module config file
         config = configparser.ConfigParser(allow_no_value=True)
@@ -47,9 +47,9 @@ class Module(QObject):
         logger.debug(yaml.dump(config._sections))
 
         # Sets parameters of the model from the config file
-        self._model.name = config["META"]["name"]
-        self._model.tooltip = config["META"]["tooltip"]
-        self._model.toolbar_name = config["META"]["toolbar_name"]
+        self.model.name = config["META"]["name"]
+        self.model.tooltip = config["META"]["tooltip"]
+        self.model.toolbar_name = config["META"]["toolbar_name"]
 
     @property
     def model(self):

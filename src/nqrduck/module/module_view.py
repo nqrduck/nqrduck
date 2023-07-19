@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import pyqtSignal, QObject
-
+from nqrduck.module.module import Module
 
 class ModuleView(QWidget):
     widget_changed = pyqtSignal(QObject)
@@ -20,7 +20,7 @@ class ModuleView(QWidget):
         self.widget_changed.emit(value)
 
     @property
-    def module(self):
+    def module(self) -> Module:
         return self._module
     
     @module.setter
