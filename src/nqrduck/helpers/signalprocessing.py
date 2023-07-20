@@ -1,5 +1,8 @@
+import logging
 from scipy.fft import fft, fftfreq, fftshift
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 class SignalProcessing():
     """ This class provides various signal processing methods that can then be used by nqrduck modules."""
@@ -27,7 +30,7 @@ class SignalProcessing():
 
         if freq_shift != 0:
             # Create the complex exponential to shift the frequency
-            shift_signal = np.exp(-2j * np.pi * freq_shift * tdx)
+            shift_signal = np.exp(-2j * np.pi * freq_shift * tdx)[:, np.newaxis]
 
             # Apply the shift by multiplying the time domain signal
             tdy_shift = np.abs(tdy * shift_signal)
@@ -38,4 +41,4 @@ class SignalProcessing():
         
         xdf = fftshift(fftfreq(N, dwell_time))
 
-        return xdf, ydf
+        return xdf, np.abs(ydf)
