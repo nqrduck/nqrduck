@@ -16,6 +16,11 @@ class MainController(QObject):
         self.main_model = main_model
 
     def load_modules(self, main_view):
+        """Loads all modules with entry points in the nqrduck group
+        Also connects the nqrduck_signal to the dispatch_signals slot and creates the menu bar entries.
+
+        Arguments:
+            main_view (MainView) -- The main view of the application"""
         # Get the modules with entry points in the nqrduck group
         modules = self._get_modules()
         logger.debug("Found modules: %s", modules)
@@ -42,11 +47,20 @@ class MainController(QObject):
 
     @pyqtSlot(str, object)
     def dispatch_signals(self, key: str, value: object):
+        """Dispatches the signals to the according module.
+        This method is connected to the nqrduck_signal of the modules.
+        It's the main way of communication between the modules.
+
+        Arguments:
+            key (str) -- The key of the signal
+            value (object) -- The value of the signal"""
         for module in self.main_model.loaded_modules.values():
+            # This is a special signal that is used to set the status bar message
             if key == "statusbar_message":
                 logger.debug("Setting status bar message: %s", value)
                 self.main_model.statusbar_message = value
                 break
+            # This is a special signal that is used to show a notification dialog
             elif key == "notification":
                 logger.debug("Showing notification: %s", value)
                 self.create_notification_dialog.emit(value)

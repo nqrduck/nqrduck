@@ -11,7 +11,7 @@ class SignalProcessing():
         pass
 
     @classmethod
-    def fft(cls, tdx : np.array, tdy: np.array, freq_shift : float = 0) -> tuple[np.array, np.array]:
+    def fft(cls, tdx : np.array, tdy: np.array, freq_shift : float = 0, zero_padding = 1000) -> tuple[np.array, np.array]:
         """This method calculates the FFT of the time domain data.
         
         Args:
@@ -26,7 +26,7 @@ class SignalProcessing():
         
         dwell_time = (tdx[1] - tdx[0])
             
-        N = len(tdx)
+        N = len(tdx) + zero_padding
 
         if freq_shift != 0:
             # Create the complex exponential to shift the frequency
@@ -34,10 +34,10 @@ class SignalProcessing():
 
             # Apply the shift by multiplying the time domain signal
             tdy_shift = np.abs(tdy * shift_signal)
-            ydf = fftshift(fft(tdy_shift, axis=0), axes=0) 
+            ydf = fftshift(fft(tdy_shift, N, axis=0), axes=0) 
         
         else:
-            ydf = fftshift(fft(tdy, axis=0), axes=0)
+            ydf = fftshift(fft(tdy, N, axis=0), axes=0)
         
         xdf = fftshift(fftfreq(N, dwell_time))
 

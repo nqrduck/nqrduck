@@ -36,6 +36,12 @@ class MainView(QMainWindow):
 
     @pyqtSlot(list)
     def create_notification_dialog(self, notification):
+        """Creates a notification dialog with the given message and type.
+        The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog.
+        
+        Arguments:
+            notification (list) -- The notification to display. It has the form [type, message]
+        """
         NotificationDialog(notification, self)
 
     def on_active_module_changed(self, module):
@@ -47,6 +53,12 @@ class MainView(QMainWindow):
         self._ui.stackedWidget.setCurrentWidget(widget)
 
     def on_module_loaded(self, module):
+        """Adds a module to the toolbar and connects the clicked signal to the according slot in the main view.
+        Also connects the widget_changed signal of the module to the according slot in the main view.
+        
+        Arguments:
+            module (Module) -- The module to add
+        """
         tool_button = QToolButton()
         tool_button.setText(module.model.toolbar_name)
         tool_button.clicked.connect(
@@ -74,7 +86,8 @@ class MainView(QMainWindow):
 
 class NotificationDialog(QDialog):
     """This class provides a simple dialog for displaying notifications by the different modules.
-    It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog."""
+    It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog.
+    """
     def __init__(self, notification, parent=None):
         super().__init__(parent)
 

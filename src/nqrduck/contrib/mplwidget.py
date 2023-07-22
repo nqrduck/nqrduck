@@ -56,6 +56,7 @@ class MplWidget(QtWidgets.QWidget):
 
         font_manager.fontManager.addfont(font_path)
         prop = font_manager.FontProperties(fname=font_path)
+        mpl.rcParams["axes.unicode_minus"] = False
         mpl.rcParams['font.family'] = 'sans-serif'
         mpl.rcParams['font.sans-serif'] = prop.get_name()
         mpl.rcParams['font.size'] = 15

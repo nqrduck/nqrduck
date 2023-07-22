@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class MainModel(QObject):
+    
     DEFAULT_CONFIG = "configuration.ini"
 
     module_added = pyqtSignal(Module)
@@ -47,6 +48,12 @@ class MainModel(QObject):
         return self._loaded_modules
 
     def add_module(self, name, module):
+        """Adds a module to the loaded modules dictionary
+        
+        Arguments:
+            name (str) -- The name of the module
+            module (Module) -- The module to add
+        """
         self._loaded_modules[name] = module
         logger.debug("Added module: %s", name)
         self.module_added.emit(module)
