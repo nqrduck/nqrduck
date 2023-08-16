@@ -44,7 +44,7 @@ def main():
 
     # add ch to logger
     logger.addHandler(ch)
-    # Stop matplotlib from spamming the DEBUG log  levell
+    # Stop matplotlib from spamming the DEBUG log level
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
     logger.debug("Starting QApplication ...")
