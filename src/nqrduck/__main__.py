@@ -1,10 +1,10 @@
 import sys
 import logging
+import logging
 from PyQt6.QtWidgets import QApplication
 from .core.main_model import MainModel
 from .core.main_controller import MainController
-from .core.main_view import MainView
-
+from .core.main_view import MainView, SplashScreen
 
 class NQRduck(QApplication):
 
@@ -14,6 +14,9 @@ class NQRduck(QApplication):
         self._main_model = MainModel()
         self._main_controller = MainController(self._main_model)
         self._main_view = MainView(self._main_model, self._main_controller)
+
+        # Wait for the splash screen to close before starting the rest of the application
+        self.processEvents()
 
         # Here the modules are loaded and signals connected
         self._main_controller.load_modules(self._main_view)
@@ -50,6 +53,7 @@ def main():
     logger.debug("Starting QApplication ...")
     
     application = NQRduck(sys.argv)
+    
     sys.exit(application.exec())
 
 if __name__ == '__main__':

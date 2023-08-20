@@ -115,6 +115,70 @@ class Logos(Icons):
             QIcon: The QuestionMark_16x16 logo.
         """
         return Logos.get_logo("QuestionMark_16x16.png")
+    
+    @staticmethod
+    def Error_16x16():
+        """Returns the Error_16x16 logo as a QIcon.
+
+        Returns:
+            QIcon: The Error_16x16 logo.
+        """
+        return Logos.get_logo("Error_16x16.png")
+    
+    @staticmethod
+    def Info_16x16():
+        """Returns the Info_16x16 logo as a QIcon.
+
+        Returns:
+            QIcon: The Info_16x16 logo.
+        """
+        return Logos.get_logo("Info_16x16.png")
+    
+    @staticmethod
+    def Attention_16x16():
+        """Returns the Attention_16x16 logo as a QIcon.
+
+        Returns:
+            QIcon: The Attention_16x16 logo.
+        """
+        return Logos.get_logo("Attention_16x16.png")
+    
+    @staticmethod
+    def Settings_16x16():
+        """Returns the Settings_16x16 logo as a QIcon.
+
+        Returns:
+            QIcon: The Settings_16x16 logo.
+        """
+        return Logos.get_logo("Settings_16x16.png")
+    
+    @staticmethod
+    def Play_16x16():
+        """Returns the Play_16x16 logo as a QIcon.
+
+        Returns:
+            QIcon: The Play_16x16 logo.
+        """
+        return Logos.get_logo("Play_16x16.png")
+    
+    @staticmethod
+    def LabMallard_32x32():
+        """Returns the LabMallardnbg_32x32 logo as a QIcon.
+        Careful this is exported in 400% instead of 200% so it might look weird with other logos. 
+
+        Returns:
+            QIcon: The QuestionMark_16x16 logo.
+        """
+        return Logos.get_logo("LabMallardnbg_32x32.png")
+    
+    @staticmethod
+    def Logo_64x32():
+        """ Returns the Logo_64x32 logo as QIcon.
+        This is also exported in 400%
+        
+        Returns:
+            QIcon: The Logo_64x32"""
+        return Logos.get_logo("Logo_64x32.png")
 
 
 class PulseParamters(Icons):

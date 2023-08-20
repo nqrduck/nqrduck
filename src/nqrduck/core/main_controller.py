@@ -15,7 +15,7 @@ class MainController(QObject):
         super().__init__()
         self.main_model = main_model
 
-    def load_modules(self, main_view):
+    def load_modules(self, main_view) -> None:
         """Loads all modules with entry points in the nqrduck group
         Also connects the nqrduck_signal to the dispatch_signals slot and creates the menu bar entries.
 
