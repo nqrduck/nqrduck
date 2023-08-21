@@ -179,6 +179,15 @@ class Logos(Icons):
         Returns:
             QIcon: The Logo_64x32"""
         return Logos.get_logo("Logo_64x32.png")
+    
+    @staticmethod
+    def Logo_full():
+        """ Returns the Logo_fulllogo as QIcon.
+        This is also exported in 400%. Only use this for the splash screen and maybe about page. It has a weird size.
+        
+        Returns:
+            QIcon: The Logo_full"""
+        return Logos.get_logo("Logo_full.png")
 
 
 class PulseParamters(Icons):

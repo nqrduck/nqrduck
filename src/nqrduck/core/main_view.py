@@ -58,7 +58,7 @@ class MainView(QMainWindow):
             module (Module) -- The active module"""
         self._ui.stackedWidget.setCurrentWidget(module.view)
 
-    def on_module_widget_changed(self, widget: "QWidget"):
+    def on_module_widget_changed(self, widget: "QWidget") -> None:
         """Adds a module widget to the stacked widget and sets it as the current widget.
         
         Args:
@@ -90,6 +90,12 @@ class MainView(QMainWindow):
 
     @pyqtSlot(str, list)
     def on_menu_bar_item_added(self, menu_name : str, actions : list) -> None:
+        """Adds a menu bar item to the main view.
+
+        Args:
+            menu_name (str) -- The name of the menu bar item
+            actions (list) -- A list of actions to add to the menu bar item
+        """
         logger.debug("Adding menu bar item to main view: %s", menu_name)
         qmenu = QMenu(menu_name, self)
         for action in actions:
@@ -147,19 +153,15 @@ class SplashScreen(QWidget):
         logger.debug("Showing Splash Screen")
 
         self.main_layout = QHBoxLayout()
-        self.main_layout.setContentsMargins(20, 20, 20, 20)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.logo = Logos.Logo_64x32()
+        self.logo = Logos.Logo_full()
         self.logo_label = QLabel()
         self.logo_label.setPixmap(self.logo.pixmap(self.logo.availableSizes()[0]))
         self.logo_label.setStyleSheet("border: 0px solid green")
 
-        self.title_duck_label = QLabel()
-        self.title_duck = Logos.LabMallard_32x32()
-        self.title_duck_label.setPixmap(self.title_duck.pixmap(self.title_duck.availableSizes()[0]))
 
         self.main_layout.addWidget(self.logo_label)
-        self.main_layout.addWidget(self.title_duck_label)
         self.setLayout(self.main_layout)
 
         self.timer = QTimer()
@@ -168,5 +170,3 @@ class SplashScreen(QWidget):
         # Set window properties
         self.setWindowFlags(Qt.WindowType.SplashScreen | Qt.WindowType.WindowStaysOnTopHint)
 
-        # Set border and background color
-        self.setStyleSheet("QWidget { background-color: rgb(134, 234, 154) }")
