@@ -1,5 +1,4 @@
 import logging
-from PyQt6.QtGui import QPainter
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer
 from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication
 from .main_window import Ui_MainWindow
@@ -148,6 +147,9 @@ class NotificationDialog(QDialog):
 
 
 class SplashScreen(QWidget):
+    """This class provides a simple splash screen for the application.
+    It shows the logo of the application for 2 seconds and then closes itself.
+    """
     def __init__(self):
         super().__init__()
         logger.debug("Showing Splash Screen")
@@ -168,5 +170,5 @@ class SplashScreen(QWidget):
         self.timer.singleShot(2000, self.close)
         
         # Set window properties
-        self.setWindowFlags(Qt.WindowType.SplashScreen | Qt.WindowType.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.WindowType.SplashScreen)
 
