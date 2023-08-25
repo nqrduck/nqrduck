@@ -7,7 +7,7 @@ allow-direct-references = true
 
 [project]
 name = "nqrduck"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Julia Pfitzer", email="git@jupfi.me" },
 ]
@@ -37,25 +37,33 @@ all = [
     "nqrduck[nqrduck-spectrometer-scout]",
     "nqrduck[nqrduck-pulseprogrammer]",
     "nqrduck[nqrduck-measurement]",
+    "nqrduck[nqrduck-autotm]",
+    "nqrduck[nqrduck-spectrometer-simulator]",
 ]
 nqrduck-spectrometer = [
-    "nqrduck-spectrometer @ git+https://github.com/jupfi/nqrduck-spectrometer.git",
+    "nqrduck-spectrometer @ git+https://github.com/nqrduck/nqrduck-spectrometer.git",
 ]
 nqrduck-broadband = [
-    "nqrduck-broadband @ git+https://github.com/jupfi/nqrduck-broadband.git",
+    "nqrduck-broadband @ git+https://github.com/nqrduck/nqrduck-broadband.git",
 ]
 nqrduck-spectrometer-limenqr = [
-    "nqrduck-spectrometer-limenqr @ git+https://github.com/jupfi/nqrduck-spectrometer-limenqr.git",
+    "nqrduck-spectrometer-limenqr @ git+https://github.com/nqrduck/nqrduck-spectrometer-limenqr.git",
 ]
 nqrduck-spectrometer-scout = [
-    "nqrduck-spectrometer-scout @ git+https://github.com/jupfi/nqrduck-spectrometer-scout.git",
+    "nqrduck-spectrometer-scout @ git+https://github.com/nqrduck/nqrduck-spectrometer-scout.git",
 ]
 nqrduck-pulseprogrammer = [
-    "nqrduck-pulseprogrammer @ git+https://github.com/jupfi/nqrduck-pulseprogrammer.git",
+    "nqrduck-pulseprogrammer @ git+https://github.com/nqrduck/nqrduck-pulseprogrammer.git",
 ]
 nqrduck-measurement = [
-    "nqrduck-measurement @ git+https://github.com/jupfi/nqrduck-measurement.git",
+    "nqrduck-measurement @ git+https://github.com/nqrduck/nqrduck-measurement.git",
 ]
+nqrduck-autotm = [
+    "nqrduck-autotm @ git+ https://github.com/nqrduck/nqrduck-autotm",
+]
+nqrduck-spectrometer-simulator = [
+    "nqrduck-spectrometer-simulator @ git+https://github.com/nqrduck/nqrduck-spectrometer-simulator",
+
 
 [project.gui-scripts]
 nqrduck = "nqrduck.__main__:main"
