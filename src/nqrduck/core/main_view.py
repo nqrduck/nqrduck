@@ -57,7 +57,10 @@ class MainView(QMainWindow):
             module (Module) -- The active module"""
         self._ui.stackedWidget.setCurrentWidget(module.view)
 
-    def on_module_widget_changed(self, widget: "QWidget") -> None:
+        # Indicate which module is active by making the text bold for this we iterate over the  buttons inside the toolbox
+
+
+    def on_module_widget_added(self, widget: "QWidget") -> None:
         """Adds a module widget to the stacked widget and sets it as the current widget.
         
         Args:
@@ -81,7 +84,7 @@ class MainView(QMainWindow):
         self._toolbox.addWidget(tool_button)
         logger.debug("Added module to toolbar:%s", module.model.name)
 
-        self.on_module_widget_changed(module.view)
+        self.on_module_widget_added(module.view)
 
     def on_tool_button_clicked(self, module_name):
         logger.debug("Active module changed to: %s", module_name)

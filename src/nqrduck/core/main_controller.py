@@ -36,7 +36,7 @@ class MainController(QObject):
             logger.debug("View of module: %s", module.view)
             # Import the module
             logger.debug("Loading Module: %s", module_name)
-            module.model.widget_changed.connect(main_view.on_module_widget_changed)
+            module.model.widget_changed.connect(main_view.on_module_widget_added)
             logger.debug("Adding module to main model: %s", module_name)
             self.main_model.add_module(module._model.name, module)
 
