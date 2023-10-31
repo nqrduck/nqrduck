@@ -58,7 +58,11 @@ class MainView(QMainWindow):
         self._ui.stackedWidget.setCurrentWidget(module.view)
 
         # Indicate which module is active by making the text bold for this we iterate over the  buttons inside the toolbox
-
+        for button in  self._toolbox.findChildren(QToolButton):
+            if button.text() == module.model.toolbar_name:
+                button.setStyleSheet("font-weight: bold")
+            else:
+                button.setStyleSheet("font-weight: normal")
 
     def on_module_widget_added(self, widget: "QWidget") -> None:
         """Adds a module widget to the stacked widget and sets it as the current widget.
