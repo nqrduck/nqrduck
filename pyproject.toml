@@ -59,7 +59,7 @@ nqrduck-measurement = [
     "nqrduck-measurement @ git+https://github.com/nqrduck/nqrduck-measurement.git",
 ]
 nqrduck-autotm = [
-    "nqrduck-autotm @ git+ https://github.com/nqrduck/nqrduck-autotm",
+    "nqrduck-autotm @ git+https://github.com/nqrduck/nqrduck-autotm",
 ]
 nqrduck-spectrometer-simulator = [
     "nqrduck-spectrometer-simulator @ git+https://github.com/nqrduck/nqrduck-spectrometer-simulator",
