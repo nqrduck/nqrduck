@@ -1,6 +1,8 @@
 import sys
+import os
 import logging
 import logging
+import  tempfile
 from PyQt6.QtWidgets import QApplication
 from .core.main_model import MainModel
 from .core.main_controller import MainController
@@ -46,6 +48,14 @@ def main():
     logger.addHandler(ch)
     # Stop matplotlib from spamming the DEBUG log level
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
+    # Output log to log file to temp folder
+    temp_folder = tempfile.gettempdir()
+    fh = logging.FileHandler(os.path.join(temp_folder, 'nqrduck.log'))
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+
 
     logger.debug("Starting QApplication ...")
     
