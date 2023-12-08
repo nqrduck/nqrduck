@@ -41,4 +41,4 @@ class SignalProcessing():
         
         xdf = fftshift(fftfreq(N, dwell_time))
 
-        return xdf, np.abs(ydf)
+        return xdf, ydf
