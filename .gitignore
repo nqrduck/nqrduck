@@ -20,3 +20,5 @@ venv/
 
 # Other
 *.DS_Store
+*.pos
+*.quack
