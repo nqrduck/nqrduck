@@ -59,7 +59,7 @@ class MplWidget(QtWidgets.QWidget):
         mpl.rcParams["axes.unicode_minus"] = False
         mpl.rcParams['font.family'] = 'sans-serif'
         mpl.rcParams['font.sans-serif'] = prop.get_name()
-        mpl.rcParams['font.size'] = 15
+        mpl.rcParams['font.size'] = 25
 
         self.setStyleSheet('background-color:transparent;')
         logger.debug("Set stylesheet to %s" % self.styleSheet())
