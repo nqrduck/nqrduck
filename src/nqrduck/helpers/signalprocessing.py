@@ -11,7 +11,7 @@ class SignalProcessing():
         pass
 
     @classmethod
-    def fft(cls, tdx : np.array, tdy: np.array, freq_shift : float = 0, zero_padding = 1000) -> tuple[np.array, np.array]:
+    def fft(cls, tdx : np.array, tdy: np.array, freq_shift : float = 0, zero_padding = 10000) -> tuple[np.array, np.array]:
         """This method calculates the FFT of the time domain data.
         
         Args:
