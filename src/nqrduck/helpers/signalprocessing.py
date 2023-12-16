@@ -1,6 +1,7 @@
 import logging
 from scipy.fft import fft, fftfreq, fftshift
 import numpy as np
+import sympy
 
 logger = logging.getLogger(__name__)
 
@@ -42,3 +43,46 @@ class SignalProcessing():
         xdf = fftshift(fftfreq(N, dwell_time))
 
         return xdf, ydf
+    
+    @classmethod
+    def baseline_correction(cls, fdx : np.array, fdy : np.array, order : int) -> np.array:
+        """This method calculates the baseline correction of the frequency domain data.
+        
+        Args:
+            fdx (np.array): Frequency domain x data in MHz.
+            fdy (np.array): Frequency domain magnitude y data.
+            order (int): Order of the polynomial used for baseline correction.
+        
+        Returns:
+            np.array: Frequency domain magnitude y data with baseline correction.
+        """
+        pass
+    
+    @classmethod
+    def apodization(cls, tdx : np.array, tdy : np.array, apodization_function : sympy.Expr) -> np.array:
+        """This method calculates the apodization of the time domain data.
+        
+        Args:
+            tdx (np.array): Time domain x data in seconds.
+            tdy (np.array): Time domain magnitude y data.
+            apodization_function (sympy.Expr): Apodization function.
+        
+        Returns:
+            np.array: Time domain magnitude y data with apodization.
+        """
+        pass
+    
+    @classmethod
+    def peak_picking(cls, fdx: np.array, fdy: np.array, threshold : float = 0.05) -> tuple[np.array, np.array]:
+        """This method calculates the peak picking of the frequency domain data.
+        
+        Args:
+            fdx (np.array): Frequency domain x data in MHz.
+            fdy (np.array): Frequency domain magnitude y data.
+            threshold (float): Threshold for peak picking.
+        
+        Returns:
+            np.array: Frequency domain x data in MHz.
+            np.array: Frequency domain magnitude y data with peak picking.
+        """
+        pass
