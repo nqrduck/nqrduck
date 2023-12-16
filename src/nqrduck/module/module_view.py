@@ -64,7 +64,7 @@ class ModuleView(QWidget):
                                                     options=QFileDialog.Option.DontUseNativeDialog)
             if fileName:
                 # Append the .quack extension if not present
-                if not fileName.endswith(". %s" % self.extension):
+                if not fileName.endswith(".%s" % self.extension):
                     fileName += ".%s" % self.extension
                 return fileName
             else:
