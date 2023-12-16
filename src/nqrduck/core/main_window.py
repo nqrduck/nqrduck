@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'src/nqrduck/core/resources/main_window.ui'
+# Form implementation generated from reading ui file 'nqrduck/src/nqrduck/core/resources/main_window.ui'
 #
 # Created by: PyQt6 UI code generator 6.5.1
 #
@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(102, 91)
+        MainWindow.resize(102, 103)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -45,9 +45,6 @@ class Ui_MainWindow(object):
         self.actionSave_as.setObjectName("actionSave_as")
         self.actionLoad = QtGui.QAction(parent=MainWindow)
         self.actionLoad.setObjectName("actionLoad")
-        self.menuFile.addAction(self.actionNew)
-        self.menuFile.addAction(self.actionSave_as)
-        self.menuFile.addAction(self.actionLoad)
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -57,7 +54,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.menuFile.setTitle(_translate("MainWindow", "File"))
+        self.menuFile.setTitle(_translate("MainWindow", "About"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.actionNew.setText(_translate("MainWindow", "New"))
         self.actionSave_as.setText(_translate("MainWindow", "Save as ..."))

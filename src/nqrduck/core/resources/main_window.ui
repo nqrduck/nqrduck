@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>102</width>
-    <height>91</height>
+    <height>103</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,11 +37,8 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>About</string>
     </property>
-    <addaction name="actionNew"/>
-    <addaction name="actionSave_as"/>
-    <addaction name="actionLoad"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
