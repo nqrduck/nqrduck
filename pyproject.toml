@@ -34,7 +34,7 @@ all = [
     "nqrduck[nqrduck-spectrometer]",
     "nqrduck[nqrduck-broadband]",
     "nqrduck[nqrduck-spectrometer-limenqr]",
-    "nqrduck[nqrduck-spectrometer-scout]",
+    "nqrduck[nqrduck-spectrometer-scout];(sys_platform == 'win32')",
     "nqrduck[nqrduck-pulseprogrammer]",
     "nqrduck[nqrduck-measurement]",
     "nqrduck[nqrduck-autotm]",
@@ -50,7 +50,7 @@ nqrduck-spectrometer-limenqr = [
     "nqrduck-spectrometer-limenqr @ git+https://github.com/nqrduck/nqrduck-spectrometer-limenqr.git",
 ]
 nqrduck-spectrometer-scout = [
-    "nqrduck-spectrometer-scout @ git+https://github.com/nqrduck/nqrduck-spectrometer-scout.git",
+    'nqrduck-spectrometer-scout @ git+https://github.com/nqrduck/nqrduck-spectrometer-scout.git',
 ]
 nqrduck-pulseprogrammer = [
     "nqrduck-pulseprogrammer @ git+https://github.com/nqrduck/nqrduck-pulseprogrammer.git",
