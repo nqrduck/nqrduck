@@ -70,7 +70,8 @@ class SignalProcessing():
         Returns:
             np.array: Time domain magnitude y data with apodization.
         """
-        pass
+        weight = np.array([apodization_function.subs("t", t) for t in tdx])
+        return tdy * weight
     
     @classmethod
     def peak_picking(cls, fdx: np.array, fdy: np.array, threshold : float = 0.05) -> tuple[np.array, np.array]:
@@ -82,7 +83,6 @@ class SignalProcessing():
             threshold (float): Threshold for peak picking.
         
         Returns:
-            np.array: Frequency domain x data in MHz.
-            np.array: Frequency domain magnitude y data with peak picking.
+            list: x,y data of the peaks.
         """
         pass
