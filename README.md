@@ -33,3 +33,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contributing: Developing NQRduck modules
 A template module is provided [here](https://github.com/nqrduck/nqrduck-module). It is a good starting point for developing new modules.
+
+If you want to contribute to the core, please add an issue or a pull request :).
