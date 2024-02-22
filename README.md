@@ -15,7 +15,7 @@
     ```
 3. Install the package with `pip install .[all]` to install all available NQRduck modules. This should install all other dependencies as well.
 Alternatively, you can install different modules separately by running `pip install .[module_name]` where `module_name` is the name of the module you want to install.
-You can fin the different modules [here](https://github.com/nqrduck).
+You can find the different modules [here](https://github.com/nqrduck).
 4. Run the program with `nqrduck`.
 
 ## Usage
