@@ -9,8 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class MainModel(QObject):
-    
-    DEFAULT_CONFIG = "configuration.ini"
 
     module_added = pyqtSignal(Module)
     active_module_changed = pyqtSignal(Module)
