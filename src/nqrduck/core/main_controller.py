@@ -78,7 +78,7 @@ class MainController(QObject):
         """
         modules = {}
 
-        for entry_point in importlib.metadata.entry_points().get("nqrduck", []):
+        for entry_point in importlib.metadata.entry_points().select(group="nqrduck"):
             modules[entry_point.name] = entry_point.load()
 
         return modules
