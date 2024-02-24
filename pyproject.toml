@@ -64,6 +64,9 @@ nqrduck-autotm = [
 nqrduck-spectrometer-simulator = [
     "nqrduck-spectrometer-simulator @ git+https://github.com/nqrduck/nqrduck-spectrometer-simulator",
 ]
+nqrduck-module = [
+    "nqrduck-module @ git+https://github.com/nqrduck/nqrduck-module",
+]
 
 [project.gui-scripts]
 nqrduck = "nqrduck.__main__:main"
