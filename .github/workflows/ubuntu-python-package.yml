@@ -25,7 +25,7 @@ jobs:
     - name: Install system and Python dependencies
       run: |
         sudo apt-get update
-        sudo apt-get -qq install python3-pyqt5
+        sudo apt-get -qq install python3-pyqt5 xvfb
         python -m pip install --upgrade pip
         pip install pytest
 
@@ -34,4 +34,4 @@ jobs:
         pip install .[nqrduck-module]
 
     - name: Run all the tests
-      run: pytest tests/
+      run: xvfb-run pytest tests/
