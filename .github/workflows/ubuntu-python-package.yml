@@ -25,9 +25,9 @@ jobs:
     - name: Install system and Python dependencies
       run: |
         sudo apt-get update
-        sudo apt-get -qq install libxcb-xinerama0 pyqt6-dev-tools
+        sudo apt-get -qq install python3-pyqt6
         python -m pip install --upgrade pip
-        pip install pytest pytest-xvfb pytest-qt
+        pip install pytest
 
     - name: Install test module and dependencies
       run: |
