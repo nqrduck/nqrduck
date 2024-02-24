@@ -1,6 +1,3 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Python package
 
 on:
@@ -18,11 +15,6 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
 
-    env:
-      # Display must be available globally for linux to know where xvfb is
-      DISPLAY: ":99.0"
-      QT_SELECT: "qt6"
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -30,23 +22,16 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: setup ${{ matrix.os }}
+    - name: Install system and Python dependencies
       run: |
-        sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0 libglib2.0-0 libgl1-mesa-dev
-        sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
-        # start xvfb in the background
-        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-        
-    - name: Install dependencies
-      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils libegl1-mesa
         python -m pip install --upgrade pip
-        pip install pytest
-        
-    - name: Install test module
-      run: |
-        pip install .[nqrduck-module]
+        pip install pytest pytest-xvfb PyQt6
 
-    - name: Run all the tests!
+    - name: Install test module and dependencies
       run: |
-        xvfb-run `which coverage` run -m pytest
+        pip install .[test]
 
+    - name: Run all the tests
+      run: pytest tests/
