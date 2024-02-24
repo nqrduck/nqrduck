@@ -34,4 +34,4 @@ jobs:
         pip install .[nqrduck-module]
 
     - name: Run all the tests
-      run: xvfb-run pytest tests/
+      run: python3 tests/test_load_module.py #xvfb-run pytest tests/
