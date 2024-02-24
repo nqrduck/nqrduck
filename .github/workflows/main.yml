@@ -28,7 +28,7 @@ jobs:
 
     - name: Install system and Python dependencies
       run: |
-        yes | pacman -Sy --needed python-pyqt5 xorg-server-xvfb libgl mesa libxkbcommon fontconfig xcb-util-cursor libegl
+        yes | pacman -Sy --needed git python-pyqt5 xorg-server-xvfb libgl mesa libxkbcommon fontconfig xcb-util-cursor libegl
         python -m pip install --upgrade pip
         pip install pytest
 
