@@ -18,6 +18,11 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
 
+    env:
+      # Display must be available globally for linux to know where xvfb is
+      DISPLAY: ":99.0"
+      QT_SELECT: "qt6"
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -39,7 +44,7 @@ jobs:
       run: |
         pip install .[nqrduck-module]
 
-
     - name: Run all the tests!
       run: |
-        pytest tests/
+        xvfb-run `which coverage` run -m pytest
+
