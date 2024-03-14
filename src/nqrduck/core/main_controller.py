@@ -78,7 +78,12 @@ class MainController(QObject):
         """
         modules = {}
 
-        for entry_point in importlib.metadata.entry_points().select(group="nqrduck"):
-            modules[entry_point.name] = entry_point.load()
+        try:
+            for entry_point in importlib.metadata.entry_points().select(group="nqrduck"):
+                modules[entry_point.name] = entry_point.load()
+        # Adds python 3.9 compatibility
+        except AttributeError:
+            for entry_point in importlib.metadata.entry_points()["nqrduck"]:
+                modules[entry_point.name] = entry_point.load()
 
         return modules
