@@ -36,7 +36,17 @@ class MainView(QMainWindow):
         self.setWindowIcon(self._main_model.logo)
 
         # Set font for the whole application via the stylesheet
-        self.setStyleSheet((f"font: 25pt '{self._main_model.font}'"))
+        default_font = QApplication.font()
+        default_font_size = default_font.pointSize() * 2
+
+        logger.debug("Setting font to size: %s", default_font_size)
+
+        self.setStyleSheet(f"""
+            * {{
+                font-family: '{self._main_model.font}';
+                font-size: {default_font_size}pt;
+            }}
+        """)
 
         self._layout = self._ui.centralwidget.layout()
 
