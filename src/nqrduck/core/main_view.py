@@ -37,7 +37,7 @@ class MainView(QMainWindow):
 
         # Set font for the whole application via the stylesheet
         default_font = QApplication.font()
-        default_font_size = default_font.pointSize() * 2
+        default_font_size = int(default_font.pointSize() * 2.5)
 
         logger.debug("Setting font to size: %s", default_font_size)
 
