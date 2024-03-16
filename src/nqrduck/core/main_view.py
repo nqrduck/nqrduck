@@ -231,6 +231,10 @@ class AboutModules(QDialog):
         modules =  parent._main_model.loaded_modules
         for module in modules:
             self.modules.setText("\t" + self.modules.text() + f"\n{module}")
+            # Add the  submodules
+            submodules = modules[module].model.submodules
+            for submodule in submodules:
+                self.modules.setText("\t \t" + self.modules.text() + f"\n\t{submodule}")
 
         self.layout.addWidget(self.modules)
         self.layout.addStretch()

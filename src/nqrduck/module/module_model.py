@@ -8,6 +8,7 @@ class ModuleModel(QObject):
     def __init__(self, module) -> None:
         super().__init__()
         self.module = module
+        self.submodules = []
 
     @property
     def module(self):
@@ -60,4 +61,15 @@ class ModuleModel(QObject):
     @property
     def module_type(self):
         return self._module_type
+    
+    @property
+    def submodules(self):
+        return self._submodules
+    
+    @submodules.setter
+    def submodules(self, value):
+        self._submodules = value
+
+    def add_submodule(self, submodule):
+        self.submodules.append(submodule)
     
