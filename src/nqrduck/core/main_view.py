@@ -119,8 +119,10 @@ class MainView(QMainWindow):
             action.setParent(self)
             qmenu.addAction(action)
 
-        self._ui.menubar.addMenu(qmenu)
+        # Get the action before which you want to insert your menu
+        before_action = self.menuBar().actions()[0]
 
+        self.menuBar().insertMenu(before_action, qmenu)
 class NotificationDialog(QDialog):
     """This class provides a simple dialog for displaying notifications by the different modules.
     It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog.
