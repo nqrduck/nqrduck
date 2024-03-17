@@ -31,7 +31,7 @@ class NQRduck(QApplication):
 
 def main():
     # create logger
-    logger = logging.getLogger('root')
+    logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
     # create console handler and set level to debug
