@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>102</width>
-    <height>103</height>
+    <width>428</width>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,15 +31,25 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>102</width>
+     <width>428</width>
      <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>About</string>
+     <string>Help</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionAbout_Modules"/>
+    <addaction name="actionAbout_NQRduck"/>
+    <addaction name="actionLogger"/>
+   </widget>
+   <widget class="QMenu" name="menuPreferences">
+    <property name="title">
+     <string>Preferences</string>
     </property>
    </widget>
+   <addaction name="menuPreferences"/>
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -67,6 +77,21 @@
   <action name="actionLoad">
    <property name="text">
     <string>Load</string>
+   </property>
+  </action>
+  <action name="actionAbout_Modules">
+   <property name="text">
+    <string>About Modules</string>
+   </property>
+  </action>
+  <action name="actionAbout_NQRduck">
+   <property name="text">
+    <string>About NQRduck</string>
+   </property>
+  </action>
+  <action name="actionLogger">
+   <property name="text">
+    <string>Logger</string>
    </property>
   </action>
  </widget>

@@ -1,12 +1,11 @@
 import logging
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer
-from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication
+from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit
 from .main_window import Ui_MainWindow
 from ..module.module import Module
 from ..assets.icons import Logos
 
 logger = logging.getLogger(__name__)
-
 
 class MainView(QMainWindow):
     def __init__(self, main_model, main_controller):
@@ -24,14 +23,8 @@ class MainView(QMainWindow):
 
         self._toolbox = self._ui.toolBar
         self._toolbox.setFloatable(False)
-        self._main_model.module_added.connect(self.on_module_loaded)
-        self._main_model.active_module_changed.connect(self.on_active_module_changed)
 
-        self._main_model.statusbar_message_changed.connect(
-            self._ui.statusbar.showMessage
-        )
-
-        self._main_controller.create_notification_dialog.connect(self.create_notification_dialog)
+        self.connect_signals()
 
         self.setWindowIcon(self._main_model.logo)
 
@@ -49,6 +42,29 @@ class MainView(QMainWindow):
         """)
 
         self._layout = self._ui.centralwidget.layout()
+
+    def connect_signals(self) -> None:
+        """ Connects various signals to the according slots in the main view."""
+        self._main_model.module_added.connect(self.on_module_loaded)
+        self._main_model.active_module_changed.connect(self.on_active_module_changed)
+
+        # Statusbar Message
+        self._main_model.statusbar_message_changed.connect(
+            self._ui.statusbar.showMessage
+        )
+
+        # Notification Dialog
+        self._main_controller.create_notification_dialog.connect(self.create_notification_dialog)
+
+        # About Modules
+        self._ui.actionAbout_Modules.triggered.connect(self.on_about_modules)
+
+        # About NQRduck
+        self._ui.actionAbout_NQRduck.triggered.connect(self.on_about_nqrduck)
+
+        # Logger
+        self._ui.actionLogger.triggered.connect(self.on_logger)
+
 
     @pyqtSlot(list)
     def create_notification_dialog(self, notification : list) -> None:
@@ -119,8 +135,28 @@ class MainView(QMainWindow):
             action.setParent(self)
             qmenu.addAction(action)
 
-        self._ui.menubar.addMenu(qmenu)
+        # Get the action before which you want to insert your menu
+        before_action = self.menuBar().actions()[0]
 
+        self.menuBar().insertMenu(before_action, qmenu)
+
+    @pyqtSlot()
+    def on_about_modules(self) -> None:
+        """Opens a dialog with information about the loaded modules."""
+        about_modules = AboutModules(self)
+        about_modules.exec()
+
+    @pyqtSlot()
+    def on_about_nqrduck(self) -> None:
+        """Opens a dialog with information about the application."""
+        about_nqrduck = AboutNQRduck(self)
+        about_nqrduck.exec()
+
+    @pyqtSlot()
+    def on_logger(self) -> None:
+        """Opens a dialog with the log messages of the application."""
+        logger_window = LoggerWindow(self)
+        logger_window.exec()
 class NotificationDialog(QDialog):
     """This class provides a simple dialog for displaying notifications by the different modules.
     It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog.
@@ -189,3 +225,153 @@ class SplashScreen(QWidget):
         # Set window properties
         self.setWindowFlags(Qt.WindowType.SplashScreen)
 
+class AboutModules(QDialog):
+    """This class provides a simple dialog for displaying information about the different modules.
+    It shows the module name and the version of the module.
+    """
+
+    def __init__(self, parent):
+        super().__init__()
+        self.setParent(parent)
+
+        self.setWindowTitle("About Modules")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        # Add black border and  fill background
+        self.setStyleSheet("QDialog { border: 2px solid black; background-color: white }")
+        
+        self.module_info = QLabel("Installed Modules:")
+        # Make text bold
+        self.module_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.module_info)
+
+        # Create module Label
+        self.modules  = QLabel()
+
+        modules =  parent._main_model.loaded_modules
+        for module in modules:
+            self.modules.setText("\t" + self.modules.text() + f"\n{module}")
+            # Add the  submodules
+            submodules = modules[module].model.submodules
+            for submodule in submodules:
+                self.modules.setText("\t \t" + self.modules.text() + f"\n\t{submodule}")
+
+        self.layout.addWidget(self.modules)
+        self.layout.addStretch()
+
+        # Add an OK button to close the dialog
+        ok_button = QPushButton('OK', self)
+        ok_button.clicked.connect(self.accept)
+        self.layout.addWidget(ok_button)
+
+class AboutNQRduck(QDialog):
+    """This class provides a simple dialog for displaying information about the application.
+    It shows the name of the application and the version of the application.
+    """
+
+    def __init__(self, parent):
+        super().__init__()
+        self.setParent(parent)
+
+        self.setWindowTitle("About NQRduck")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        # Add black border and  fill background
+        self.setStyleSheet("QDialog { border: 2px solid black; background-color: white }")
+        
+        self.app_info = QLabel("NQRduck")
+        # Make text bold
+        self.app_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.app_info)
+
+        #NQRduck logo
+        self.logo = Logos.Logo_full()
+        self.logo_label = QLabel()
+        self.logo_label.setPixmap(self.logo.pixmap(self.logo.availableSizes()[0]))
+        self.layout.addWidget(self.logo_label)
+
+        # Link to the repository -  hardcoded link: evil
+        self.repository_link = QLabel("<a href='https://github.com/nqrduck/'>GitHub Project</a>")
+        self.repository_link.setOpenExternalLinks(True)
+        self.layout.addWidget(self.repository_link)
+
+        self.layout.addStretch()
+
+        # Add an OK button to close the dialog
+        ok_button = QPushButton('OK', self)
+        ok_button.clicked.connect(self.accept)
+        self.layout.addWidget(ok_button)
+
+class LoggerWindow(QDialog):
+    """This class provides a simple dialog for displaying the log messages of the application.
+    It shows the log messages and the log level of the log message.
+    """
+
+    def __init__(self, parent):
+        super().__init__()
+        self.setParent(parent)
+
+        self.setWindowTitle("Logger")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+
+        # Make log window half the screen width
+        self.setFixedWidth(int(QApplication.primaryScreen().size().width() / 2))
+
+        # Add black border and  fill background
+        self.setStyleSheet("QDialog { border: 2px solid black; background-color: white }")
+
+        # Height is also half the screen height
+        self.setFixedHeight(int(QApplication.primaryScreen().size().height() / 2))
+
+        log_level = logging.getLevelName(logger.parent.level)
+
+        self.log_level = QLabel(f"Log Level: {log_level}")
+        self.layout.addWidget(self.log_level)
+        
+        self.log_info = QLabel("Log Messages:")
+        # Make text bold
+        self.log_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.log_info)
+
+        # Create scrollable text area for the logs
+        self.logs = QTextEdit()
+        self.logs.setReadOnly(True)
+        self.logs.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+        # Leave some space for the other widgets
+        self.logs.setFixedHeight(int(QApplication.primaryScreen().size().height() * 0.4))
+
+        logs =  logger.parent.handlers[1].baseFilename
+        
+        with open(logs, 'r') as file:
+            log = file.read().strip()
+
+            # Go through lines
+            for line in log.split("\n"):
+                try:
+                    line = line.split(" - ")
+                    timestampe = line[0]
+                    name = line[1]
+                    level = line[2]
+                    message = " - ".join(line[3:])
+                    # Create html message: timestamp is blue, name is green, level is red message black
+                    html_message = f"<font color='blue'>{timestampe}</font> - <font color='green'>{name}</font> - <font color='red'>{level}</font> - {message}"
+                # If this fails the line is part of a multiline log message and therefor the text is simply black
+                except IndexError:
+                    html_message = f"<font color='black'>{line}</font>" 
+                
+                self.logs.append(html_message)
+
+
+        self.layout.addWidget(self.logs)
+        # Scroll to bottom
+        self.logs.verticalScrollBar().setValue(
+            self.logs.verticalScrollBar().maximum()
+         )
+        
+        self.layout.addStretch()
+
+        # Add an OK button to close the dialog
+        ok_button = QPushButton('OK', self)
+        ok_button.clicked.connect(self.accept)
+        self.layout.addWidget(ok_button)

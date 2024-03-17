@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'nqrduck/src/nqrduck/core/resources/main_window.ui'
+# Form implementation generated from reading ui file 'src/nqrduck/core/resources/main_window.ui'
 #
 # Created by: PyQt6 UI code generator 6.5.1
 #
@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(102, 103)
+        MainWindow.resize(428, 296)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -28,10 +28,12 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.stackedWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 102, 30))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 428, 30))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(parent=self.menubar)
         self.menuFile.setObjectName("menuFile")
+        self.menuPreferences = QtWidgets.QMenu(parent=self.menubar)
+        self.menuPreferences.setObjectName("menuPreferences")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -45,6 +47,17 @@ class Ui_MainWindow(object):
         self.actionSave_as.setObjectName("actionSave_as")
         self.actionLoad = QtGui.QAction(parent=MainWindow)
         self.actionLoad.setObjectName("actionLoad")
+        self.actionAbout_Modules = QtGui.QAction(parent=MainWindow)
+        self.actionAbout_Modules.setObjectName("actionAbout_Modules")
+        self.actionAbout_NQRduck = QtGui.QAction(parent=MainWindow)
+        self.actionAbout_NQRduck.setObjectName("actionAbout_NQRduck")
+        self.actionLogger = QtGui.QAction(parent=MainWindow)
+        self.actionLogger.setObjectName("actionLogger")
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionAbout_Modules)
+        self.menuFile.addAction(self.actionAbout_NQRduck)
+        self.menuFile.addAction(self.actionLogger)
+        self.menubar.addAction(self.menuPreferences.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -54,8 +67,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.menuFile.setTitle(_translate("MainWindow", "About"))
+        self.menuFile.setTitle(_translate("MainWindow", "Help"))
+        self.menuPreferences.setTitle(_translate("MainWindow", "Preferences"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.actionNew.setText(_translate("MainWindow", "New"))
         self.actionSave_as.setText(_translate("MainWindow", "Save as ..."))
         self.actionLoad.setText(_translate("MainWindow", "Load"))
+        self.actionAbout_Modules.setText(_translate("MainWindow", "About Modules"))
+        self.actionAbout_NQRduck.setText(_translate("MainWindow", "About NQRduck"))
+        self.actionLogger.setText(_translate("MainWindow", "Logger"))
