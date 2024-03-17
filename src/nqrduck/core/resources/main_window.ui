@@ -42,6 +42,7 @@
     <addaction name="separator"/>
     <addaction name="actionAbout_Modules"/>
     <addaction name="actionAbout_NQRduck"/>
+    <addaction name="separator"/>
     <addaction name="actionLogger"/>
    </widget>
    <widget class="QMenu" name="menuPreferences">

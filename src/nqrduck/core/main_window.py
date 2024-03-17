@@ -56,6 +56,7 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionAbout_Modules)
         self.menuFile.addAction(self.actionAbout_NQRduck)
+        self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionLogger)
         self.menubar.addAction(self.menuPreferences.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
