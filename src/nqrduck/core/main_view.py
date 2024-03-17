@@ -49,14 +49,19 @@ class MainView(QMainWindow):
         self._main_model.module_added.connect(self.on_module_loaded)
         self._main_model.active_module_changed.connect(self.on_active_module_changed)
 
+        # Statusbar Message
         self._main_model.statusbar_message_changed.connect(
             self._ui.statusbar.showMessage
         )
 
+        # Notification Dialog
         self._main_controller.create_notification_dialog.connect(self.create_notification_dialog)
 
         # About Modules
         self._ui.actionAbout_Modules.triggered.connect(self.on_about_modules)
+
+        # About NQRduck
+        self._ui.actionAbout_NQRduck.triggered.connect(self.on_about_nqrduck)
 
 
     @pyqtSlot(list)
@@ -133,10 +138,17 @@ class MainView(QMainWindow):
 
         self.menuBar().insertMenu(before_action, qmenu)
 
+    @pyqtSlot()
     def on_about_modules(self):
         """Opens a dialog with information about the loaded modules."""
         about_modules = AboutModules(self)
         about_modules.exec()
+
+    @pyqtSlot()
+    def on_about_nqrduck(self):
+        """Opens a dialog with information about the application."""
+        about_nqrduck = AboutNQRduck(self)
+        about_nqrduck.exec()
 class NotificationDialog(QDialog):
     """This class provides a simple dialog for displaying notifications by the different modules.
     It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog.
@@ -237,6 +249,44 @@ class AboutModules(QDialog):
                 self.modules.setText("\t \t" + self.modules.text() + f"\n\t{submodule}")
 
         self.layout.addWidget(self.modules)
+        self.layout.addStretch()
+
+        # Add an OK button to close the dialog
+        ok_button = QPushButton('OK', self)
+        ok_button.clicked.connect(self.accept)
+        self.layout.addWidget(ok_button)
+
+class AboutNQRduck(QDialog):
+    """This class provides a simple dialog for displaying information about the application.
+    It shows the name of the application and the version of the application.
+    """
+
+    def __init__(self, parent):
+        super().__init__()
+        self.setParent(parent)
+
+        self.setWindowTitle("About NQRduck")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        # Add black border and  fill background
+        self.setStyleSheet("QDialog { border: 2px solid black; background-color: white }")
+        
+        self.app_info = QLabel("NQRduck")
+        # Make text bold
+        self.app_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.app_info)
+        
+        #NQRduck logo
+        self.logo = Logos.Logo_full()
+        self.logo_label = QLabel()
+        self.logo_label.setPixmap(self.logo.pixmap(self.logo.availableSizes()[0]))
+        self.layout.addWidget(self.logo_label)
+
+        # Link to the repository -  hardcoded link: evil
+        self.repository_link = QLabel("<a href='https://github.com/nqrduck/'>GitHub Project</a>")
+        self.repository_link.setOpenExternalLinks(True)
+        self.layout.addWidget(self.repository_link)
+
         self.layout.addStretch()
 
         # Add an OK button to close the dialog
