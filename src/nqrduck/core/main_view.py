@@ -338,30 +338,27 @@ class LoggerWindow(QDialog):
         self.logs = QTextEdit()
         self.logs.setReadOnly(True)
         self.logs.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
-        self.logs.setPlainText("")
         # Leave some space for the other widgets
         self.logs.setFixedHeight(int(QApplication.primaryScreen().size().height() * 0.4))
 
         logs =  logger.parent.handlers[1].baseFilename
         
         with open(logs, 'r') as file:
-            log = file.read()
+            log = file.read().strip()
 
             # Go through lines
             for line in log.split("\n"):
-                logger.debug(line)
                 try:
                     line = line.split(" - ")
                     timestampe = line[0]
                     name = line[1]
                     level = line[2]
                     message = " - ".join(line[3:])
+                    # Create html message: timestamp is blue, name is green, level is red message black
                     html_message = f"<font color='blue'>{timestampe}</font> - <font color='green'>{name}</font> - <font color='red'>{level}</font> - {message}"
                 # If this fails the line is part of a multiline log message and therefor the text is simply black
                 except IndexError:
                     html_message = f"<font color='black'>{line}</font>" 
-
-                # Create html message: timestamp is blue, name is green, level is red message black
                 
                 self.logs.append(html_message)
 
