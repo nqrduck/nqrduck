@@ -143,20 +143,23 @@ class MainView(QMainWindow):
     @pyqtSlot()
     def on_about_modules(self) -> None:
         """Opens a dialog with information about the loaded modules."""
+        logger.debug("Opening about modules dialog")
         about_modules = AboutModules(self)
-        about_modules.exec()
+        about_modules.show()
 
     @pyqtSlot()
     def on_about_nqrduck(self) -> None:
         """Opens a dialog with information about the application."""
+        logger.debug("Opening about NQRduck dialog")
         about_nqrduck = AboutNQRduck(self)
-        about_nqrduck.exec()
-
+        about_nqrduck.show()
     @pyqtSlot()
     def on_logger(self) -> None:
         """Opens a dialog with the log messages of the application."""
+        logger.debug("Opening logger dialog")
         logger_window = LoggerWindow(self)
-        logger_window.exec()
+        logger_window.show()
+        
 class NotificationDialog(QDialog):
     """This class provides a simple dialog for displaying notifications by the different modules.
     It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog.
@@ -231,7 +234,7 @@ class AboutModules(QDialog):
     """
 
     def __init__(self, parent):
-        super().__init__()
+        super().__init__(parent=parent)
         self.setParent(parent)
 
         self.setWindowTitle("About Modules")
@@ -270,7 +273,7 @@ class AboutNQRduck(QDialog):
     """
 
     def __init__(self, parent):
-        super().__init__()
+        super().__init__(parent=parent)
         self.setParent(parent)
 
         self.setWindowTitle("About NQRduck")
@@ -308,7 +311,7 @@ class LoggerWindow(QDialog):
     """
 
     def __init__(self, parent):
-        super().__init__()
+        super().__init__(parent=parent)
         self.setParent(parent)
 
         self.setWindowTitle("Logger")
