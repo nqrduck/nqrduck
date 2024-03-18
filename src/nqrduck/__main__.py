@@ -1,12 +1,15 @@
 import sys
+import traceback
 import os
 import logging
 import logging
 import  tempfile
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox   
 from .core.main_model import MainModel
 from .core.main_controller import MainController
 from .core.main_view import MainView, SplashScreen
+
+logger = logging.getLogger(__name__)
 
 class NQRduck(QApplication):
 
@@ -28,8 +31,17 @@ class NQRduck(QApplication):
         self._main_view.setWindowTitle("NQRduck")
         self._main_view.showMaximized()
 
+def handle_exception(exc_type, exc_value, exc_traceback):
+    """Handle uncaught exceptions."""
+    logger.exception("An unhandled exception occurred: ", exc_info=(exc_type, exc_value, exc_traceback))
+    error_msg = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+
+    QMessageBox.critical(None, "Error", "An unhandled exception occurred:\n" + error_msg)
+        
+    sys.exit(1)
 
 def main():
+    sys.excepthook = handle_exception  # Install the exception handler
     # create logger
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -60,8 +72,9 @@ def main():
     logger.debug("Starting QApplication ...")
     
     application = NQRduck(sys.argv)
-    
-    sys.exit(application.exec())
+        
+    exit_code = application.exec()
+    sys.exit(exit_code)
 
 if __name__ == '__main__':
     main()
