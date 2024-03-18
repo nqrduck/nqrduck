@@ -165,7 +165,7 @@ class NotificationDialog(QDialog):
     It has a message it displays and a type. The type can be 'Info', 'Warning' or 'Error' and changes the color and symbol of the dialog.
     """
     def __init__(self, notification, parent=None):
-        super().__init__()
+        super().__init__(parent=parent)
         self.setParent(parent)
 
         type = notification[0]
