@@ -2,7 +2,7 @@ import sys
 import traceback
 import os
 import logging
-import logging
+import logging.handlers
 import  tempfile
 from PyQt6.QtWidgets import QApplication, QMessageBox   
 from .core.main_model import MainModel
@@ -65,9 +65,11 @@ def main():
 
     # Output log to log file to temp folder
     temp_folder = tempfile.gettempdir()
-    fh = logging.FileHandler(os.path.join(temp_folder, 'nqrduck.log'))
+    # Rotate log files
+    fh = logging.handlers.RotatingFileHandler(os.path.join(temp_folder, 'nqrduck.log'), maxBytes=1000000, backupCount=5)
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(formatter)
+    fh.doRollover()
     logger.addHandler(fh)
 
 
