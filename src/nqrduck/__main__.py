@@ -41,7 +41,9 @@ def handle_exception(exc_type, exc_value, exc_traceback):
     sys.exit(1)
 
 def main():
-    sys.excepthook = handle_exception  # Install the exception handler
+    # Install the exception handler
+    sys.excepthook = handle_exception  
+
     # create logger
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)

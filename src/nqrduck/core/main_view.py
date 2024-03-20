@@ -1,6 +1,6 @@
 import logging
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer
-from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit
+from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox
 from .main_window import Ui_MainWindow
 from ..module.module import Module
 from ..assets.icons import Logos
@@ -329,8 +329,21 @@ class LoggerWindow(QDialog):
 
         log_level = logging.getLevelName(logger.parent.level)
 
-        self.log_level = QLabel(f"Log Level: {log_level}")
-        self.layout.addWidget(self.log_level)
+        self.log_level_label = QLabel(f"Log Level: {log_level}")
+        self.layout.addWidget(self.log_level_label)
+
+        # Log level selection
+        self.log_level_info = QLabel("Change Minimum Log Level:")
+        # Make text bold
+        self.log_level_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.log_level_info)
+
+        # Combo Box for log level
+        self.log_level_combo = QComboBox()
+        self.log_level_combo.addItems(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+        self.log_level_combo.setCurrentText(log_level)
+        self.log_level_combo.currentTextChanged.connect(self.on_log_level_changed)
+        self.layout.addWidget(self.log_level_combo)
         
         self.log_info = QLabel("Log Messages:")
         # Make text bold
@@ -342,29 +355,9 @@ class LoggerWindow(QDialog):
         self.logs.setReadOnly(True)
         self.logs.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
         # Leave some space for the other widgets
-        self.logs.setFixedHeight(int(QApplication.primaryScreen().size().height() * 0.4))
+        self.logs.setFixedHeight(int(QApplication.primaryScreen().size().height() * 0.37))
 
-        logs =  logger.parent.handlers[1].baseFilename
-        
-        with open(logs, 'r') as file:
-            log = file.read().strip()
-
-            # Go through lines
-            for line in log.split("\n"):
-                try:
-                    line = line.split(" - ")
-                    timestampe = line[0]
-                    name = line[1]
-                    level = line[2]
-                    message = " - ".join(line[3:])
-                    # Create html message: timestamp is blue, name is green, level is red message black
-                    html_message = f"<font color='blue'>{timestampe}</font> - <font color='green'>{name}</font> - <font color='red'>{level}</font> - {message}"
-                # If this fails the line is part of a multiline log message and therefor the text is simply black
-                except IndexError:
-                    html_message = f"<font color='black'>{line}</font>" 
-                
-                self.logs.append(html_message)
-
+        self.update_logs()
 
         self.layout.addWidget(self.logs)
         # Scroll to bottom
@@ -378,3 +371,61 @@ class LoggerWindow(QDialog):
         ok_button = QPushButton('OK', self)
         ok_button.clicked.connect(self.accept)
         self.layout.addWidget(ok_button)
+
+    def update_logs(self):
+        """Updates the log messages in the text area."""
+        # Clear
+        self.logs.clear()
+
+        logs =  logger.parent.handlers[1].baseFilename
+        
+        with open(logs, 'r') as file:
+            log = file.read().strip()
+
+            # Go through lines
+            valid_prev_line = False
+            html_message = ""
+            for line in log.split("\n"):
+                try:
+                    line = line.split(" - ")
+                    timestampe = line[0]
+                    name = line[1]
+                    level = line[2]
+
+                    # Get the log level number
+                    log_level = logging.getLevelName(self.log_level_combo.currentText())
+
+                    # If the log level is higher than the selected log level we skip the log message
+                    if logging.getLevelName(level) < log_level:
+                        valid_prev_line = False
+                        continue
+
+                    if level == "DEBUG":
+                        color = "blue"
+                    elif level == "INFO":
+                        color = "green"
+                    elif level == "WARNING":
+                        color = "orange"
+                    elif level == "ERROR":
+                        color = "red"
+
+                    message = " - ".join(line[3:])
+                    # Create html message: timestamp is blue, name is green, level is red message black
+                    html_message = f"<font color='black'>{timestampe}</font> - <font color='green'>{name}</font> - <font color='{color}'>{level}</font> - {message}"
+                    valid_prev_line = True
+                # If this fails the line is part of a multiline log message and therefor the text is simply black
+                except IndexError:
+                    if valid_prev_line:
+                        html_message = f"<font color='black'>{line}</font>"
+                
+                self.logs.append(html_message)
+
+    @pyqtSlot(str)
+    def on_log_level_changed(self, level : str) -> None:
+        """Changes the log level of the logger to the selected log level.
+        
+        Args:
+            level (str) -- The selected log level
+        """
+        self.log_level_label.setText(f"Log Level: {level}")
+        self.update_logs()
