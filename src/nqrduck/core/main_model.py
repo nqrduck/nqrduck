@@ -1,12 +1,21 @@
 import logging
 from pathlib import Path
 from PyQt6.QtGui import QFont, QFontDatabase
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal, QSettings
 from PyQt6.QtGui import QPixmap, QIcon
 from ..module.module import Module
 
 logger = logging.getLogger(__name__)
 
+class SettingsManager(QObject):
+    """Manages the settings for the application.
+    This can be the font, the theme, the window size, etc.
+    """
+    settings_changed = pyqtSignal()
+
+    def __init__(self, parent: QObject | None = ...) -> None:
+        super().__init__(parent)
+        self.settings = QSettings("NQRduck", "NQRduck")
 
 class MainModel(QObject):
 
@@ -17,6 +26,9 @@ class MainModel(QObject):
     def __init__(self):
         super().__init__()
         self._loaded_modules = dict()
+
+        # Get the setting manager
+        self.settings = SettingsManager()
 
         # Set Logo
         self_path = Path(__file__).parent

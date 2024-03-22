@@ -4,10 +4,10 @@ import os
 import logging
 import logging.handlers
 import  tempfile
-from PyQt6.QtWidgets import QApplication, QMessageBox   
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from .core.main_model import MainModel
 from .core.main_controller import MainController
-from .core.main_view import MainView, SplashScreen
+from .core.main_view import MainView
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,9 @@ def main():
     logger.debug("Starting QApplication ...")
     
     application = NQRduck(sys.argv)
-        
+
+    
+
     exit_code = application.exec()
     sys.exit(exit_code)
 
