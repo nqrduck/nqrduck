@@ -13,9 +13,51 @@ class SettingsManager(QObject):
     """
     settings_changed = pyqtSignal()
 
-    def __init__(self, parent: QObject | None = ...) -> None:
+    def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
         self.settings = QSettings("NQRduck", "NQRduck")
+
+    @property
+    def font(self) -> QFont:
+        font = self.settings.value("font", QFont())
+        return font
+    
+    @font.setter
+    def font(self, value: QFont) -> None:
+        self.settings.setValue("font", value)
+        self.settings_changed.emit()
+
+    @property
+    def font_size(self) -> int:
+        font_size = self.settings.value("font_size", 12)
+        return font_size
+    
+    @font_size.setter
+    def font_size(self, value: int) -> None:
+        self.settings.setValue("font_size", value)
+        self.settings_changed.emit()
+
+    @property
+    def style_factory(self) -> str:
+        """ The style factory used for the application."""
+        style_factory = self.settings.value("style_factory", "Fusion")
+        return style_factory
+    
+    @style_factory.setter
+    def style_factory(self, value: str) -> None:
+        self.settings.setValue("style_factory", value)
+        self.settings_changed.emit()
+    
+    @property
+    def module_order(self) -> list:
+        """ The order in  which the modules are displayed in the main window. """
+        module_order = self.settings.value("module_order", [])
+        return module_order
+    
+    @module_order.setter
+    def module_order(self, value: list) -> None:
+        self.settings.setValue("module_order", value)
+        self.settings_changed.emit()
 
 class MainModel(QObject):
 
@@ -28,7 +70,7 @@ class MainModel(QObject):
         self._loaded_modules = dict()
 
         # Get the setting manager
-        self.settings = SettingsManager()
+        self.settings = SettingsManager(parent=self)
 
         # Set Logo
         self_path = Path(__file__).parent
