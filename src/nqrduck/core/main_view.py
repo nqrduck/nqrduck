@@ -1,6 +1,6 @@
 import logging
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer
-from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox
+from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox, QSpinBox
 from .main_window import Ui_MainWindow
 from ..module.module import Module
 from ..assets.icons import Logos
@@ -28,18 +28,7 @@ class MainView(QMainWindow):
 
         self.setWindowIcon(self._main_model.logo)
 
-        # Set font for the whole application via the stylesheet
-        default_font = QApplication.font()
-        default_font_size = int(default_font.pointSize() * 2.5)
-
-        logger.debug("Setting font to size: %s", default_font_size)
-
-        self.setStyleSheet(f"""
-            * {{
-                font-family: '{self._main_model.font}';
-                font-size: {default_font_size}pt;
-            }}
-        """)
+        self.on_settings_changed()
 
         self._layout = self._ui.centralwidget.layout()
 
@@ -64,6 +53,12 @@ class MainView(QMainWindow):
 
         # Logger
         self._ui.actionLogger.triggered.connect(self.on_logger)
+
+        # Settings Changed
+        self._main_model.settings.settings_changed.connect(self.on_settings_changed)
+
+        # Preferences
+        self._ui.actionPreferences.triggered.connect(self.on_preferences)
 
 
     @pyqtSlot(list)
@@ -159,6 +154,26 @@ class MainView(QMainWindow):
         logger.debug("Opening logger dialog")
         logger_window = LoggerWindow(self)
         logger_window.show()
+
+    @pyqtSlot()
+    def on_settings_changed(self) -> None:
+        """Updates the font of the application with the new settings."""
+        logger.debug("Setting font to size: %s", int(self._main_model.settings.settings.value("font_size")))
+        font_size = int(self._main_model.settings.settings.value("font_size"))
+
+        self.setStyleSheet(f"""
+            * {{
+                font-family: '{self._main_model.settings.settings.value("font")}';
+                font-size: {font_size}pt;
+            }}
+        """)
+
+    @pyqtSlot()
+    def on_preferences(self) -> None:
+        """Opens a dialog with the preferences of the application."""
+        logger.debug("Opening preferences dialog")
+        preferences_window = PreferencesWindow(self)
+        preferences_window.show()
         
 class NotificationDialog(QDialog):
     """This class provides a simple dialog for displaying notifications by the different modules.
@@ -429,3 +444,82 @@ class LoggerWindow(QDialog):
         """
         self.log_level_label.setText(f"Log Level: {level}")
         self.update_logs()
+
+class PreferencesWindow(QDialog):
+    """This class provides a simple dialog for displaying the preferences of the application.
+    It shows the preferences of the application and allows the user to change them.
+    """
+
+    def __init__(self, parent):
+        super().__init__(parent=parent)
+        self.setParent(parent)
+
+        self.setWindowTitle("Preferences")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+
+        # Add black border and  fill background
+        self.setStyleSheet("QDialog { border: 2px solid black; background-color: white }")
+
+        self.preferences_info = QLabel("Preferences:")
+        # Make text bold
+        self.preferences_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.preferences_info)
+
+        # Font selection
+        self.font_info = QLabel("Change Font:")
+        # Make text bold
+        self.font_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.font_info)
+
+        # Combo Box for font
+        self.font_combo = QComboBox()
+        # Get the system fonts
+        # Also add the custom aseprite  font
+        self.font_combo.addItem(str(parent._main_model.settings.default_font))
+        # Add system fonts
+        self.font_combo.addItems(QApplication.font().families())
+        self.font_combo.setCurrentText(parent._main_model.settings.settings.value("font"))
+        self.font_combo.currentTextChanged.connect(self.on_font_changed)
+        self.layout.addWidget(self.font_combo)
+
+        # Font size selection
+        self.font_size_info = QLabel("Change Font Size:")
+        # Make text bold
+        self.font_size_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.font_size_info)
+
+        # Spin Box
+        self.font_size_spin = QSpinBox()
+        self.font_size_spin.setMinimum(1)
+        self.font_size_spin.setMaximum(40)
+        self.font_size_spin.setValue(int(parent._main_model.settings.settings.value("font_size")))
+        self.font_size_spin.valueChanged.connect(self.on_font_size_changed)
+        self.layout.addWidget(self.font_size_spin)
+
+        self.layout.addStretch()
+
+        # Add an OK button to close the dialog
+        ok_button = QPushButton('OK', self)
+        ok_button.clicked.connect(self.accept)
+        self.layout.addWidget(ok_button)
+
+    @pyqtSlot(str)
+    def on_font_changed(self, font : str) -> None:
+        """Changes the font of the application to the selected font.
+        
+        Args:
+            font (str) -- The selected font
+        """
+        logger.debug("Changing font to: %s", font)
+        self.parent()._main_model.settings.font = font
+
+    @pyqtSlot(int)
+    def on_font_size_changed(self, font_size : int) -> None:
+        """Changes the font size of the application to the selected font size.
+        
+        Args:
+            font_size (str) -- The selected font size
+        """
+        logger.debug("Changing font size to: %s", font_size)
+        self.parent()._main_model.settings.font_size = int(font_size)

@@ -47,8 +47,9 @@
    </widget>
    <widget class="QMenu" name="menuPreferences">
     <property name="title">
-     <string>Preferences</string>
+     <string>Settings</string>
     </property>
+    <addaction name="actionPreferences"/>
    </widget>
    <addaction name="menuPreferences"/>
    <addaction name="menuFile"/>
@@ -93,6 +94,11 @@
   <action name="actionLogger">
    <property name="text">
     <string>Logger</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
    </property>
   </action>
  </widget>

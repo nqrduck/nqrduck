@@ -53,11 +53,14 @@ class Ui_MainWindow(object):
         self.actionAbout_NQRduck.setObjectName("actionAbout_NQRduck")
         self.actionLogger = QtGui.QAction(parent=MainWindow)
         self.actionLogger.setObjectName("actionLogger")
+        self.actionPreferences = QtGui.QAction(parent=MainWindow)
+        self.actionPreferences.setObjectName("actionPreferences")
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionAbout_Modules)
         self.menuFile.addAction(self.actionAbout_NQRduck)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionLogger)
+        self.menuPreferences.addAction(self.actionPreferences)
         self.menubar.addAction(self.menuPreferences.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
 
@@ -69,7 +72,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.menuFile.setTitle(_translate("MainWindow", "Help"))
-        self.menuPreferences.setTitle(_translate("MainWindow", "Preferences"))
+        self.menuPreferences.setTitle(_translate("MainWindow", "Settings"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.actionNew.setText(_translate("MainWindow", "New"))
         self.actionSave_as.setText(_translate("MainWindow", "Save as ..."))
@@ -77,3 +80,4 @@ class Ui_MainWindow(object):
         self.actionAbout_Modules.setText(_translate("MainWindow", "About Modules"))
         self.actionAbout_NQRduck.setText(_translate("MainWindow", "About NQRduck"))
         self.actionLogger.setText(_translate("MainWindow", "Logger"))
+        self.actionPreferences.setText(_translate("MainWindow", "Preferences"))

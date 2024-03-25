@@ -3,6 +3,7 @@ from pathlib import Path
 from PyQt6.QtGui import QFont, QFontDatabase
 from PyQt6.QtCore import QObject, pyqtSignal, QSettings
 from PyQt6.QtGui import QPixmap, QIcon
+import PyQt6.QtWidgets
 from ..module.module import Module
 
 logger = logging.getLogger(__name__)
@@ -15,11 +16,18 @@ class SettingsManager(QObject):
 
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
-        self.settings = QSettings("NQRduck", "NQRduck")
+        self.settings = QSettings("NQRduck", "NQRduck")    
+        
+        # Default Aseprite font
+        self_path = Path(__file__).parent
+        font_path = self_path / "resources/font/AsepriteFont.ttf"
+        font_id = QFontDatabase.addApplicationFont(str(font_path))
+        font_families = QFontDatabase.applicationFontFamilies(font_id)
+        self.default_font = font_families[0]
 
     @property
     def font(self) -> QFont:
-        font = self.settings.value("font", QFont())
+        font = self.settings.value("font", self.default_font)
         return font
     
     @font.setter
@@ -40,7 +48,7 @@ class SettingsManager(QObject):
     @property
     def style_factory(self) -> str:
         """ The style factory used for the application."""
-        style_factory = self.settings.value("style_factory", "Fusion")
+        style_factory = self.settings.value("style_factory", PyQt6.QtWidgets.QStyleFactory.keys()[0])
         return style_factory
     
     @style_factory.setter
@@ -76,12 +84,6 @@ class MainModel(QObject):
         self_path = Path(__file__).parent
         logo_path = self_path / "resources/logo.png"
         self.logo = QIcon(QPixmap(str(logo_path)))
-
-        # Set Font
-        font_path = self_path / "resources/font/AsepriteFont.ttf"
-        font_id = QFontDatabase.addApplicationFont(str(font_path))
-        font_families = QFontDatabase.applicationFontFamilies(font_id)
-        self.font = font_families[0]
 
         # Set default status bar message
         self.statusbar_message = "Ready"
