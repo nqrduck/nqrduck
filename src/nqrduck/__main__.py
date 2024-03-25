@@ -77,8 +77,6 @@ def main():
     
     application = NQRduck(sys.argv)
 
-    
-
     exit_code = application.exec()
     sys.exit(exit_code)
 

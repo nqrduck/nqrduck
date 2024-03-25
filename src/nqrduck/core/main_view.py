@@ -1,6 +1,7 @@
 import logging
-from PyQt6.QtCore import pyqtSlot, Qt, QTimer
-from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox, QSpinBox
+import PyQt6.QtWidgets
+from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication
+from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox, QSpinBox, QFontComboBox, QStyleFactory
 from .main_window import Ui_MainWindow
 from ..module.module import Module
 from ..assets.icons import Logos
@@ -167,6 +168,10 @@ class MainView(QMainWindow):
                 font-size: {font_size}pt;
             }}
         """)
+
+        # Update the Style Factory
+        style_factory =  self._main_model.settings.settings.value("style_factory")
+        QCoreApplication.instance().setStyle(style_factory)
 
     @pyqtSlot()
     def on_preferences(self) -> None:
@@ -473,12 +478,12 @@ class PreferencesWindow(QDialog):
         self.layout.addWidget(self.font_info)
 
         # Combo Box for font
-        self.font_combo = QComboBox()
+        self.font_combo = QFontComboBox()
+        self.font_combo.setFontFilters(QFontComboBox.FontFilter.MonospacedFonts)
         # Get the system fonts
         # Also add the custom aseprite  font
         self.font_combo.addItem(str(parent._main_model.settings.default_font))
         # Add system fonts
-        self.font_combo.addItems(QApplication.font().families())
         self.font_combo.setCurrentText(parent._main_model.settings.settings.value("font"))
         self.font_combo.currentTextChanged.connect(self.on_font_changed)
         self.layout.addWidget(self.font_combo)
@@ -489,13 +494,26 @@ class PreferencesWindow(QDialog):
         self.font_size_info.setStyleSheet("font-weight: bold")
         self.layout.addWidget(self.font_size_info)
 
-        # Spin Box
+        # Spin Box for font size
         self.font_size_spin = QSpinBox()
         self.font_size_spin.setMinimum(1)
         self.font_size_spin.setMaximum(40)
         self.font_size_spin.setValue(int(parent._main_model.settings.settings.value("font_size")))
         self.font_size_spin.valueChanged.connect(self.on_font_size_changed)
         self.layout.addWidget(self.font_size_spin)
+
+        # Style Factory selection
+        self.style_factory_info = QLabel("Change Style Factory:")
+        # Make text bold
+        self.style_factory_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.style_factory_info)
+
+        # Combo Box for style factory
+        self.style_factory_combo = QComboBox()
+        self.style_factory_combo.addItems(parent._main_model.settings.style_factories)
+        self.style_factory_combo.setCurrentText(parent._main_model.settings.style_factory)
+        self.style_factory_combo.currentTextChanged.connect(self.on_style_factory_changed)
+        self.layout.addWidget(self.style_factory_combo)
 
         self.layout.addStretch()
 
@@ -513,6 +531,8 @@ class PreferencesWindow(QDialog):
         """
         logger.debug("Changing font to: %s", font)
         self.parent()._main_model.settings.font = font
+        # Dynamically scale the window size
+        self.adjustSize()
 
     @pyqtSlot(int)
     def on_font_size_changed(self, font_size : int) -> None:
@@ -523,3 +543,17 @@ class PreferencesWindow(QDialog):
         """
         logger.debug("Changing font size to: %s", font_size)
         self.parent()._main_model.settings.font_size = int(font_size)
+        # Dynamically scale the window size
+        self.adjustSize()
+
+    @pyqtSlot(str)
+    def on_style_factory_changed(self, style_factory : str) -> None:
+        """Changes the style factory of the application to the selected style factory.
+        
+        Args:
+            style_factory (str) -- The selected style factory
+        """
+        logger.debug("Changing style factory to: %s", style_factory)
+        self.parent()._main_model.settings.style_factory = style_factory
+        # Dynamically scale the window size
+        self.adjustSize()

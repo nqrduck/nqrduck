@@ -25,6 +25,10 @@ class SettingsManager(QObject):
         font_families = QFontDatabase.applicationFontFamilies(font_id)
         self.default_font = font_families[0]
 
+
+        # Available Style Factories
+        self.style_factories = PyQt6.QtWidgets.QStyleFactory.keys()
+
     @property
     def font(self) -> QFont:
         font = self.settings.value("font", self.default_font)
@@ -87,6 +91,7 @@ class MainModel(QObject):
 
         # Set default status bar message
         self.statusbar_message = "Ready"
+
 
     @property
     def active_module(self):
