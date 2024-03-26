@@ -162,6 +162,7 @@ class MainView(QMainWindow):
         logger.debug("Setting font to size: %s", int(self._main_model.settings.settings.value("font_size")))
         font_size = int(self._main_model.settings.settings.value("font_size"))
 
+
         self.setStyleSheet(f"""
             * {{
                 font-family: '{self._main_model.settings.settings.value("font")}';

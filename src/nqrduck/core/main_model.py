@@ -25,9 +25,14 @@ class SettingsManager(QObject):
         font_families = QFontDatabase.applicationFontFamilies(font_id)
         self.default_font = font_families[0]
 
-
         # Available Style Factories
         self.style_factories = PyQt6.QtWidgets.QStyleFactory.keys()
+
+        # Set default settings
+        self.settings.setValue("font", self.default_font)
+        self.settings.setValue("font_size", 22)
+        self.settings.setValue("style_factory", self.style_factories[-1])
+        self.settings.setValue("module_order", [])
 
     @property
     def font(self) -> QFont:
@@ -41,7 +46,7 @@ class SettingsManager(QObject):
 
     @property
     def font_size(self) -> int:
-        font_size = self.settings.value("font_size", 12)
+        font_size = self.settings.value("font_size", 22)
         return font_size
     
     @font_size.setter
@@ -52,7 +57,7 @@ class SettingsManager(QObject):
     @property
     def style_factory(self) -> str:
         """ The style factory used for the application."""
-        style_factory = self.settings.value("style_factory", PyQt6.QtWidgets.QStyleFactory.keys()[0])
+        style_factory = self.settings.value("style_factory", PyQt6.QtWidgets.QStyleFactory.keys()[-1])
         return style_factory
     
     @style_factory.setter
