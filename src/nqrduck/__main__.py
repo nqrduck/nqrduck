@@ -31,6 +31,8 @@ class NQRduck(QApplication):
         self._main_view.setWindowTitle("NQRduck")
         self._main_view.showMaximized()
 
+        self._main_view.on_settings_changed()
+
 def handle_exception(exc_type, exc_value, exc_traceback):
     """Handle uncaught exceptions."""
     logger.exception("An unhandled exception occurred: ", exc_info=(exc_type, exc_value, exc_traceback))

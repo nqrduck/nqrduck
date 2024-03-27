@@ -1,7 +1,8 @@
 import logging
+from collections import OrderedDict
 import PyQt6.QtWidgets
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication
-from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox, QSpinBox, QFontComboBox, QStyleFactory
+from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox, QSpinBox, QFontComboBox, QTableWidget
 from .main_window import Ui_MainWindow
 from ..module.module import Module
 from ..assets.icons import Logos
@@ -29,9 +30,9 @@ class MainView(QMainWindow):
 
         self.setWindowIcon(self._main_model.logo)
 
-        self.on_settings_changed()
-
         self._layout = self._ui.centralwidget.layout()
+
+        self.on_settings_changed()
 
     def connect_signals(self) -> None:
         """ Connects various signals to the according slots in the main view."""
@@ -173,6 +174,30 @@ class MainView(QMainWindow):
         # Update the Style Factory
         style_factory =  self._main_model.settings.settings.value("style_factory")
         QCoreApplication.instance().setStyle(style_factory)
+
+        # Update module order in toolbar
+        module_order = self._main_model.settings.module_order
+
+        # Copy toolbar actions
+        toolboxes = self._toolbox.findChildren(QToolButton)
+        self._toolbox.clear()
+
+        for module in module_order:
+            for button in toolboxes:
+                if not button.text():
+                    continue
+
+                if button.text() == self._main_model.loaded_modules[module].model.toolbar_name:
+                    new_button = QToolButton()
+                    new_button.setText(button.text())
+                    # Get the slot of the button that is connected to the clicked event
+                    new_button.clicked.connect(button.clicked)
+                    self._toolbox.addWidget(new_button)
+                    break
+
+        # Rescale toolbar
+        logger.debug([button.text() for button in self._toolbox.findChildren(QToolButton)])
+        self._toolbox.adjustSize()        
 
     @pyqtSlot()
     def on_preferences(self) -> None:
@@ -464,6 +489,9 @@ class PreferencesWindow(QDialog):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
+        # Make preferences window half the screen width
+        self.setFixedWidth(int(QApplication.primaryScreen().size().width() / 2))
+
         # Add black border and  fill background
         self.setStyleSheet("QDialog { border: 2px solid black; background-color: white }")
 
@@ -516,12 +544,46 @@ class PreferencesWindow(QDialog):
         self.style_factory_combo.currentTextChanged.connect(self.on_style_factory_changed)
         self.layout.addWidget(self.style_factory_combo)
 
+        # Module Order Settings
+        self.module_order_info = QLabel("Change Module Order:")
+        # Make text bold
+        self.module_order_info.setStyleSheet("font-weight: bold")
+        self.layout.addWidget(self.module_order_info)
+
+        # Horizontal layout for the module order settings
+        self.module_order_layout = QHBoxLayout()
+
+        loaded_modules = parent._main_model.loaded_modules
+        module_order = parent._main_model.settings.module_order
+        if module_order == []:
+            module_order = OrderedDict(loaded_modules)
+            self.parent()._main_model.settings.module_order = module_order
+
+        # Create a table with the modules as rows. The first column is the module name and the second colum is a move up button and the third column is a move down button
+        self.module_order_table = QTableWidget()
+        self.module_order_table.setColumnCount(3)
+        self.module_order_table.setHorizontalHeaderLabels(["Module", "Move Up", "Move Down"])
+        self.module_order_table.setRowCount(len(loaded_modules))
+        # Make first colum broad
+        self.module_order_table.horizontalHeader().setSectionResizeMode(0, PyQt6.QtWidgets.QHeaderView.ResizeMode.Stretch)
+        self.module_order_table.horizontalHeader().setSectionResizeMode(1, PyQt6.QtWidgets.QHeaderView.ResizeMode.Stretch)
+        self.module_order_table.horizontalHeader().setSectionResizeMode(2, PyQt6.QtWidgets.QHeaderView.ResizeMode.Stretch)
+
+        self.module_order_layout.addWidget(self.module_order_table)
+        self.module_order_layout.addStretch()
+
+        self.update_module_order_table()
+
+        self.layout.addLayout(self.module_order_layout)
+
         self.layout.addStretch()
 
         # Add an OK button to close the dialog
         ok_button = QPushButton('OK', self)
         ok_button.clicked.connect(self.accept)
         self.layout.addWidget(ok_button)
+
+        self.adjustSize()
 
     @pyqtSlot(str)
     def on_font_changed(self, font : str) -> None:
@@ -556,5 +618,59 @@ class PreferencesWindow(QDialog):
         """
         logger.debug("Changing style factory to: %s", style_factory)
         self.parent()._main_model.settings.style_factory = style_factory
+        # Dynamically scale the window size
+        self.adjustSize()
+
+    @pyqtSlot(str)
+    def on_move_up(self, module : str) -> None:
+        """Moves the selected module up in the module order.
+        
+        Args:
+            module (str) -- The selected module
+        """
+        logger.debug("Moving module up: %s", module)
+        module_order = self.parent()._main_model.settings.module_order
+        index = module_order.index(module)
+        if index > 0:
+            module_order[index], module_order[index - 1] = module_order[index - 1], module_order[index]
+            self.parent()._main_model.settings.module_order = module_order
+            self.update_module_order_table()
+
+    @pyqtSlot(str)
+    def on_move_down(self, module : str) -> None:
+        """Moves the selected module down in the module order.
+        
+        Args:
+            module (str) -- The selected module
+        """
+        logger.debug("Moving module down: %s", module)
+        module_order = self.parent()._main_model.settings.module_order
+        index = module_order.index(module)
+        if index < len(module_order) - 1:
+            module_order[index], module_order[index + 1] = module_order[index + 1], module_order[index]
+            self.parent()._main_model.settings.module_order = module_order
+            self.update_module_order_table()
+
+    def update_module_order_table(self):
+        """Updates the module order table with the new module order."""
+        self.module_order_table.clearContents()
+        module_order = self.parent()._main_model.settings.module_order
+
+        for i, module in enumerate(module_order):
+            self.module_order_table.setItem(i, 0, PyQt6.QtWidgets.QTableWidgetItem(module))
+            # Add the move up button
+            move_up_button = QPushButton("Move Up")
+            move_up_button.clicked.connect(lambda _, m=module: self.on_move_up(m))  # Capture module in default argument
+            self.module_order_table.setCellWidget(i, 1, move_up_button)
+            # Add the move down button
+            move_down_button = QPushButton("Move Down")
+            move_down_button.clicked.connect(lambda _, m=module: self.on_move_down(m))  # Capture module in default argument
+            self.module_order_table.setCellWidget(i, 2, move_down_button)
+
+
+        # Fit the rows and columns
+        self.module_order_table.resizeColumnsToContents()
+        self.module_order_table.resizeRowsToContents()
+
         # Dynamically scale the window size
         self.adjustSize()

@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from collections import OrderedDict
 from PyQt6.QtGui import QFont, QFontDatabase
 from PyQt6.QtCore import QObject, pyqtSignal, QSettings
 from PyQt6.QtGui import QPixmap, QIcon
@@ -29,10 +30,14 @@ class SettingsManager(QObject):
         self.style_factories = PyQt6.QtWidgets.QStyleFactory.keys()
 
         # Set default settings
-        self.settings.setValue("font", self.default_font)
-        self.settings.setValue("font_size", 22)
-        self.settings.setValue("style_factory", self.style_factories[-1])
-        self.settings.setValue("module_order", [])
+        if not self.settings.contains("font"):
+            self.settings.setValue("font", self.default_font)
+        if not self.settings.contains("font_size"):    
+            self.settings.setValue("font_size", 22)
+        if not self.settings.contains("style_factory"):
+            self.settings.setValue("style_factory", self.style_factories[-1])
+        if not self.settings.contains("module_order"):
+            self.settings.setValue("module_order", OrderedDict([]))
 
     @property
     def font(self) -> QFont:
@@ -66,13 +71,13 @@ class SettingsManager(QObject):
         self.settings_changed.emit()
     
     @property
-    def module_order(self) -> list:
+    def module_order(self) -> OrderedDict:
         """ The order in  which the modules are displayed in the main window. """
-        module_order = self.settings.value("module_order", [])
+        module_order = self.settings.value("module_order", OrderedDict([]))
         return module_order
     
     @module_order.setter
-    def module_order(self, value: list) -> None:
+    def module_order(self, value: OrderedDict) -> None:
         self.settings.setValue("module_order", value)
         self.settings_changed.emit()
 
