@@ -186,14 +186,16 @@ class MainView(QMainWindow):
             for button in toolboxes:
                 if not button.text():
                     continue
-
-                if button.text() == self._main_model.loaded_modules[module].model.toolbar_name:
-                    new_button = QToolButton()
-                    new_button.setText(button.text())
-                    # Get the slot of the button that is connected to the clicked event
-                    new_button.clicked.connect(button.clicked)
-                    self._toolbox.addWidget(new_button)
-                    break
+                try:
+                    if button.text() == self._main_model.loaded_modules[module].model.toolbar_name:
+                        new_button = QToolButton()
+                        new_button.setText(button.text())
+                        # Get the slot of the button that is connected to the clicked event
+                        new_button.clicked.connect(button.clicked)
+                        self._toolbox.addWidget(new_button)
+                        break
+                except KeyError:
+                    logger.info("Module %s not found in loaded modules", module)
 
         # Rescale toolbar
         logger.debug([button.text() for button in self._toolbox.findChildren(QToolButton)])
