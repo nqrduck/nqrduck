@@ -17,7 +17,6 @@ class SettingsManager(QObject):
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
         self.settings = QSettings("NQRduck", "NQRduck")    
-        self.settings.clear()
         
         # Default Aseprite font
         self_path = Path(__file__).parent
