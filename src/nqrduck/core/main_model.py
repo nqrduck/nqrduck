@@ -17,6 +17,7 @@ class SettingsManager(QObject):
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
         self.settings = QSettings("NQRduck", "NQRduck")    
+        self.settings.clear()
         
         # Default Aseprite font
         self_path = Path(__file__).parent
@@ -73,6 +74,9 @@ class SettingsManager(QObject):
     def module_order(self) -> list:
         """ The order in  which the modules are displayed in the main window. """
         module_order = self.settings.value("module_order", [])
+        if module_order is None:
+            module_order = self.parent().loaded_modules
+            self.settings.setValue("module_order", module_order)
         return module_order
     
     @module_order.setter
