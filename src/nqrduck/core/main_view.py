@@ -2,6 +2,9 @@ import logging
 import PyQt6.QtWidgets
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication
 from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox, QSpinBox, QFontComboBox, QTableWidget
+import matplotlib as mpl
+from pathlib  import  Path
+from matplotlib import font_manager
 from .main_window import Ui_MainWindow
 from ..module.module import Module
 from ..assets.icons import Logos
@@ -30,6 +33,14 @@ class MainView(QMainWindow):
         self.setWindowIcon(self._main_model.logo)
 
         self._layout = self._ui.centralwidget.layout()
+
+        # Set custom font for matplotlib
+        path = Path(__file__).parent
+        font_path = str(path / 'resources/font/AsepriteFont.ttf')  # Your font path goes here
+        logger.debug("Adding font: " + font_path)
+
+        font_manager.fontManager.addfont(font_path)
+        prop = font_manager.FontProperties(fname=font_path)
 
         self.on_settings_changed()
 
@@ -199,7 +210,25 @@ class MainView(QMainWindow):
                     logger.info("Module %s not found in loaded modules", module)
 
         # Rescale toolbar
-        self._toolbox.adjustSize()        
+        self._toolbox.adjustSize()
+
+        self.update_mpl_parameters()
+
+    def update_mpl_parameters(self) -> None:
+        """Updates the mpl parameters so the plots are adjusted to the current application settings."""
+        font_size = int(self._main_model.settings.settings.value("font_size"))
+        mpl.rcParams["axes.unicode_minus"] = False
+        mpl.rcParams['font.family'] = 'sans-serif'
+        mpl.rcParams['font.sans-serif'] = self._main_model.settings.settings.value("font")
+        mpl.rcParams['font.size'] = font_size
+        
+        logger.debug("Set stylesheet to %s" % self.styleSheet())
+
+        mpl.rcParams.update({
+            "figure.facecolor":  (0.0, 0.0, 0.0, 0.00),  # transparent   
+            "axes.facecolor":    (0.0, 1.0, 0.0, 0.03),  # green 
+            "savefig.facecolor": (0.0, 0.0, 0.0, 0.0),  # transparent
+        })        
 
     @pyqtSlot()
     def on_preferences(self) -> None:

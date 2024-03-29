@@ -45,30 +45,10 @@ class MplWidget(QtWidgets.QWidget):
         hlayout.addStretch(1)
 
         self.vbl.addLayout(hlayout)
-
         self.vbl.addWidget(self.canvas)
         self.setLayout(self.vbl)
-        
-        # Set custom font
-        path = Path(__file__).parent
-        font_path = str(path / '../core/resources/font/AsepriteFont.ttf')  # Your font path goes here
-        logger.debug("Adding font: " + font_path)
-
-        font_manager.fontManager.addfont(font_path)
-        prop = font_manager.FontProperties(fname=font_path)
-        mpl.rcParams["axes.unicode_minus"] = False
-        mpl.rcParams['font.family'] = 'sans-serif'
-        mpl.rcParams['font.sans-serif'] = prop.get_name()
-        mpl.rcParams['font.size'] = 25
 
         self.setStyleSheet('background-color:transparent;')
-        logger.debug("Set stylesheet to %s" % self.styleSheet())
-
-        mpl.rcParams.update({
-            "figure.facecolor":  (0.0, 0.0, 0.0, 0.00),  # transparent   
-            "axes.facecolor":    (0.0, 1.0, 0.0, 0.03),  # green 
-            "savefig.facecolor": (0.0, 0.0, 0.0, 0.0),  # transparent
-        })
 
         # Set custom matplotlib parameters
         mpl.rcParams['figure.subplot.bottom'] = 0.2
