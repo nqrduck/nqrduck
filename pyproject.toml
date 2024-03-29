@@ -40,6 +40,15 @@ all = [
     "nqrduck[nqrduck-autotm]",
     "nqrduck[nqrduck-spectrometer-simulator]",
 ]
+base = [
+    "nqrduck[nqrduck-spectrometer]",
+    "nqrduck[nqrduck-broadband]",
+    "nqrduck[nqrduck-pulseprogrammer]",
+    "nqrduck[nqrduck-measurement]",
+    "nqrduck[nqrduck-spectrometer-simulator]",
+]
+
+
 nqrduck-spectrometer = [
     "nqrduck-spectrometer @ git+https://github.com/nqrduck/nqrduck-spectrometer.git",
 ]
