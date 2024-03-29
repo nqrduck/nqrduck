@@ -1,5 +1,4 @@
 import logging
-from collections import OrderedDict
 import PyQt6.QtWidgets
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication
 from PyQt6.QtWidgets import QMainWindow, QToolButton, QMenu, QDialog, QVBoxLayout, QLabel, QDialogButtonBox, QHBoxLayout, QWidget, QApplication, QPushButton, QTextEdit, QComboBox, QSpinBox, QFontComboBox, QTableWidget
@@ -182,6 +181,8 @@ class MainView(QMainWindow):
         toolboxes = self._toolbox.findChildren(QToolButton)
         self._toolbox.clear()
 
+        logger.debug("Updating toolbar with new module order: %s", module_order)
+
         for module in module_order:
             for button in toolboxes:
                 if not button.text():
@@ -198,7 +199,6 @@ class MainView(QMainWindow):
                     logger.info("Module %s not found in loaded modules", module)
 
         # Rescale toolbar
-        logger.debug([button.text() for button in self._toolbox.findChildren(QToolButton)])
         self._toolbox.adjustSize()        
 
     @pyqtSlot()
@@ -555,17 +555,13 @@ class PreferencesWindow(QDialog):
         # Horizontal layout for the module order settings
         self.module_order_layout = QHBoxLayout()
 
-        loaded_modules = parent._main_model.loaded_modules
         module_order = parent._main_model.settings.module_order
-        if module_order == []:
-            module_order = OrderedDict(loaded_modules)
-            self.parent()._main_model.settings.module_order = module_order
 
         # Create a table with the modules as rows. The first column is the module name and the second colum is a move up button and the third column is a move down button
         self.module_order_table = QTableWidget()
         self.module_order_table.setColumnCount(3)
         self.module_order_table.setHorizontalHeaderLabels(["Module", "Move Up", "Move Down"])
-        self.module_order_table.setRowCount(len(loaded_modules))
+        self.module_order_table.setRowCount(len(module_order))
         # Make first colum broad
         self.module_order_table.horizontalHeader().setSectionResizeMode(0, PyQt6.QtWidgets.QHeaderView.ResizeMode.Stretch)
         self.module_order_table.horizontalHeader().setSectionResizeMode(1, PyQt6.QtWidgets.QHeaderView.ResizeMode.Stretch)

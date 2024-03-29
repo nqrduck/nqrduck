@@ -45,8 +45,7 @@ class MainController(QObject):
 
             module.controller.on_loading()
 
-        if not self.main_model.settings.module_order:
-            self.main_model.settings.module_order = list(self.main_model.loaded_modules)
+        main_view.on_settings_changed()
 
     @pyqtSlot(str, object)
     def dispatch_signals(self, key: str, value: object):

@@ -16,7 +16,7 @@ class SettingsManager(QObject):
 
     def __init__(self, parent: QObject = None) -> None:
         super().__init__(parent)
-        self.settings = QSettings("NQRduck", "NQRduck")    
+        self.settings = QSettings("NQRduck", "NQRduck") 
         
         # Default Aseprite font
         self_path = Path(__file__).parent
@@ -36,7 +36,7 @@ class SettingsManager(QObject):
         if not self.settings.contains("style_factory"):
             self.settings.setValue("style_factory", self.style_factories[-1])
         if not self.settings.contains("module_order"):
-            self.settings.setValue("module_order", [])
+            self.settings.setValue("module_order", [key for key in self.parent().loaded_modules.keys()])
 
     @property
     def font(self) -> QFont:
@@ -72,14 +72,17 @@ class SettingsManager(QObject):
     @property
     def module_order(self) -> list:
         """ The order in  which the modules are displayed in the main window. """
-        module_order = self.settings.value("module_order", [])
-        if module_order is None:
-            module_order = self.parent().loaded_modules
-            self.settings.setValue("module_order", module_order)
-        return module_order
+        self._module_order = self.settings.value("module_order", [key for key in self.parent().loaded_modules.keys()])
+        if self._module_order is None or self._module_order == [] or self._module_order == {}:
+            self._module_order = [key for key in self.parent().loaded_modules.keys()]
+            self.settings.setValue("module_order", self._module_order)
+            logger.debug("Module order set to default")
+        
+        return self._module_order
     
     @module_order.setter
     def module_order(self, value: list) -> None:
+        logger.debug("Setting module order to: %s", value)
         self.settings.setValue("module_order", value)
         self.settings_changed.emit()
 
@@ -115,10 +118,13 @@ class MainModel(QObject):
         self.active_module_changed.emit(value)
 
     @property
-    def loaded_modules(self):
+    def loaded_modules(self) -> dict:
+        """Dict with the different modules that have been loaded.
+        The key is the name of the module and the value is the module object.
+        """
         return self._loaded_modules
 
-    def add_module(self, name, module):
+    def add_module(self, name : str, module : Module) -> None:
         """Adds a module to the loaded modules dictionary
         
         Arguments:
