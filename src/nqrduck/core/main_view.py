@@ -581,6 +581,11 @@ class PreferencesWindow(QDialog):
 
         self.adjustSize()
 
+        # Reset settings button
+        reset_button = QPushButton('Reset Settings to default', self)
+        reset_button.clicked.connect(self.on_reset_settings)
+        self.layout.addWidget(reset_button)
+
         self.update_module_order_table()
 
     @pyqtSlot(str)
@@ -670,5 +675,13 @@ class PreferencesWindow(QDialog):
         self.module_order_table.resizeColumnsToContents()
         self.module_order_table.resizeRowsToContents()
 
+        # Dynamically scale the window size
+        self.adjustSize()
+
+    @pyqtSlot()
+    def on_reset_settings(self) -> None:
+        """Resets the settings of the application to the default settings."""
+        logger.debug("Resetting settings")
+        self.parent()._main_model.settings.reset_settings()
         # Dynamically scale the window size
         self.adjustSize()

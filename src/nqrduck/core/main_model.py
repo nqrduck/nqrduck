@@ -86,6 +86,15 @@ class SettingsManager(QObject):
         self.settings.setValue("module_order", value)
         self.settings_changed.emit()
 
+    def reset_settings(self) -> None:
+        """Resets the settings to default values."""
+        self.settings.clear()
+        self.settings.setValue("font", self.default_font)
+        self.settings.setValue("font_size", 22)
+        self.settings.setValue("style_factory", self.style_factories[-1])
+        self.settings.setValue("module_order", [key for key in self.parent().loaded_modules.keys()])
+        self.settings_changed.emit()
+
 class MainModel(QObject):
 
     module_added = pyqtSignal(Module)
