@@ -42,7 +42,6 @@ all = [
 ]
 base = [
     "nqrduck[nqrduck-spectrometer]",
-    "nqrduck[nqrduck-broadband]",
     "nqrduck[nqrduck-pulseprogrammer]",
     "nqrduck[nqrduck-measurement]",
     "nqrduck[nqrduck-spectrometer-simulator]",
