@@ -77,6 +77,13 @@ class SettingsManager(QObject):
             self._module_order = [key for key in self.parent().loaded_modules.keys()]
             self.settings.setValue("module_order", self._module_order)
             logger.debug("Module order set to default")
+
+        # Check if there are new modules that are not in the module order, if so add them to the end
+        for key in self.parent().loaded_modules.keys():
+            if key not in self._module_order:
+                self._module_order.append(key)
+                self.settings.setValue("module_order", self._module_order)
+                logger.debug("Added new module to module order: %s", key)          
         
         return self._module_order
     
