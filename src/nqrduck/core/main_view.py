@@ -570,8 +570,6 @@ class PreferencesWindow(QDialog):
         self.module_order_layout.addWidget(self.module_order_table)
         self.module_order_layout.addStretch()
 
-        self.update_module_order_table()
-
         self.layout.addLayout(self.module_order_layout)
 
         self.layout.addStretch()
@@ -582,6 +580,8 @@ class PreferencesWindow(QDialog):
         self.layout.addWidget(ok_button)
 
         self.adjustSize()
+
+        self.update_module_order_table()
 
     @pyqtSlot(str)
     def on_font_changed(self, font : str) -> None:
