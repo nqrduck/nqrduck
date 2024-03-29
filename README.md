@@ -13,7 +13,8 @@
     python -m venv venv
     source venv/bin/activate
     ```
-3. Install the package with `pip install .[all]` to install all available NQRduck modules. This should install all other dependencies as well.
+3. Install the package with `pip install .[all]` to install all available NQRduck modules. Careful here you might need additional dependencies specified in the respective module repositories.
+If  you only want to  install some base  modules use `pip install .[base]`.
 Alternatively, you can install different modules separately by running `pip install .[module_name]` where `module_name` is the name of the module you want to install.
 You can find the different modules [here](https://github.com/nqrduck).
 4. Run the program with `nqrduck`.
