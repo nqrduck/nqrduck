@@ -1,3 +1,4 @@
+"""Main entry point for the NQRduck application."""
 import sys
 import traceback
 import os
@@ -12,9 +13,14 @@ from .core.main_view import MainView
 logger = logging.getLogger(__name__)
 
 class NQRduck(QApplication):
-
+    """Main application for the NQRduck.
+    
+    Args:
+        sys_argv (list): The system arguments
+    """
     def __init__(self, sys_argv):
-        super(NQRduck, self).__init__(sys_argv)
+        """Initializes the NQRduck application."""
+        super().__init__(sys_argv)
 
         self._main_model = MainModel()
         self._main_controller = MainController(self._main_model)
@@ -34,7 +40,13 @@ class NQRduck(QApplication):
         self._main_view.on_settings_changed()
 
 def handle_exception(exc_type, exc_value, exc_traceback):
-    """Handle uncaught exceptions."""
+    """Handle uncaught exceptions.
+    
+    Args:
+        exc_type (type): The type of the exception
+        exc_value (Exception): The exception object
+        exc_traceback (traceback): The traceback object
+    """
     logger.exception("An unhandled exception occurred: ", exc_info=(exc_type, exc_value, exc_traceback))
     error_msg = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
 
@@ -43,6 +55,7 @@ def handle_exception(exc_type, exc_value, exc_traceback):
     sys.exit(1)
 
 def main():
+    """Main entry point for the NQRduck application."""
     # Install the exception handler
     sys.excepthook = handle_exception  
 

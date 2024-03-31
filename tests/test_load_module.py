@@ -1,10 +1,10 @@
-# Tests that loads a module from the nqrduck entry points
-import pytest
+"""Tests that loads a module from the nqrduck entry points."""
 from PyQt6.QtWidgets import QApplication
 from nqrduck.core.main_model import MainModel
 from nqrduck.core.main_controller import MainController
 
 def test_load_module():
+    """Tests that loads a module from the nqrduck entry points."""
     main_view = StubMainView()
     
     main_model = MainModel()
@@ -17,17 +17,18 @@ def test_load_module():
 
 
 class StubMainView(QApplication):
-    """This is only a stub for the tests"""
+    """This is only a stub for the tests."""
     def __init__(self):
+        """Initializes the StubMainView."""
         super().__init__([])
  
 
     def on_module_widget_added(self, widget):
-        """ This is only a stub for the tests"""
+        """This is only a stub for the tests."""
         pass
 
     def on_menu_bar_item_added(self, menu_item):
-        """ This is only a stub for the tests"""
+        """This is only a stub for the tests."""
         pass
 
 

@@ -1,11 +1,13 @@
+"""Provides methods to load icons."""
+
 from pathlib import Path
 import logging
 from PyQt6.QtGui import QIcon
 
 logger = logging.getLogger(__name__)
 
-class Icons:
 
+class Icons:
     """This class provides various assets for the different modules."""
 
     @staticmethod
@@ -28,8 +30,8 @@ class Icons:
 
         return icon
 
-class Logos(Icons):
 
+class Logos(Icons):
     """This class provides the logos for the different modules."""
 
     @staticmethod
@@ -106,7 +108,7 @@ class Logos(Icons):
             QIcon: The Save_16x16 logo.
         """
         return Logos.get_logo("Save_16x16.png")
-    
+
     @staticmethod
     def QuestionMark_16x16():
         """Returns the QuestionMark_16x16 logo as a QIcon.
@@ -115,7 +117,7 @@ class Logos(Icons):
             QIcon: The QuestionMark_16x16 logo.
         """
         return Logos.get_logo("QuestionMark_16x16.png")
-    
+
     @staticmethod
     def Error_16x16():
         """Returns the Error_16x16 logo as a QIcon.
@@ -124,7 +126,7 @@ class Logos(Icons):
             QIcon: The Error_16x16 logo.
         """
         return Logos.get_logo("Error_16x16.png")
-    
+
     @staticmethod
     def Info_16x16():
         """Returns the Info_16x16 logo as a QIcon.
@@ -133,7 +135,7 @@ class Logos(Icons):
             QIcon: The Info_16x16 logo.
         """
         return Logos.get_logo("Info_16x16.png")
-    
+
     @staticmethod
     def Attention_16x16():
         """Returns the Attention_16x16 logo as a QIcon.
@@ -142,7 +144,7 @@ class Logos(Icons):
             QIcon: The Attention_16x16 logo.
         """
         return Logos.get_logo("Attention_16x16.png")
-    
+
     @staticmethod
     def Settings_16x16():
         """Returns the Settings_16x16 logo as a QIcon.
@@ -151,7 +153,7 @@ class Logos(Icons):
             QIcon: The Settings_16x16 logo.
         """
         return Logos.get_logo("Settings_16x16.png")
-    
+
     @staticmethod
     def Play_16x16():
         """Returns the Play_16x16 logo as a QIcon.
@@ -160,40 +162,44 @@ class Logos(Icons):
             QIcon: The Play_16x16 logo.
         """
         return Logos.get_logo("Play_16x16.png")
-    
+
     @staticmethod
     def LabMallard_32x32():
         """Returns the LabMallardnbg_32x32 logo as a QIcon.
-        Careful this is exported in 400% instead of 200% so it might look weird with other logos. 
+
+        Careful this is exported in 400% instead of 200% so it might look weird with other logos.
 
         Returns:
             QIcon: The QuestionMark_16x16 logo.
         """
         return Logos.get_logo("LabMallardnbg_32x32.png")
-    
+
     @staticmethod
     def Logo_64x32():
-        """ Returns the Logo_64x32 logo as QIcon.
+        """Returns the Logo_64x32 logo as QIcon.
+
         This is also exported in 400%
-        
+
         Returns:
-            QIcon: The Logo_64x32"""
+        QIcon: The Logo_64x32
+        """
         return Logos.get_logo("Logo_64x32.png")
-    
+
     @staticmethod
     def Logo_full():
-        """ Returns the Logo_fulllogo as QIcon.
+        """Returns the Logo_fulllogo as QIcon.
+
         This is also exported in 400%. Only use this for the splash screen and maybe about page. It has a weird size.
-        
+
         Returns:
-            QIcon: The Logo_full"""
+        QIcon: The Logo_full
+        """
         return Logos.get_logo("Logo_full.png")
 
 
 class PulseParamters(Icons):
-
     """This class provides the pulse parameter assets for the different modules."""
-    
+
     @staticmethod
     def get_pulseparameter(name):
         """Returns a pulse parameter as a QIcon.

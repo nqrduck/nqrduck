@@ -1,3 +1,4 @@
+"""Module class for the different modules of the application."""
 import logging
 import yaml
 import configparser
@@ -8,11 +9,23 @@ from PyQt6.QtCore import pyqtSignal, QObject
 logger = logging.getLogger(__name__)
 
 class Module(QObject):
+    """Module class for the different modules of the application.
+    
+    Args:
+        model (ModuleModel): The model of the module
+        view (ModuleView): The view of the module
+        controller (ModuleController): The controller of the module
+    
+    Attributes:
+        MODULE_CONFIG_PATH (str): The path to the module config file
+        nqrduck_signal (pyqtSignal): Signal to send messages to the main controller
+    """
     MODULE_CONFIG_PATH = "resources"
 
     nqrduck_signal = pyqtSignal(str, object)
 
     def __init__(self, model, view, controller):
+        """Initializes the Module."""
         super().__init__()
         self.model = model(self)
         self.controller = controller(self)
@@ -53,6 +66,7 @@ class Module(QObject):
 
     @property
     def model(self):
+        """The model of the module."""
         return self._model
 
     @model.setter
@@ -61,6 +75,7 @@ class Module(QObject):
 
     @property
     def controller(self):
+        """The controller of the module."""
         return self._controller
 
     @controller.setter
@@ -69,6 +84,7 @@ class Module(QObject):
 
     @property
     def view(self):
+        """The view of the module."""
         return self._view
 
     @view.setter
