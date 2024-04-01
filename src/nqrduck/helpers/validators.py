@@ -23,11 +23,12 @@ class DuckIntValidator(QValidator):
         self.min_value = min_value
         self.max_value = max_value
 
-    def validate(self, value):
+    def validate(self, value, position):
         """Validates the input value.
 
         Args:
             value (str): The input value
+            position (int): The position of the cursor
 
         Returns:
             QValidator.State: The state of the input value
@@ -68,11 +69,12 @@ class DuckFloatValidator(QValidator):
         self.min_value = min_value
         self.max_value = max_value
 
-    def validate(self, value: str):
+    def validate(self, value: str, position: int):
         """Validates the input value.
 
         Args:
             value (str): The input value
+            position (int): The position of the cursor
         """
         try:
             f_value = float(value)
