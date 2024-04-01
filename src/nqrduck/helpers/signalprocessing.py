@@ -1,3 +1,4 @@
+"""Helper used for signal processing."""
 import logging
 from scipy.fft import fft, fftfreq, fftshift
 import numpy as np
@@ -5,11 +6,8 @@ import sympy
 
 logger = logging.getLogger(__name__)
 
-class SignalProcessing():
-    """ This class provides various signal processing methods that can then be used by nqrduck modules."""
-
-    def __init__(self):
-        pass
+class SignalProcessing:
+    """This class provides various signal processing methods that can then be used by nqrduck modules."""
 
     @classmethod
     def fft(cls, tdx : np.array, tdy: np.array, freq_shift : float = 0, zero_padding = 1000) -> tuple[np.array, np.array]:
@@ -19,12 +17,12 @@ class SignalProcessing():
             tdx (np.array): Time domain x data in seconds.
             tdy (np.array): Time domain magnitude y data.
             freq_shift (float): Frequency shift in MHz - this can be useful if the spectrometer has it's frequency data in the IF band.
+            zero_padding (float): Zero padding to be used in the FFT.
         
         Returns:
             np.array: Frequency domain x data in MHz.
             np.array: Frequency domain magnitude y data.
         """
-        
         dwell_time = (tdx[1] - tdx[0])
             
         N = len(tdx) + zero_padding

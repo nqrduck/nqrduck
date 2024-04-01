@@ -1,3 +1,4 @@
+"""The main controller of the application."""
 import logging
 import importlib
 import importlib.metadata
@@ -9,18 +10,32 @@ logger = logging.getLogger(__name__)
 
 
 class MainController(QObject):
+    """The main controller of the application.
+    
+    This class loads all modules with entry points in the nqrduck group.
+    It also connects the nqrduck_signal to the dispatch_signals slot and creates the menu bar entries.
+    
+    Args:
+        main_model (MainModel): The main model of the application
+        
+    Attributes:
+        create_notification_dialog (pyqtSignal): Signal to create a notification dialog
+    """
     create_notification_dialog = pyqtSignal(list)
 
     def __init__(self, main_model):
+        """Initializes the MainController."""
         super().__init__()
         self.main_model = main_model
 
     def load_modules(self, main_view) -> None:
-        """Loads all modules with entry points in the nqrduck group
+        """Loads all modules with entry points in the nqrduck group.
+
         Also connects the nqrduck_signal to the dispatch_signals slot and creates the menu bar entries.
 
-        Arguments:
-            main_view (MainView) -- The main view of the application"""
+        Args:
+        main_view (MainView): The main view of the application
+        """
         # Get the modules with entry points in the nqrduck group
         modules = self._get_modules()
         logger.debug("Found modules: %s", modules)
@@ -45,15 +60,19 @@ class MainController(QObject):
 
             module.controller.on_loading()
 
+        main_view.on_settings_changed()
+
     @pyqtSlot(str, object)
     def dispatch_signals(self, key: str, value: object):
         """Dispatches the signals to the according module.
+
         This method is connected to the nqrduck_signal of the modules.
         It's the main way of communication between the modules.
 
-        Arguments:
-            key (str) -- The key of the signal
-            value (object) -- The value of the signal"""
+        Args:
+            key (str): The key of the signal
+            value (object): The value of the signal
+        """
         for module in self.main_model.loaded_modules.values():
             # This is a special signal that is used to set the status bar message
             if key == "statusbar_message":
@@ -71,15 +90,16 @@ class MainController(QObject):
 
     @staticmethod
     def _get_modules():
-        """
-        Returns a dictionary of all modules found in the entry points with 'nqrduck'
+        """Returns a dictionary of all modules found in the entry points with 'nqrduck'.
 
-        Returns: dict -- Dictionary of modules
+        Returns dict: Dictionary of modules
         """
         modules = {}
 
         try:
-            for entry_point in importlib.metadata.entry_points().select(group="nqrduck"):
+            for entry_point in importlib.metadata.entry_points().select(
+                group="nqrduck"
+            ):
                 modules[entry_point.name] = entry_point.load()
         # Adds python 3.9 compatibility
         except AttributeError:

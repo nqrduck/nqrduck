@@ -46,6 +46,12 @@ base = [
     "nqrduck[nqrduck-measurement]",
     "nqrduck[nqrduck-spectrometer-simulator]",
 ]
+dev = [
+    "black",
+    "pydocstyle",
+    "pyupgrade",
+    "ruff",
+]
 
 
 nqrduck-spectrometer = [
@@ -75,6 +81,24 @@ nqrduck-spectrometer-simulator = [
 nqrduck-module = [
     "nqrduck-module @ git+https://github.com/nqrduck/nqrduck-module",
 ]
+
+[tool.ruff]
+exclude = [
+  "widget.py",
+  "main_window.py",
+]
+
+[tool.ruff.lint]
+extend-select = [
+  "UP",  # pyupgrade
+  "D",   # pydocstyle
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [project.gui-scripts]
 nqrduck = "nqrduck.__main__:main"
