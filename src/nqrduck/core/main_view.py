@@ -386,7 +386,7 @@ class AboutModules(QDialog):
         self.setLayout(self.layout)
         # Add black border and  fill background
         self.setStyleSheet(
-            "QDialog { border: 2px solid black; background-color: white }"
+            "QDialog { border: 2px solid black;}"
         )
 
         self.module_info = QLabel("Installed Modules:")
@@ -433,7 +433,7 @@ class AboutNQRduck(QDialog):
         self.setLayout(self.layout)
         # Add black border and  fill background
         self.setStyleSheet(
-            "QDialog { border: 2px solid black; background-color: white }"
+            "QDialog { border: 2px solid black;}"
         )
 
         self.app_info = QLabel("NQRduck")
@@ -485,7 +485,7 @@ class LoggerWindow(QDialog):
 
         # Add black border and  fill background
         self.setStyleSheet(
-            "QDialog { border: 2px solid black; background-color: white }"
+            "QDialog { border: 2px solid black;}"
         )
 
         # Height is also half the screen height
@@ -618,7 +618,7 @@ class PreferencesWindow(QDialog):
 
         # Add black border and  fill background
         self.setStyleSheet(
-            "QDialog { border: 2px solid black; background-color: white }"
+            "QDialog { border: 2px solid black; }"
         )
 
         self.preferences_info = QLabel("Preferences:")
