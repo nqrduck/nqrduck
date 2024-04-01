@@ -31,6 +31,10 @@ class StubMainView(QApplication):
         """This is only a stub for the tests."""
         pass
 
+    def on_settings_changed(self):
+        """This is only a stub for the tests."""
+        pass
+
 
 if __name__ == "__main__":
     test_load_module()
