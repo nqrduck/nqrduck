@@ -43,7 +43,7 @@ class DuckIntValidator(QValidator):
 
             return QValidator.State.Acceptable
 
-        except ValueError:
+        except (ValueError, AssertionError):
             if value.endswith("e"):
                 return QValidator.State.Intermediate
             return QValidator.State.Invalid
@@ -88,7 +88,7 @@ class DuckFloatValidator(QValidator):
 
             return QValidator.State.Acceptable
 
-        except ValueError:
+        except (ValueError, AssertionError):
             if value.endswith("e"):
                 return QValidator.State.Intermediate
 
