@@ -1,5 +1,6 @@
 """Helper used for validating input."""
 
+from typing import Tuple
 from PyQt6.QtCore import QObject
 from PyQt6.QtGui import QValidator
 
@@ -23,7 +24,7 @@ class DuckIntValidator(QValidator):
         self.min_value = min_value
         self.max_value = max_value
 
-    def validate(self, value, position):
+    def validate(self, value: str, position: int) -> Tuple[QValidator.State, str, int]:
         """Validates the input value.
 
         Args:
@@ -31,22 +32,22 @@ class DuckIntValidator(QValidator):
             position (int): The position of the cursor
 
         Returns:
-            QValidator.State: The state of the input value
+            Tuple[QValidator.State, str, int]: The validation state, the fixed value, and the position
         """
         try:
             f_value = float(value)
             assert f_value.is_integer()
             if self.min_value is not None and f_value < self.min_value:
-                return QValidator.State.Invalid
+                return (QValidator.State.Invalid, value, position)
             if self.max_value is not None and f_value > self.max_value:
-                return QValidator.State.Invalid
+                return (QValidator.State.Invalid, value, position)
 
-            return QValidator.State.Acceptable
+            return (QValidator.State.Acceptable, value, position)
 
         except (ValueError, AssertionError):
             if value.endswith("e"):
-                return QValidator.State.Intermediate
-            return QValidator.State.Invalid
+                return (QValidator.State.Intermediate, value, position)
+            return (QValidator.State.Invalid, value, position)
 
 
 class DuckFloatValidator(QValidator):
@@ -75,24 +76,27 @@ class DuckFloatValidator(QValidator):
         Args:
             value (str): The input value
             position (int): The position of the cursor
+
+        Returns:
+            Tuple[QValidator.State, str, int]: The validation state, the fixed value, and the position
         """
         try:
             f_value = float(value)
             if self.min_value is not None and f_value < self.min_value:
-                return QValidator.State.Invalid
+                return (QValidator.State.Invalid, value, position)
             if self.max_value is not None and f_value > self.max_value:
-                return QValidator.State.Invalid
+                return (QValidator.State.Invalid, value, position)
 
             if value.endswith("."):
-                return QValidator.State.Intermediate
+                return (QValidator.State.Intermediate, value, position)
 
-            return QValidator.State.Acceptable
+            return (QValidator.State.Acceptable, value, position)
 
         except (ValueError, AssertionError):
             if value.endswith("e"):
-                return QValidator.State.Intermediate
+                return (QValidator.State.Intermediate, value, position)
 
-            return QValidator.State.Invalid
+            return (QValidator.State.Invalid, value, position)
 
     def fixup(self, value: str):
         """Replaces commas with dots.
