@@ -161,7 +161,7 @@ class DuckSpinBox(QWidget):
         self.spin_box.setMinimumWidth(80)
 
         if min_value is not None and max_value is not None:
-            self.spin_box.setRange(int(min_value), int(max_value))
+            self.spin_box.setRange(min_value, max_value)
         self.spin_box.valueChanged.connect(self.on_value_changed)
 
         # This only can be an issue during development, better to catch it early
@@ -169,7 +169,7 @@ class DuckSpinBox(QWidget):
 
         if slider:
             self.slider = QSlider(Qt.Orientation.Horizontal)
-            self.slider.setRange(min_value, max_value)
+            self.slider.setRange(int(min_value), int(max_value))
             self.slider.valueChanged.connect(self.on_slider_value_changed)
 
             self.layout.addWidget(self.slider)
