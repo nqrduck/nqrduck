@@ -157,6 +157,9 @@ class DuckSpinBox(QWidget):
         else:
             self.spin_box = QSpinBox()
 
+        # Maker the SpinBox 5 digits wide
+        self.spin_box.setMinimumWidth(80)
+
         if min_value is not None and max_value is not None:
             self.spin_box.setRange(min_value, max_value)
         self.spin_box.valueChanged.connect(self.on_value_changed)
