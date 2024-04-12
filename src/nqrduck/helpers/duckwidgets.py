@@ -161,7 +161,7 @@ class DuckSpinBox(QWidget):
         self.spin_box.setMinimumWidth(80)
 
         if min_value is not None and max_value is not None:
-            self.spin_box.setRange(min_value, max_value)
+            self.spin_box.setRange(int(min_value), int(max_value))
         self.spin_box.valueChanged.connect(self.on_value_changed)
 
         # This only can be an issue during development, better to catch it early
@@ -187,7 +187,7 @@ class DuckSpinBox(QWidget):
         self.state_updated.emit(True, str(value))
         # Update the slider if it exists
         if hasattr(self, "slider"):
-            self.slider.setValue(value)
+            self.slider.setValue(int(value))
 
     def on_slider_value_changed(self, value):
         """Slot that is called when the value of the QSlider changes.
