@@ -1,8 +1,9 @@
 """Provides a variety of different widgets for the  NQRduck GUI."""
 import logging
 
-from PyQt6.QtWidgets import QLineEdit
+from PyQt6.QtWidgets import QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QSlider, QHBoxLayout
 from PyQt6.QtCore import pyqtSlot, pyqtSignal
+from PyQt6.QtCore import Qt
 
 from .validators import DuckFloatValidator, DuckIntValidator
 
@@ -129,4 +130,71 @@ class DuckFloatEdit(DuckEdit):
             max_value (float): The maximum value.
         """
         self.validator.max_value = max_value
+
+class DuckSpinBox(QWidget):
+    """A class that provides a QSpinBox or QDoubleSpinBox widget.
+    Additionally, a slider can be added to the widget.
+    """
+
+    state_updated = pyqtSignal(bool, str)
+
+    def __init__(self, parent=None, min_value=None, max_value=None, slider = False, double_box = False):
+        """Initializes the DuckSpinBox.
+
+        Args:
+            parent (QWidget): The parent widget.
+            min_value (int): The minimum value that is accepted.
+            max_value (int): The maximum value that is accepted.
+            slider (bool): If True, a slider is added to the widget.
+            double_box (bool): If True, a QDoubleSpinBox is used instead of a QSpinBox.
+        """
+        super().__init__(parent)
+
+        self.layout = QHBoxLayout()
+
+        if double_box:
+            self.spin_box = QDoubleSpinBox()
+        else:
+            self.spin_box = QSpinBox()
+
+        # Maker the SpinBox 5 digits wide
+        self.spin_box.setMinimumWidth(80)
+
+        if min_value is not None and max_value is not None:
+            self.spin_box.setRange(int(min_value), int(max_value))
+        self.spin_box.valueChanged.connect(self.on_value_changed)
+
+        # This only can be an issue during development, better to catch it early
+        assert not( slider is True and (min_value is None or max_value is None)), "If a slider is added, min_value and max_value must be set."
+
+        if slider:
+            self.slider = QSlider(Qt.Orientation.Horizontal)
+            self.slider.setRange(min_value, max_value)
+            self.slider.valueChanged.connect(self.on_slider_value_changed)
+
+            self.layout.addWidget(self.slider)
+
+        self.layout.addWidget(self.spin_box)
         
+        self.setLayout(self.layout)
+
+    def on_value_changed(self, value):
+        """Slot that is called when the value of the QSpinBox changes.
+
+        Args:
+            value (int): The new value of the QSpinBox.
+        """
+        self.state_updated.emit(True, str(value))
+        # Update the slider if it exists
+        if hasattr(self, "slider"):
+            self.slider.setValue(int(value))
+
+    def on_slider_value_changed(self, value):
+        """Slot that is called when the value of the QSlider changes.
+
+        Args:
+            value (int): The new value of the QSlider.
+        """
+        self.state_updated.emit(True, str(value))
+        self.spin_box.setValue(value)
+
