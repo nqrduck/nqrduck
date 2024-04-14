@@ -17,7 +17,7 @@ class ModuleView(QWidget):
     """
 
     widget_changed = pyqtSignal(QObject)
-    add_menubar_item = pyqtSignal(str, list)
+    add_menubar_item = pyqtSignal(str, list, bool)
 
     def __init__(self, module):
         """Initializes the ModuleView."""
