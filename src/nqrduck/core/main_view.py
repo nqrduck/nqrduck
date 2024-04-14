@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QFontComboBox,
     QTableWidget,
 )
+from PyQt6.QtGui import QActionGroup
 import matplotlib as mpl
 from pathlib import Path
 from matplotlib import font_manager
@@ -168,20 +169,37 @@ class MainView(QMainWindow):
         logger.debug("Active module changed to: %s", module_name)
         self._main_model.active_module = self._main_model.loaded_modules[module_name]
 
-    @pyqtSlot(str, list)
-    def on_menu_bar_item_added(self, menu_name: str, actions: list) -> None:
+    @pyqtSlot(str, list, bool)
+    def on_menu_bar_item_added(self, menu_name: str, actions: list, group : bool = None) -> None:
         """Adds a menu bar item to the main view.
 
         Args:
             menu_name (str) : The name of the menu bar item
-            actions (list) : A list of actions to add to the menu bar item
+            actions (list) : A list of actions to add to the menu bar item if the items in the list are of type QActionGroup this group will be added to the menu bar item
+            group (bool) : If the actions are of type QActionGroup
         """
         logger.debug("Adding menu bar item to main view: %s", menu_name)
-        qmenu = QMenu(menu_name, self)
+        # Check if the menu already exists
+        new_menu = True
+        for menu in self.menuBar().findChildren(QMenu):
+            if menu.title() == menu_name:
+                logger.debug("Menu already exists")
+                new_menu = False
+
+        if new_menu:
+            qmenu = QMenu(menu_name, self)
+        else:
+            qmenu = self.menuBar().findChild(QMenu, menu_name)
+        
         for action in actions:
-            logger.debug("Adding action to menu bar: %s", action.text())
             action.setParent(self)
             qmenu.addAction(action)
+
+
+        if group:
+            action_group = QActionGroup(self)
+            for action in actions:
+                action_group.addAction(action)
 
         # Get the action before which you want to insert your menu
         before_action = self.menuBar().actions()[0]
