@@ -9,7 +9,7 @@ allow-direct-references = true
 name = "nqrduck"
 version = "0.0.4"
 authors = [
-  { name="Julia Pfitzer", email="git@jupfi.me" },
+  { name="jupfi", email="support@nqrduck.cool" },
 ]
 
 description = "Simple Python script to interact with various python modules used for magnetic resonance spectroscopy."
