@@ -133,6 +133,7 @@ class DuckFloatEdit(DuckEdit):
 
 class DuckSpinBox(QWidget):
     """A class that provides a QSpinBox or QDoubleSpinBox widget.
+    
     Additionally, a slider can be added to the widget.
     """
 
