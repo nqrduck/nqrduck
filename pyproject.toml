@@ -23,14 +23,6 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[project.urls]
-"Homepage" = "https://nqrduck.cool"
-"Bug Tracker" = "https://github.com/nqrduck/nqrduck/issues"
-"Source Code" = "https://github.com/nqrduck/nqrduck"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/nqrduck"]
-
 dependencies = [
     "matplotlib",
     "pyqt6",
@@ -110,3 +102,11 @@ convention = "google"
 
 [project.gui-scripts]
 nqrduck = "nqrduck.__main__:main"
+
+[project.urls]
+"Homepage" = "https://nqrduck.cool"
+"Bug Tracker" = "https://github.com/nqrduck/nqrduck/issues"
+"Source Code" = "https://github.com/nqrduck/nqrduck"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nqrduck"]
