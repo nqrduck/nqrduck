@@ -7,7 +7,7 @@ allow-direct-references = true
 
 [project]
 name = "nqrduck"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
   { name="Julia Pfitzer", email="git@jupfi.me" },
 ]
@@ -22,6 +22,14 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[project.urls]
+"Homepage" = "https://nqrduck.cool"
+"Bug Tracker" = "https://github.com/nqrduck/nqrduck/issues"
+"Source Code" = "https://github.com/nqrduck/nqrduck"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nqrduck"]
 
 dependencies = [
     "matplotlib",
