@@ -12,7 +12,7 @@ authors = [
   { name="Julia Pfitzer", email="git@jupfi.me" },
 ]
 
-description = "Simple Python script to interact with various python modules used for NQR spectroscopy."
+description = "Simple Python script to interact with various python modules used for magnetic resonance spectroscopy."
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.8"
@@ -30,56 +30,27 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-all = [
-    "nqrduck[nqrduck-spectrometer]",
-    "nqrduck[nqrduck-broadband]",
-    "nqrduck[nqrduck-spectrometer-limenqr]",
-    "nqrduck[nqrduck-spectrometer-scout];(sys_platform == 'win32')",
-    "nqrduck[nqrduck-pulseprogrammer]",
-    "nqrduck[nqrduck-measurement]",
-    "nqrduck[nqrduck-autotm]",
-    "nqrduck[nqrduck-spectrometer-simulator]",
-]
-base = [
-    "nqrduck[nqrduck-spectrometer]",
-    "nqrduck[nqrduck-pulseprogrammer]",
-    "nqrduck[nqrduck-measurement]",
-    "nqrduck[nqrduck-spectrometer-simulator]",
-]
+#all = [
+#    "nqrduck-spectrometer",
+#    "nqrduck-broadband",
+#    "nqrduck-spectrometer-limenqr",
+#    "nqrduck-spectrometer-scout;(sys_platform == 'win32')",
+#    "nqrduck-pulseprogrammer",
+#    "nqrduck-measurement",
+#    "nqrduck-autotm",
+#    "nqrduck-spectrometer-simulator",
+#]
+#base = [
+#    "nqrduck-spectrometer",
+#    "nqrduck-pulseprogrammer",
+#    "nqrduck-measurement",
+#    "nqrduck-spectrometer-simulator",
+#]
 dev = [
     "black",
     "pydocstyle",
     "pyupgrade",
     "ruff",
-]
-
-
-nqrduck-spectrometer = [
-    "nqrduck-spectrometer @ git+https://github.com/nqrduck/nqrduck-spectrometer.git",
-]
-nqrduck-broadband = [
-    "nqrduck-broadband @ git+https://github.com/nqrduck/nqrduck-broadband.git",
-]
-nqrduck-spectrometer-limenqr = [
-    "nqrduck-spectrometer-limenqr @ git+https://github.com/nqrduck/nqrduck-spectrometer-limenqr.git",
-]
-nqrduck-spectrometer-scout = [
-    'nqrduck-spectrometer-scout @ git+https://github.com/nqrduck/nqrduck-spectrometer-scout.git',
-]
-nqrduck-pulseprogrammer = [
-    "nqrduck-pulseprogrammer @ git+https://github.com/nqrduck/nqrduck-pulseprogrammer.git",
-]
-nqrduck-measurement = [
-    "nqrduck-measurement @ git+https://github.com/nqrduck/nqrduck-measurement.git",
-]
-nqrduck-autotm = [
-    "nqrduck-autotm @ git+https://github.com/nqrduck/nqrduck-autotm",
-]
-nqrduck-spectrometer-simulator = [
-    "nqrduck-spectrometer-simulator @ git+https://github.com/nqrduck/nqrduck-spectrometer-simulator",
-]
-nqrduck-module = [
-    "nqrduck-module @ git+https://github.com/nqrduck/nqrduck-module",
 ]
 
 [tool.ruff]

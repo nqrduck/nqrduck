@@ -11,35 +11,29 @@ permissions:
   contents: read
 
 jobs:
-  test-and-deploy:
+  # test:
+  #      uses: ./.github/workflows/ubuntu-python-package.yml  # use the callable tests job to run tests
+
+  deploy:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-      fail-fast: false
+
+  #  needs: [test]
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: "3.11"
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get -qq install python3-pyqt5 xvfb libgl1 xvfb libxkbcommon-dev libegl1 fontconfig libxcb-cursor0
         python -m pip install --upgrade pip
-        pip install pytest
-        pip install .[nqrduck-module]
-
-    - name: Run tests with xvfb
-      run: xvfb-run pytest tests/
 
     - name: Publish to PyPI
-      if: success() # Proceeds if all tests pass
       run: |
         python -m venv venv
         . ./venv/bin/activate
