@@ -7,7 +7,7 @@ allow-direct-references = true
 
 [project]
 name = "nqrduck"
-version = "0.0.5"
+version = "0.0.6"
 authors = [
   { name="jupfi", email="support@nqrduck.cool" },
 ]
@@ -33,7 +33,7 @@ dependencies = [
 all = [
     "nqrduck-spectrometer",
     "nqrduck-broadband",
-    "nqrduck-spectrometer-limenqr;(sys_platform == 'Linux')",
+    "nqrduck-spectrometer-limenqr;(sys_platform == 'linux')",
     "nqrduck-spectrometer-scout;(sys_platform == 'win32')",
     "nqrduck-pulseprogrammer",
     "nqrduck-measurement",

@@ -1,4 +1,6 @@
 # Changelog
+### Version 0.0.6 (23-04-2024)
+- Fixed bug with platform dependency in the pyproject.toml file
 
 ### Version 0.0.5 (23-04-2024)
 - All modules are now available on PyPI
