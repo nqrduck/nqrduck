@@ -33,7 +33,7 @@ dependencies = [
 all = [
     "nqrduck-spectrometer",
     "nqrduck-broadband",
-    "nqrduck-spectrometer-limenqr(sys_platform == 'Linux')",
+    "nqrduck-spectrometer-limenqr;(sys_platform == 'Linux')",
     "nqrduck-spectrometer-scout;(sys_platform == 'win32')",
     "nqrduck-pulseprogrammer",
     "nqrduck-measurement",
