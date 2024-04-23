@@ -7,7 +7,7 @@ allow-direct-references = true
 
 [project]
 name = "nqrduck"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="jupfi", email="support@nqrduck.cool" },
 ]
@@ -15,7 +15,7 @@ authors = [
 description = "Simple Python script to interact with various python modules used for magnetic resonance spectroscopy."
 readme = "README.md"
 license = { file="LICENSE" }
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -30,22 +30,28 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-#all = [
-#    "nqrduck-spectrometer",
-#    "nqrduck-broadband",
-#    "nqrduck-spectrometer-limenqr",
-#    "nqrduck-spectrometer-scout;(sys_platform == 'win32')",
-#    "nqrduck-pulseprogrammer",
-#    "nqrduck-measurement",
-#    "nqrduck-autotm",
-#    "nqrduck-spectrometer-simulator",
-#]
-#base = [
-#    "nqrduck-spectrometer",
-#    "nqrduck-pulseprogrammer",
-#    "nqrduck-measurement",
-#    "nqrduck-spectrometer-simulator",
-#]
+all = [
+    "nqrduck-spectrometer",
+    "nqrduck-broadband",
+    "nqrduck-spectrometer-limenqr(sys_platform == 'Linux')",
+    "nqrduck-spectrometer-scout;(sys_platform == 'win32')",
+    "nqrduck-pulseprogrammer",
+    "nqrduck-measurement",
+    "nqrduck-autotm",
+    "nqrduck-spectrometer-simulator",
+]
+base = [
+    "nqrduck-spectrometer",
+    "nqrduck-pulseprogrammer",
+    "nqrduck-measurement",
+    "nqrduck-spectrometer-simulator",
+]
+lime = [
+    "nqrduck-measurement",
+    "nqrduck-pulseprogrammer",
+    "nqrduck-spectrometer",
+    "nqrduck-spectrometer-limenqr",
+]
 dev = [
     "black",
     "pydocstyle",

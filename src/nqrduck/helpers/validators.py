@@ -1,6 +1,5 @@
 """Helper used for validating input."""
 
-from typing import Tuple
 from PyQt6.QtCore import QObject
 from PyQt6.QtGui import QValidator
 
@@ -24,7 +23,7 @@ class DuckIntValidator(QValidator):
         self.min_value = min_value
         self.max_value = max_value
 
-    def validate(self, value: str, position: int) -> Tuple[QValidator.State, str, int]:
+    def validate(self, value: str, position: int) -> tuple[QValidator.State, str, int]:
         """Validates the input value.
 
         Args:
