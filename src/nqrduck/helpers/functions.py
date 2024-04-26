@@ -213,8 +213,8 @@ class Function:
             try:
                 self._expr = sympy.sympify(expr)
             except ValueError:
-                logger.error("Could not convert %s to a sympy expression", expr)
-                raise SyntaxError("Could not convert %s to a sympy expression" % expr)
+                logger.error(f"Could not convert {expr} to a sympy expression")
+                raise SyntaxError(f"Could not convert {expr} to a sympy expression")
         elif isinstance(expr, sympy.Expr):
             self._expr = expr
 
@@ -229,7 +229,7 @@ class Function:
             self._resolution = Decimal(resolution)
         except ValueError:
             logger.error("Could not convert %s to a decimal", resolution)
-            raise SyntaxError("Could not convert %s to a decimal" % resolution)
+            raise SyntaxError(f"Could not convert {resolution} to a decimal")
 
     @property
     def start_x(self):
@@ -242,7 +242,7 @@ class Function:
             self._start_x = float(start_x)
         except ValueError:
             logger.error("Could not convert %s to a float", start_x)
-            raise SyntaxError("Could not convert %s to a float" % start_x)
+            raise SyntaxError(f"Could not convert {start_x} to a float")
 
     @property
     def end_x(self):
@@ -255,7 +255,7 @@ class Function:
             self._end_x = float(end_x)
         except ValueError:
             logger.error("Could not convert %s to a float", end_x)
-            raise SyntaxError("Could not convert %s to a float" % end_x)
+            raise SyntaxError(f"Could not convert {end_x} to a float")
 
     class Parameter:
         """A parameter of a function.

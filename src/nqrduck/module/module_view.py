@@ -91,8 +91,8 @@ class ModuleView(QWidget):
             )
             if fileName:
                 # Append the .quack extension if not present
-                if not fileName.endswith(".%s" % self.extension):
-                    fileName += ".%s" % self.extension
+                if not fileName.endswith(f".{self.extension}"):
+                    fileName += f".{self.extension}"
                 return fileName
             else:
                 return None

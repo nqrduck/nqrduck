@@ -289,7 +289,7 @@ class MainView(QMainWindow):
         )
         mpl.rcParams["font.size"] = font_size
 
-        logger.debug("Set stylesheet to %s" % self.styleSheet())
+        logger.debug(f"Set stylesheet to {self.styleSheet()}")
 
         mpl.rcParams.update(
             {
@@ -339,7 +339,7 @@ class NotificationDialog(QDialog):
             # self.icon = QIcon('path_to_error_icon')
 
         self.messageLabel = QLabel(message)
-        self.messageLabel.setStyleSheet("QLabel { color : %s }" % self.color.name)
+        self.messageLabel.setStyleSheet(f"QLabel color :{self.color.name}")
         # self.iconLabel = QLabel()
         # self.iconLabel.setPixmap(self.icon.pixmap(32, 32))
 

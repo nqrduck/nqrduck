@@ -231,6 +231,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
     @pyqtSlot()
     def on_replot_button_clicked(self) -> None:
         """This function is called when the replot button is clicked.
+
         It will update the parameters of the function and replots the function.
         """
         logger.debug("Replot button clicked")
@@ -255,6 +256,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
     @pyqtSlot()
     def on_advanced_settings_button_clicked(self) -> None:
         """This function is called when the advanced settings button is clicked.
+
         It will show or hide the advanced settings.
         """
         if self.advanced_settings.isHidden():
@@ -267,6 +269,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
     @pyqtSlot()
     def on_functionbutton_clicked(self, function) -> None:
         """This function is called when a function button is clicked.
+
         It will update the function_option.value to the function that was clicked.
         """
         logger.debug(f"Button for function {function.name} clicked, instance id: {id(self)}")
@@ -278,6 +281,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
 
     def delete_active_function(self) -> None:
         """This function is called when the active function is deleted.
+
         It will remove the active function from the layout.
         """
         # Remove the plotter with object name "plotter" from the layout
@@ -289,6 +293,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
 
     def load_active_function(self) -> None:
         """This function is called when the active function is loaded.
+
         It will add the active function to the layout.
         """
         # New QWidget for the active function
@@ -354,7 +359,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
 
         Args:
             message (str): The message to be shown in the message box
-        information (str): The information to be shown in the message box
+            information (str): The information to be shown in the message box
         """
         msg = QMessageBox(parent=self.parent)
         msg.setIcon(QMessageBox.Icon.Warning)
@@ -450,7 +455,7 @@ class DuckFormBuilder(QDialog):
         self.numeric_layout = QFormLayout()
         self.numeric_layout.setHorizontalSpacing(30)
 
-        self.label = QLabel("Change options for: %s" % title)
+        self.label = QLabel(f"Change options for: {title}")
         self.layout.addWidget(self.label)
 
         self.layout.addLayout(self.numeric_layout)
