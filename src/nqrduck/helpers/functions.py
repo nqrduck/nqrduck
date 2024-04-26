@@ -54,7 +54,7 @@ class Function:
             np.ndarray: The time domain points.
         """
         # Get the time domain points
-        n = int(pulse_length / self.resolution)
+        n = int(Decimal(pulse_length) / self.resolution)
         t = np.linspace(0, float(pulse_length), n)
         return t
 
