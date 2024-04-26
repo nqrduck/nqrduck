@@ -36,6 +36,12 @@ class Function:
     start_x: float
     end_x: float
 
+    subclasses = []
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.subclasses.append(cls)
+
     def __init__(self, expr) -> None:
         """Initializes the function."""
         self.parameters = []
@@ -167,6 +173,7 @@ class Function:
         """
         return {
             "name": self.name,
+            "class" : self.__class__.__name__,
             "parameters": [parameter.to_json() for parameter in self.parameters],
             "expression": str(self.expr),
             "resolution": self.resolution,
@@ -184,9 +191,12 @@ class Function:
         Returns:
             Function: The function.
         """
-        for subclass in cls.__subclasses__():
-            if subclass.name == data["name"]:
+        for subclass in cls.subclasses:
+            logger.debug("Checking subclass %s", subclass)
+            logger.debug("Subclass name %s", subclass.__name__)
+            if subclass.__name__ == data["class"]:
                 cls = subclass
+                logger.debug("Found sublass %s", cls)
                 break
 
         obj = cls()
