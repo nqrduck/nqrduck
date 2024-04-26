@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 import logging
-from decimal import Decimal
 import numpy as np
 import sympy
 from nqrduck.contrib.mplwidget import MplWidget
