@@ -51,7 +51,7 @@ class DuckFormField(QWidget):
         raise NotImplementedError
 
 
-class DuckFloatField(DuckFormField):
+class DuckFormFloatField(DuckFormField):
     """A form field for float values."""
 
     def __init__(
@@ -90,7 +90,7 @@ class DuckFloatField(DuckFormField):
         return self.float_edit.value()
 
 
-class DuckIntField(DuckFormField):
+class DuckFormIntField(DuckFormField):
     """A form field for integer values."""
 
     def __init__(
@@ -414,7 +414,7 @@ class DuckFormCheckboxField(DuckFormField):
             tooltip (str): The tooltip of the field.
             default (bool, optional): The default value of the checkbox. Defaults to False.
         """
-        super().__init(text, tooltip)
+        super().__init__(text, tooltip)
         self.checkbox = QCheckBox()
         self.checkbox.setChecked(default)
         self.layout.addWidget(self.checkbox)
