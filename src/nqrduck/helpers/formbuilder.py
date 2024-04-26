@@ -26,21 +26,27 @@ logger = logging.getLogger(__name__)
 class DuckFormField(QWidget):
     """The base class for all Form Fields."""
 
-    def __init__(self, text: str, tooltip: str, parent=None) -> None:
+    def __init__(self, text: str, tooltip: str, parent=None, vertical=False) -> None:
         """Initializes a generic form field.
 
         Args:
             text (str): The text of the form field.
             tooltip (str): The tooltip of the form field.
             parent ([type], optional): The parent widget. Defaults to None.
+            vertical (bool, optional): Whether the layout should be vertical. Defaults to False.
         """
         super().__init__(parent=parent)
         self.setParent(parent)
-        self.layout = QHBoxLayout()
+        if vertical:
+            self.layout = QVBoxLayout()
+        else:
+            self.layout = QHBoxLayout()
         self.setLayout(self.layout)
 
         if text:
-            self.label = QLabel(text)
+            self.label = QLabel(f"{text}:")
+            # Make the label bold
+            self.label.setStyleSheet("font-weight: bold;")
             if tooltip:
                 self.label.setToolTip(tooltip)
 
@@ -80,6 +86,7 @@ class DuckFormFloatField(DuckFormField):
         self.float_edit.set_value(default)
         # The layout is already set in the parent class
         self.layout.addWidget(self.float_edit)
+        self.layout.addStretch(1)
 
     def return_value(self):
         """Returns the value of the float field.
@@ -118,6 +125,7 @@ class DuckFormIntField(DuckFormField):
         )
         # The layout is already set in the parent class
         self.layout.addWidget(self.int_edit)
+        self.layout.addStretch(1)
 
     def return_value(self):
         """Returns the value of the integer field.
@@ -150,7 +158,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
             default_function (int, optional): The default function. Defaults to 0.
             parent ([type], optional): The parent widget. Defaults to None.
         """
-        super().__init__(text, tooltip)
+        super().__init__(text, tooltip, parent=parent, vertical=True)
         self.parent = parent
 
         self.functions = functions
@@ -272,7 +280,9 @@ class DuckFormFunctionSelectionField(DuckFormField):
 
         It will update the function_option.value to the function that was clicked.
         """
-        logger.debug(f"Button for function {function.name} clicked, instance id: {id(self)}")
+        logger.debug(
+            f"Button for function {function.name} clicked, instance id: {id(self)}"
+        )
         for f in self.functions:
             if f.name == function.name:
                 self.selected_function = f
@@ -452,13 +462,16 @@ class DuckFormBuilder(QDialog):
 
         self.form_layout = QVBoxLayout()
 
+        self.numeric_wrap_layout = QHBoxLayout()
         self.numeric_layout = QFormLayout()
         self.numeric_layout.setHorizontalSpacing(30)
+        self.numeric_wrap_layout.addLayout(self.numeric_layout)
+        self.numeric_wrap_layout.addStretch(1)
 
         self.label = QLabel(f"Change options for: {title}")
         self.layout.addWidget(self.label)
 
-        self.layout.addLayout(self.numeric_layout)
+        self.layout.addLayout(self.numeric_wrap_layout)
         self.layout.addLayout(self.form_layout)
 
         self.button_layout = QHBoxLayout()
@@ -481,7 +494,10 @@ class DuckFormBuilder(QDialog):
             field (DuckFormField): The field to add.
         """
         self.fields.append(field)
-        self.layout.addWidget(field)
+        if isinstance(field, DuckFormFloatField) or isinstance(field, DuckFormIntField):
+            self.numeric_layout.addRow(field.label, field.float_edit)
+        else:
+            self.form_layout.addWidget(field)
 
         # Resize the window to fit the new field
         self.resize(self.sizeHint())

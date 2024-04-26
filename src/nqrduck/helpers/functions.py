@@ -39,6 +39,7 @@ class Function:
     subclasses = []
 
     def __init_subclass__(cls, **kwargs):
+        """Registers the subclass."""
         super().__init_subclass__(**kwargs)
         cls.subclasses.append(cls)
 
@@ -191,12 +192,13 @@ class Function:
         Returns:
             Function: The function.
         """
+        logger.debug(f"Data: {data}")
         for subclass in cls.subclasses:
             logger.debug("Checking subclass %s", subclass)
             logger.debug("Subclass name %s", subclass.__name__)
             if subclass.__name__ == data["class"]:
                 cls = subclass
-                logger.debug("Found sublass %s", cls)
+                logger.debug("Found subclass %s", cls)
                 break
 
         obj = cls()
