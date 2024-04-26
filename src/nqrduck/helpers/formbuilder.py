@@ -269,7 +269,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
         """This function is called when a function button is clicked.
         It will update the function_option.value to the function that was clicked.
         """
-        logger.debug("Button for function %s clicked", function.name)
+        logger.debug(f"Button for function {function.name} clicked, instance id: {id(self)}")
         for f in self.functions:
             if f.name == function.name:
                 self.selected_function = f
@@ -369,6 +369,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
         Returns:
             Function: The selected function.
         """
+        logger.debug("Returning selected function: %s", self.selected_function)
         return self.selected_function
 
 
@@ -427,8 +428,6 @@ class DuckFormBuilder(QDialog):
         fields (list): The list of fields in the form.
     """
 
-    fields = []
-
     def __init__(self, title: str, description: str = None, parent=None) -> None:
         """Initializes the form builder.
 
@@ -439,6 +438,8 @@ class DuckFormBuilder(QDialog):
         """
         super().__init__(parent)
         self.parent = parent
+
+        self.fields = []
 
         self.setWindowTitle("Options")
 
