@@ -163,6 +163,8 @@ class DuckSpinBox(QWidget):
 
         if min_value is not None and max_value is not None:
             self.spin_box.setRange(min_value, max_value)
+        else:
+            self.spin_box.setRange(-100000, 100000)
         self.spin_box.valueChanged.connect(self.on_value_changed)
 
         # This only can be an issue during development, better to catch it early
@@ -198,4 +200,21 @@ class DuckSpinBox(QWidget):
         """
         self.state_updated.emit(True, str(value))
         self.spin_box.setValue(value)
+
+    def set_value(self, value):
+        """Sets the value of the QSpinBox.
+
+        Args:
+            value (int): The value that should be set.
+        """
+        self.spin_box.setValue(value)
+        self.state_updated.emit(True, str(value))
+
+    def value(self):
+        """Returns the value of the QSpinBox.
+
+        Returns:
+            int: The value of the QSpinBox.
+        """
+        return self.spin_box.value()
 

@@ -1,4 +1,8 @@
 # Changelog
+
+### Version 0.0.7 (26-04-2024)
+- Implemented Formbuilder for the GUI which can be used to create easy input fields for the user
+
 ### Version 0.0.6 (23-04-2024)
 - Fixed bug with platform dependency in the pyproject.toml file
 
