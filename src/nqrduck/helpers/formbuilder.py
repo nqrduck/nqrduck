@@ -132,7 +132,13 @@ class DuckFormFunctionSelectionField(DuckFormField):
     """A form field for selecting functions."""
 
     def __init__(
-        self, text: str, tooltip: str, functions, duration : float, default_function: int = 0, parent=None
+        self,
+        text: str,
+        tooltip: str,
+        functions,
+        duration: float,
+        default_function: int = 0,
+        parent=None,
     ) -> None:
         """Initializes a function selection field.
 
@@ -146,7 +152,6 @@ class DuckFormFunctionSelectionField(DuckFormField):
         """
         super().__init__(text, tooltip)
         self.parent = parent
-
 
         self.functions = functions
         self.selected_function = functions[default_function]
@@ -364,7 +369,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
         Returns:
             Function: The selected function.
         """
-        pass
+        return self.selected_function
 
 
 class DuckFormDropdownField(DuckFormField):
@@ -471,7 +476,7 @@ class DuckFormBuilder(QDialog):
         """
         self.fields.append(field)
         self.layout.addWidget(field)
-        
+
         # Resize the window to fit the new field
         self.resize(self.sizeHint())
 
@@ -487,4 +492,4 @@ class DuckFormBuilder(QDialog):
 
     def get_values(self):
         """Returns the values of the form fields."""
-        pass
+        return [field.return_value() for field in self.fields]
