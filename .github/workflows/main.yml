@@ -25,7 +25,7 @@ jobs:
 
     - name: Install test module and dependencies
       run: |
-        pip install .[nqrduck-module] --break-system-packages
+        pip install nqrduck-module --break-system-packages
 
     - name: Run all the tests
       run: xvfb-run pytest tests/
