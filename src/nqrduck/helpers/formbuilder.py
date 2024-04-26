@@ -164,7 +164,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
         self.functions = functions
         self.selected_function = functions[default_function]
 
-        self.duration = Decimal(duration)
+        self.duration = float(duration)
 
         self.form_layout = QVBoxLayout()
         inner_layout = QHBoxLayout()

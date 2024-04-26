@@ -24,7 +24,7 @@ class Function:
         name (str): The name of the function.
         parameters (list): The parameters of the function.
         expr (sympy.Expr): The sympy expression of the function.
-        resolution (Decimal): The resolution of the function in seconds.
+        resolution (float): The resolution of the function in seconds.
         start_x (float): The x value where the evalution of the function starts.
         end_x (float): The x value where the evalution of the function ends.
     """
@@ -32,7 +32,7 @@ class Function:
     name: str
     parameters: list
     expression: str | sympy.Expr
-    resolution: Decimal
+    resolution: float
     start_x: float
     end_x: float
 
@@ -47,30 +47,30 @@ class Function:
         """Initializes the function."""
         self.parameters = []
         self.expr = expr
-        self.resolution = Decimal(1 / 30.72e6)
+        self.resolution = 1 / 30.72e6
         self.start_x = -1
         self.end_x = 1
 
-    def get_time_points(self, pulse_length: Decimal) -> np.ndarray:
+    def get_time_points(self, pulse_length: float) -> np.ndarray:
         """Returns the time domain points for the function with the given pulse length.
 
         Args:
-            pulse_length (Decimal): The pulse length in seconds.
+            pulse_length (float): The pulse length in seconds.
 
         Returns:
             np.ndarray: The time domain points.
         """
         # Get the time domain points
-        n = int(Decimal(pulse_length) / self.resolution)
+        n = int(pulse_length / self.resolution)
         t = np.linspace(0, float(pulse_length), n)
         return t
 
-    def evaluate(self, pulse_length: Decimal, resolution: Decimal = None) -> np.ndarray:
+    def evaluate(self, pulse_length: float, resolution: float = None) -> np.ndarray:
         """Evaluates the function for the given pulse length.
 
         Args:
-            pulse_length (Decimal): The pulse length in seconds.
-            resolution (Decimal, optional): The resolution of the function in seconds. Defaults to None.
+            pulse_length (float): The pulse length in seconds.
+            resolution (float, optional): The resolution of the function in seconds. Defaults to None.
 
         Returns:
             np.ndarray: The evaluated function.
@@ -108,11 +108,11 @@ class Function:
         t = np.linspace(self.start_x, self.end_x, n)
         return t
 
-    def frequency_domain_plot(self, pulse_length: Decimal) -> MplWidget:
+    def frequency_domain_plot(self, pulse_length: float) -> MplWidget:
         """Plots the frequency domain of the function for the given pulse length.
 
         Args:
-            pulse_length (Decimal): The pulse length in seconds.
+            pulse_length (float): The pulse length in seconds.
 
         Returns:
             MplWidget: The matplotlib widget containing the plot.
@@ -127,11 +127,11 @@ class Function:
         mpl_widget.canvas.ax.grid(True)
         return mpl_widget
 
-    def time_domain_plot(self, pulse_length: Decimal) -> MplWidget:
+    def time_domain_plot(self, pulse_length: float) -> MplWidget:
         """Plots the time domain of the function for the given pulse length.
 
         Args:
-            pulse_length (Decimal): The pulse length in seconds.
+            pulse_length (float): The pulse length in seconds.
 
         Returns:
             MplWidget: The matplotlib widget containing the plot.
@@ -145,13 +145,13 @@ class Function:
         return mpl_widget
 
     def get_pulse_amplitude(
-        self, pulse_length: Decimal, resolution: Decimal = None
+        self, pulse_length: float, resolution: float = None
     ) -> np.array:
         """Returns the pulse amplitude in the time domain.
 
         Args:
-            pulse_length (Decimal): The pulse length in seconds.
-            resolution (Decimal, optional): The resolution of the function in seconds. Defaults to None.
+            pulse_length (Float): The pulse length in seconds.
+            resolution (float, optional): The resolution of the function in seconds. Defaults to None.
 
         Returns:
             np.array: The pulse amplitude.
@@ -238,10 +238,10 @@ class Function:
     @resolution.setter
     def resolution(self, resolution):
         try:
-            self._resolution = Decimal(resolution)
+            self._resolution = float(resolution)
         except ValueError:
-            logger.error("Could not convert %s to a decimal", resolution)
-            raise SyntaxError(f"Could not convert {resolution} to a decimal")
+            logger.error("Could not convert %s to a float", resolution)
+            raise SyntaxError(f"Could not convert {resolution} to a float")
 
     @property
     def start_x(self):
