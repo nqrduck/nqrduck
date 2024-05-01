@@ -3,6 +3,8 @@
 import logging
 import urllib.request
 import json
+import sys
+import os
 
 from PyQt6.QtWidgets import (
     QWizard,
@@ -10,13 +12,14 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QCheckBox,
     QLabel,
-    QPushButton,
     QVBoxLayout,
     QWidget,
     QHBoxLayout,
+    QTextEdit,
+    QPushButton,
 )
 
-from PyQt6.QtCore import QThread
+from PyQt6.QtCore import QThread, QProcess, pyqtSignal, QCoreApplication
 
 from nqrduck.assets.icons import Logos
 
@@ -38,7 +41,9 @@ class DuckWizard(QWizard):
         self.addPage(WelcomePage())
         selection_page = SelectionPage(installed_modules)
         self.addPage(selection_page)
-        self.addPage(InstallPage(selection_page))
+        list_install_page = ListInstallPage(selection_page)
+        self.addPage(list_install_page)
+        self.addPage(InstallPage(list_install_page))
         self.addPage(FinishPage())
 
 
@@ -101,6 +106,8 @@ class SelectionPage(QWizardPage):
     def generate_installation_widgets(self) -> None:
         """Generate the installation widgets for the modules."""
         # First we get a list of already installed modules
+
+        # TODO: Platform dependence of the modules has to be considered
 
         self.checkboxes = {}
 
@@ -258,7 +265,7 @@ class SelectionPage(QWizardPage):
         return []
 
 
-class InstallPage(QWizardPage):
+class ListInstallPage(QWizardPage):
     """The installation page of the wizard.
 
     This page is shown while the modules are installed.
@@ -269,6 +276,8 @@ class InstallPage(QWizardPage):
         super().__init__()
 
         self.selection_page = selection_page
+
+        self.setCommitPage(True)
 
         self.setTitle("Installing NQRduck modules")
         self.setSubTitle("The following modules will be installed:")
@@ -287,6 +296,7 @@ class InstallPage(QWizardPage):
             layout.addWidget(label)
 
     def cleanupPage(self) -> None:
+        """Clean up the InstallPage."""
         logger.debug("Cleaning up InstallPage")
         for child in self.children():
             child.deleteLater()
@@ -308,38 +318,102 @@ class InstallPage(QWizardPage):
 
         return install_modules
 
-    def install_modules(self):
-        """Install the selected modules."""
-        pass
+class InstallPage(QWizardPage):
+    """The installation page of the wizard.
+
+    This page is shown while the modules are installed.
+    """
+
+    output_signal = pyqtSignal(str)
+
+    def __init__(self, list_install_page):
+        """Initializes the InstallPage."""
+        super().__init__()
+        self.completed_installation = False
+
+        self.list_install_page = list_install_page
+
+        self.setTitle("Installing NQRduck modules")
+
+    def initializePage(self) -> None:
+        """Generate the installation widgets for the modules."""
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # Create the text widget to display the pip install output
+        self.install_output = QTextEdit()
+        self.install_output.setReadOnly(True)  # Set the text widget to read-only
+        layout.addWidget(self.install_output)
+
+        install_modules = self.list_install_page.get_install_modules()
+
+        self.install_thread = self.InstallThread(install_modules)
+        self.install_thread.output_signal.connect(self.append_output)  # Connect the signal to the slot method
+        self.install_thread.completed_signal.connect(self.set_completed)
+        self.install_thread.start()
+
+    def set_completed(self, completed: bool) -> None:
+        """Set the installation as completed."""
+        self.completed_installation = completed
+        self.completeChanged.emit()
+
+    def isComplete(self) -> bool:
+        """Check if the installation is complete."""
+        return self.completed_installation
+        
+
+    def append_output(self, text):
+        """Append the installation output to the text widget."""
+        self.install_output.append(text)  # Append the text to the text widget
 
     class InstallThread(QThread):
+        """Thread class to handle running pip install commands in the background."""
+        output_signal = pyqtSignal(str)
+        completed_signal = pyqtSignal(bool)
+
         def __init__(self, install_modules):
+            """Initializes the InstallThread."""
             super().__init__()
             self.install_modules = install_modules
 
         def run(self):
+            """Run the installation of the modules."""
+            process = QProcess()
             for module in self.install_modules:
-                logger.debug(f"Installing {module}")
-                os.system(f"pip install {module}")
-                logger.debug(f"Installed {module}")
+                process.start("pip", ["install", module])
+                process.waitForStarted()
+
+                # Connect process signals to handle outputs
+                process.readyReadStandardOutput.connect(lambda: self.output_signal.emit(str(process.readAllStandardOutput(), 'utf-8')))
+                process.readyReadStandardError.connect(lambda: self.output_signal.emit(str(process.readAllStandardError(), 'utf-8')))
+
+                process.waitForFinished(-1)
+
+            self.completed_signal.emit(True)
 
 
 class FinishPage(QWizardPage):
+    """The finish page of the wizard."""
     def __init__(self):
+        """Initializes the FinishPage."""
         super().__init__()
 
         self.setTitle("Installation complete")
-        self.setSubTitle("The installation of NQRduck modules is complete.")
+        self.setSubTitle("The installation of NQRduck modules is complete. A restart is required to apply the changes.")
 
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        label = QLabel("The installation of NQRduck modules is complete.")
-        layout.addWidget(label)
-
-        self.button = QPushButton("Finish")
-        self.button.clicked.connect(self.finish)
-        layout.addWidget(self.button)
+        restart_button = QPushButton("Restart NQRduck")
+        restart_button.clicked.connect(self.restart)
+        layout.addWidget(restart_button)
 
     def finish(self):
+        """Finish the wizard."""
         self.wizard().accept()
+
+    def restart(self):
+        """Restart the application."""
+        self.finish()
+        QCoreApplication.quit()
+        os.execl(sys.executable, sys.executable, *sys.argv)

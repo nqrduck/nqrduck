@@ -2,7 +2,6 @@
 
 import logging
 import functools
-from decimal import Decimal
 from PyQt6.QtCore import pyqtSlot
 from PyQt6.QtWidgets import (
     QDialog,
