@@ -44,6 +44,8 @@
     <addaction name="actionAbout_NQRduck"/>
     <addaction name="separator"/>
     <addaction name="actionLogger"/>
+    <addaction name="separator"/>
+    <addaction name="actionInstall_Wizard"/>
    </widget>
    <widget class="QMenu" name="menuPreferences">
     <property name="title">
@@ -99,6 +101,11 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionInstall_Wizard">
+   <property name="text">
+    <string>Install Wizard</string>
    </property>
   </action>
  </widget>
