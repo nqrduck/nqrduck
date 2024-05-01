@@ -6,6 +6,8 @@ import importlib.metadata
 import importlib
 from PyQt6.QtCore import QObject, pyqtSlot, pyqtSignal
 
+from .install_wizard import DuckWizard
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,7 +36,7 @@ class MainController(QObject):
         Also connects the nqrduck_signal to the dispatch_signals slot and creates the menu bar entries.
 
         Args:
-        main_view (MainView): The main view of the application
+            main_view (MainView): The main view of the application
         """
         # Get the modules with entry points in the nqrduck group
         modules = self._get_modules()
@@ -63,7 +65,7 @@ class MainController(QObject):
         main_view.on_settings_changed()
 
     @pyqtSlot(str, object)
-    def dispatch_signals(self, key: str, value: object):
+    def dispatch_signals(self, key: str, value: object) -> None:
         """Dispatches the signals to the according module.
 
         This method is connected to the nqrduck_signal of the modules.
@@ -88,8 +90,20 @@ class MainController(QObject):
             logger.debug("Dispatching signal %s to module: %s", key, module)
             module.controller.process_signals(key, value)
 
+    def on_install_wizard(self, main_view) -> None:
+        """Creates the install wizard.
+        
+        The main view is used as a parent for the wizard.
+        
+        Args:
+            main_view (MainView): The main view of the application
+        """
+        installed_modules = self._get_modules()
+        wizard = DuckWizard(installed_modules, parent=main_view)
+        wizard.exec()
+
     @staticmethod
-    def _get_modules():
+    def _get_modules() -> dict:
         """Returns a dictionary of all modules found in the entry points with 'nqrduck'.
 
         Returns dict: Dictionary of modules

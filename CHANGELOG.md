@@ -1,5 +1,8 @@
 # Changelog
 
+### Version 0.0.8 (01-05-2024)
+- Added install wizard for the different NQRduck modules
+
 ### Version 0.0.7 (26-04-2024)
 - Implemented Formbuilder for the GUI which can be used to create easy input fields for the user
 

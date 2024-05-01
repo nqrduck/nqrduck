@@ -106,6 +106,9 @@ class MainView(QMainWindow):
         # Preferences
         self._ui.actionPreferences.triggered.connect(self.on_preferences)
 
+        # Install Wizard
+        self._ui.actionInstall_Wizard.triggered.connect(lambda: self._main_controller.on_install_wizard(self))
+        
     @pyqtSlot(list)
     def create_notification_dialog(self, notification: list) -> None:
         """Creates a notification dialog with the given message and type.
