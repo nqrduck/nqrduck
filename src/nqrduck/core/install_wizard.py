@@ -2,6 +2,7 @@
 
 import logging
 import urllib.request
+from urllib.error import URLError
 import json
 import sys
 import os
@@ -55,7 +56,9 @@ class WelcomePage(QWizardPage):
         super().__init__()
 
         self.setTitle("Welcome to NQRduck")
-        self.setSubTitle("This wizard will help you install NQRduck modules.")
+        self.setSubTitle(
+            "This wizard will help you install NQRduck modules (Internet Connection Required)."
+        )
 
         label = QLabel("Welcome to the NQRduck installer.")
         label.setWordWrap(True)
@@ -100,14 +103,18 @@ class SelectionPage(QWizardPage):
         self.layout = QFormLayout()
         self.setLayout(self.layout)
 
-        self.modules = self.get_modules()
-        self.generate_installation_widgets()
-
     def generate_installation_widgets(self) -> None:
         """Generate the installation widgets for the modules."""
         # First we get a list of already installed modules
 
-        # TODO: Platform dependence of the modules has to be considered
+        # Platform dependence of the modules has to be considered linux and win
+        platform = sys.platform
+
+        self.modules = [
+            module
+            for module in self.modules
+            if "platform" not in module.keys() or module["platform"] == platform
+        ]
 
         self.checkboxes = {}
 
@@ -152,6 +159,24 @@ class SelectionPage(QWizardPage):
             module_widget.layout().addWidget(checkbox)
             self.layout.addRow(module_widget)
             self.checkboxes[module["name"]] = checkbox
+
+    def initializePage(self) -> None:
+        """Overrides the initializePage method to generate the installation widgets."""
+        try:
+            self.modules = self.get_modules()
+            self.generate_installation_widgets()
+        except URLError:
+            logger.warning("No internet connection.")
+            # Create information about missing internet
+            connection_label =  QLabel("No internet connection found. Can't install nqrduck modules.")
+
+            self.layout.addWidget(connection_label)
+            self.setFinalPage(True)
+
+            # Remove the other pages
+            self.wizard().removePage(2)
+            self.wizard().removePage(3)
+            self.wizard().removePage(4)
 
     def get_modules(self) -> dict:
         """Get the modules from the modules json file.
@@ -282,7 +307,6 @@ class ListInstallPage(QWizardPage):
         self.setTitle("Installing NQRduck modules")
         self.setSubTitle("The following modules will be installed:")
 
-
     def initializePage(self) -> None:
         """Generate the installation widgets for the modules."""
         logger.debug("Initializing InstallPage")
@@ -301,7 +325,6 @@ class ListInstallPage(QWizardPage):
         for child in self.children():
             child.deleteLater()
 
-
     def get_install_modules(self) -> list:
         """Returns the modules that are selected for installation  minus the already installed modules.
 
@@ -317,6 +340,7 @@ class ListInstallPage(QWizardPage):
                 install_modules.append(key)
 
         return install_modules
+
 
 class InstallPage(QWizardPage):
     """The installation page of the wizard.
@@ -348,7 +372,9 @@ class InstallPage(QWizardPage):
         install_modules = self.list_install_page.get_install_modules()
 
         self.install_thread = self.InstallThread(install_modules)
-        self.install_thread.output_signal.connect(self.append_output)  # Connect the signal to the slot method
+        self.install_thread.output_signal.connect(
+            self.append_output
+        )  # Connect the signal to the slot method
         self.install_thread.completed_signal.connect(self.set_completed)
         self.install_thread.start()
 
@@ -360,7 +386,6 @@ class InstallPage(QWizardPage):
     def isComplete(self) -> bool:
         """Check if the installation is complete."""
         return self.completed_installation
-        
 
     def append_output(self, text):
         """Append the installation output to the text widget."""
@@ -368,6 +393,7 @@ class InstallPage(QWizardPage):
 
     class InstallThread(QThread):
         """Thread class to handle running pip install commands in the background."""
+
         output_signal = pyqtSignal(str)
         completed_signal = pyqtSignal(bool)
 
@@ -384,8 +410,16 @@ class InstallPage(QWizardPage):
                 process.waitForStarted()
 
                 # Connect process signals to handle outputs
-                process.readyReadStandardOutput.connect(lambda: self.output_signal.emit(str(process.readAllStandardOutput(), 'utf-8')))
-                process.readyReadStandardError.connect(lambda: self.output_signal.emit(str(process.readAllStandardError(), 'utf-8')))
+                process.readyReadStandardOutput.connect(
+                    lambda: self.output_signal.emit(
+                        str(process.readAllStandardOutput(), "utf-8")
+                    )
+                )
+                process.readyReadStandardError.connect(
+                    lambda: self.output_signal.emit(
+                        str(process.readAllStandardError(), "utf-8")
+                    )
+                )
 
                 process.waitForFinished(-1)
 
@@ -394,12 +428,15 @@ class InstallPage(QWizardPage):
 
 class FinishPage(QWizardPage):
     """The finish page of the wizard."""
+
     def __init__(self):
         """Initializes the FinishPage."""
         super().__init__()
 
         self.setTitle("Installation complete")
-        self.setSubTitle("The installation of NQRduck modules is complete. A restart is required to apply the changes.")
+        self.setSubTitle(
+            "The installation of NQRduck modules is complete. A restart is required to apply the changes."
+        )
 
         layout = QVBoxLayout()
         self.setLayout(layout)
