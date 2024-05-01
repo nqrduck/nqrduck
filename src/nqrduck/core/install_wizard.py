@@ -31,6 +31,10 @@ class DuckWizard(QWizard):
         super().__init__(parent=parent)
         self.setParent(parent)
 
+        self.setOption(QWizard.WizardOption.IndependentPages, False)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage, True)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnLastPage, True)
+
         self.addPage(WelcomePage())
         selection_page = SelectionPage(installed_modules)
         self.addPage(selection_page)
@@ -176,6 +180,9 @@ class SelectionPage(QWizardPage):
     def on_checkbox_changed(self, state: int, module_name: str) -> None:
         """Update the different modules when the checkbox is changed with the according dependencies.
 
+        If a module is  manually checked it will stay checked when unselecting a module that depends on it.
+        If we select a module with dependencies, the dependencies will be selected as well and the checkboxes will be disabled.
+
         Args:
             state (int): The state of the checkbox
             module_name (str): The name of the module
@@ -264,17 +271,14 @@ class InstallPage(QWizardPage):
         self.selection_page = selection_page
 
         self.setTitle("Installing NQRduck modules")
-        self.setSubTitle("Please wait while the NQRduck modules are installed.")
+        self.setSubTitle("The following modules will be installed:")
 
-        self.generate_installation_widgets()
 
-    def generate_installation_widgets(self) -> None:
+    def initializePage(self) -> None:
         """Generate the installation widgets for the modules."""
+        logger.debug("Initializing InstallPage")
         layout = QVBoxLayout()
         self.setLayout(layout)
-
-        label = QLabel("The following modules will be installed:")
-        layout.addWidget(label)
 
         install_modules = self.get_install_modules()
         logger.debug(f"Modules to install: {install_modules}")
@@ -282,10 +286,11 @@ class InstallPage(QWizardPage):
             label = QLabel(module)
             layout.addWidget(label)
 
-        install_button = QPushButton("Install")
-        install_button.clicked.connect(self.install_modules)
+    def cleanupPage(self) -> None:
+        logger.debug("Cleaning up InstallPage")
+        for child in self.children():
+            child.deleteLater()
 
-        layout.addWidget(install_button)
 
     def get_install_modules(self) -> list:
         """Returns the modules that are selected for installation  minus the already installed modules.
@@ -294,10 +299,11 @@ class InstallPage(QWizardPage):
             list: The modules that are selected for installation
         """
         install_modules = []
+        installed_modules = self.selection_page.installed_modules
 
         for key, value in self.selection_page.checkboxes.items():
             logger.debug(f"Checking {key} with state {value.isChecked()}")
-            if value.isChecked() and value.isEnabled():
+            if value.isChecked() and key not in installed_modules:
                 install_modules.append(key)
 
         return install_modules
