@@ -259,6 +259,8 @@ class MainView(QMainWindow):
 
         logger.debug("Updating toolbar with new module order: %s", module_order)
 
+        # Thi is used to set the first module as the active module
+        first_module = True
         for module in module_order:
             for button in toolboxes:
                 if not button.text():
@@ -273,9 +275,14 @@ class MainView(QMainWindow):
                         # Get the slot of the button that is connected to the clicked event
                         new_button.clicked.connect(button.clicked)
                         self._toolbox.addWidget(new_button)
+                        if first_module:
+                            self._main_model.active_module = self._main_model.loaded_modules[module]
+                            first_module = False
                         break
+                   
                 except KeyError:
                     logger.info("Module %s not found in loaded modules", module)
+            
 
         # Rescale toolbar
         self._toolbox.adjustSize()

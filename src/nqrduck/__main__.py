@@ -35,12 +35,9 @@ class NQRduck(QApplication):
 
         # Here the modules are loaded and signals connected
         self._main_controller.load_modules(self._main_view)
-        # Get the first loaded module and set it as active
-        try:
-            self._main_model.active_module = self._main_model.loaded_modules[
-                list(self._main_model.loaded_modules.keys())[0]
-            ]
-        except IndexError:
+        
+        # Start the wizard if no modules could be loaded
+        if not self._main_model.loaded_modules:
             logger.warning("No modules loaded")
             # Start the install wizard if no modules are loaded
             self._main_view.install_wizard = DuckWizard(
