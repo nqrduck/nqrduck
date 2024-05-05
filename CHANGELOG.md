@@ -1,4 +1,7 @@
 # Changelog
+## Version 0.0.9 (05-05-2024)
+- On startup of the GUI, the first module from the module order is automatically displayed (`84b9e98406e12abf35fd1ceb75d72f56e5447ac4`)
+- The QFileManager was renamed to FileManager since its not a PyQt class. Additionally there  is now an optional caption parameter for the file dialog (`9fc220acef1e8df8ba040be4a37746a7425928b0`)
 
 ### Version 0.0.8 (01-05-2024)
 - Added install wizard for the different NQRduck modules
