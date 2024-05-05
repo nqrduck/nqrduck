@@ -43,18 +43,20 @@ class ModuleView(QWidget):
     def module(self, value):
         self._module = value
 
-    class QFileManager:
+    class FileManager:
         """This class provides methods for opening and saving files.
 
         Args:
             extension (str): The extension of the files to open or save
             parent (QWidget): The parent widget of the file dialog
+            caption (str): The caption of the file dialog
         """
 
-        def __init__(self, extension, parent=None):
+        def __init__(self, extension, parent=None, caption = None):
             """Initializes the QFileManager."""
             self.extension = extension
             self.parent = parent
+            self.caption = caption
 
         def loadFileDialog(self) -> str:
             """Opens a file dialog for the user to select a file to open.
@@ -63,9 +65,10 @@ class ModuleView(QWidget):
                 str: The path of the file selected by the user.
             """
             extension_name = self.extension.upper()
+            caption_string = f"{self.caption} - Open .{self.extension} " if self.caption else f"Open .{self.extension} File"
             fileName, _ = QFileDialog.getOpenFileName(
                 self.parent,
-                "QFileManager - Open File",
+                caption_string,
                 "",
                 f"{extension_name} Files (*.{self.extension});;All Files (*)",
                 options=QFileDialog.Option.DontUseNativeDialog,
@@ -82,9 +85,10 @@ class ModuleView(QWidget):
                 str: The path of the file selected by the user.
             """
             extension_name = self.extension.upper()
+            caption_string = f"{self.caption} - Save .{self.extension} " if self.caption else f"Save .{self.extension} File"
             fileName, _ = QFileDialog.getSaveFileName(
                 self.parent,
-                "QFileManager - Save File",
+                caption_string,
                 "",
                 f"{extension_name} Files (*.{self.extension});;All Files (*)",
                 options=QFileDialog.Option.DontUseNativeDialog,
