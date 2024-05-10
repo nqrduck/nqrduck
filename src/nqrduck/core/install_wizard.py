@@ -94,6 +94,7 @@ class SelectionPage(QWizardPage):
         super().__init__()
 
         self.installed_modules = installed_modules
+        self.checkboxes = {}
 
         self.setTitle("Install NQRduck modules")
         self.setSubTitle(
@@ -115,8 +116,6 @@ class SelectionPage(QWizardPage):
             for module in self.modules
             if "platform" not in module.keys() or module["platform"] == platform
         ]
-
-        self.checkboxes = {}
 
         for num, module in enumerate(self.modules):
             module_widget = QWidget()
@@ -164,7 +163,9 @@ class SelectionPage(QWizardPage):
         """Overrides the initializePage method to generate the installation widgets."""
         try:
             self.modules = self.get_modules()
-            self.generate_installation_widgets()
+            # Don't rerun the installation widget in case it has already been generated
+            if not self.checkboxes:
+                self.generate_installation_widgets()
         except URLError:
             logger.warning("No internet connection.")
             # Create information about missing internet
