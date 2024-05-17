@@ -1,6 +1,7 @@
 """The main view of the application."""
 
 import logging
+import qdarkstyle
 import PyQt6.QtWidgets
 from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication
 from PyQt6.QtWidgets import (
@@ -20,12 +21,15 @@ from PyQt6.QtWidgets import (
     QSpinBox,
     QFontComboBox,
     QTableWidget,
+    QCheckBox,
 )
 from PyQt6.QtGui import QActionGroup
 import matplotlib as mpl
 from pathlib import Path
 from matplotlib import font_manager
+import matplotlib.pyplot as plt
 from .main_window import Ui_MainWindow
+from..contrib.mplwidget import MplWidget, MplCanvas
 from ..module.module import Module
 from ..assets.icons import Logos
 
@@ -34,13 +38,14 @@ logger = logging.getLogger(__name__)
 
 class MainView(QMainWindow):
     """The main view of the application.
-    
+
     This class provides the main view of the application. It contains the toolbar, the stacked widget for the different modules and the status bar.
-    
+
     Args:
         main_model (MainModel): The main model of the application
         main_controller (MainController): The main controller of the application
     """
+
     def __init__(self, main_model, main_controller):
         """Initializes the MainView."""
         super().__init__()
@@ -74,7 +79,7 @@ class MainView(QMainWindow):
         font_manager.fontManager.addfont(font_path)
         # prop = font_manager.FontProperties(fname=font_path)
 
-        self.on_settings_changed()
+        self.on_settings_changed()   
 
     def connect_signals(self) -> None:
         """Connects various signals to the according slots in the main view."""
@@ -107,8 +112,10 @@ class MainView(QMainWindow):
         self._ui.actionPreferences.triggered.connect(self.on_preferences)
 
         # Install Wizard
-        self._ui.actionInstall_Wizard.triggered.connect(lambda: self._main_controller.on_install_wizard(self))
-        
+        self._ui.actionInstall_Wizard.triggered.connect(
+            lambda: self._main_controller.on_install_wizard(self)
+        )
+
     @pyqtSlot(list)
     def create_notification_dialog(self, notification: list) -> None:
         """Creates a notification dialog with the given message and type.
@@ -165,7 +172,7 @@ class MainView(QMainWindow):
 
     def on_tool_button_clicked(self, module_name):
         """Changes the active module to the module with the given name.
-        
+
         Args:
             module_name (str) : The name of the module to change to
         """
@@ -173,7 +180,9 @@ class MainView(QMainWindow):
         self._main_model.active_module = self._main_model.loaded_modules[module_name]
 
     @pyqtSlot(str, list, bool)
-    def on_menu_bar_item_added(self, menu_name: str, actions: list, group : bool = None) -> None:
+    def on_menu_bar_item_added(
+        self, menu_name: str, actions: list, group: bool = None
+    ) -> None:
         """Adds a menu bar item to the main view.
 
         Args:
@@ -193,11 +202,10 @@ class MainView(QMainWindow):
             qmenu = QMenu(menu_name, self)
         else:
             qmenu = self.menuBar().findChild(QMenu, menu_name)
-        
+
         for action in actions:
             action.setParent(self)
             qmenu.addAction(action)
-
 
         if group:
             action_group = QActionGroup(self)
@@ -233,21 +241,32 @@ class MainView(QMainWindow):
     @pyqtSlot()
     def on_settings_changed(self) -> None:
         """Updates the font of the application with the new settings."""
+        # Update dark mode
+        stylesheet = ""
+        if self._main_model.settings.dark_mode:
+            stylesheet += qdarkstyle.load_stylesheet_pyqt6()
+
         logger.debug(
             "Setting font to size: %s",
             int(self._main_model.settings.settings.value("font_size")),
         )
-        font_size = int(self._main_model.settings.settings.value("font_size"))
+        font_size = int(self._main_model.settings.font_size)
 
-        self.setStyleSheet(f"""
+        custom_stylesheet = f"""
             * {{
-                font-family: '{self._main_model.settings.settings.value("font")}';
+                font-family: '{self._main_model.settings.font}';
                 font-size: {font_size}pt;
             }}
-        """)
+        """
+
+        # Combine the stylesheets
+        final_stylesheet = stylesheet + custom_stylesheet
+
+        # Apply the combined stylesheet
+        self.setStyleSheet(final_stylesheet)
 
         # Update the Style Factory
-        style_factory = self._main_model.settings.settings.value("style_factory")
+        style_factory = self._main_model.settings.style_factory
         QCoreApplication.instance().setStyle(style_factory)
 
         # Update module order in toolbar
@@ -276,13 +295,14 @@ class MainView(QMainWindow):
                         new_button.clicked.connect(button.clicked)
                         self._toolbox.addWidget(new_button)
                         if first_module:
-                            self._main_model.active_module = self._main_model.loaded_modules[module]
+                            self._main_model.active_module = (
+                                self._main_model.loaded_modules[module]
+                            )
                             first_module = False
                         break
-                   
+
                 except KeyError:
                     logger.info("Module %s not found in loaded modules", module)
-            
 
         # Rescale toolbar
         self._toolbox.adjustSize()
@@ -291,21 +311,35 @@ class MainView(QMainWindow):
 
     def update_mpl_parameters(self) -> None:
         """Updates the mpl parameters so the plots are adjusted to the current application settings."""
-        font_size = int(self._main_model.settings.settings.value("font_size"))
+        font_size = int(self._main_model.settings.font_size)
         mpl.rcParams["axes.unicode_minus"] = False
         mpl.rcParams["font.family"] = "sans-serif"
-        mpl.rcParams["font.sans-serif"] = self._main_model.settings.settings.value(
-            "font"
-        )
+        mpl.rcParams["font.sans-serif"] = self._main_model.settings.font
         mpl.rcParams["font.size"] = font_size
-
-        logger.debug(f"Set stylesheet to {self.styleSheet()}")
 
         mpl.rcParams.update(
             {
                 "figure.facecolor": (0.0, 0.0, 0.0, 0.00),  # transparent
                 "axes.facecolor": (0.0, 1.0, 0.0, 0.03),  # green
                 "savefig.facecolor": (0.0, 0.0, 0.0, 0.0),  # transparent
+            }
+        )
+
+        # If darkmode is enabled make the text white
+        if self._main_model.settings.dark_mode:
+            color = "white"
+        else:
+            color = "black"
+
+        logger.debug(f"Setting plot color to: {color}")
+
+        mpl.rcParams.update(
+            {
+                "text.color": color,
+                "axes.labelcolor": color,
+                "xtick.color": color,
+                "ytick.color": color,
+                "axes.edgecolor": color,
             }
         )
 
@@ -413,9 +447,7 @@ class AboutModules(QDialog):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         # Add black border and  fill background
-        self.setStyleSheet(
-            "QDialog { border: 2px solid black;}"
-        )
+        self.setStyleSheet("QDialog { border: 2px solid black;}")
 
         self.module_info = QLabel("Installed Modules:")
         # Make text bold
@@ -460,9 +492,7 @@ class AboutNQRduck(QDialog):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         # Add black border and  fill background
-        self.setStyleSheet(
-            "QDialog { border: 2px solid black;}"
-        )
+        self.setStyleSheet("QDialog { border: 2px solid black;}")
 
         self.app_info = QLabel("NQRduck")
         # Make text bold
@@ -512,9 +542,7 @@ class LoggerWindow(QDialog):
         self.setFixedWidth(int(QApplication.primaryScreen().size().width() / 2))
 
         # Add black border and  fill background
-        self.setStyleSheet(
-            "QDialog { border: 2px solid black;}"
-        )
+        self.setStyleSheet("QDialog { border: 2px solid black;}")
 
         # Height is also half the screen height
         self.setFixedHeight(int(QApplication.primaryScreen().size().height() / 2))
@@ -645,9 +673,7 @@ class PreferencesWindow(QDialog):
         self.setFixedWidth(int(QApplication.primaryScreen().size().width() / 2))
 
         # Add black border and  fill background
-        self.setStyleSheet(
-            "QDialog { border: 2px solid black; }"
-        )
+        self.setStyleSheet("QDialog { border: 2px solid black; }")
 
         self.preferences_info = QLabel("Preferences:")
         # Make text bold
@@ -688,6 +714,22 @@ class PreferencesWindow(QDialog):
         )
         self.font_size_spin.valueChanged.connect(self.on_font_size_changed)
         self.layout.addWidget(self.font_size_spin)
+
+        # Dark Mode
+        self.dark_mode_layout = QHBoxLayout()
+        self.dark_mode_info = QLabel("Enable Dark Mode:")
+        # Make text bold
+        self.dark_mode_info.setStyleSheet("font-weight: bold")
+        self.dark_mode_layout.addWidget(self.dark_mode_info)
+
+        # Check Box for dark mode
+        self.dark_mode_check = QCheckBox()
+        self.dark_mode_check.setChecked(bool(parent._main_model.settings.dark_mode))
+        self.dark_mode_check.stateChanged.connect(self.on_dark_mode_changed)
+        self.dark_mode_layout.addWidget(self.dark_mode_check)
+        self.dark_mode_layout.addStretch()
+
+        self.layout.addLayout(self.dark_mode_layout)
 
         # Style Factory selection
         self.style_factory_info = QLabel("Change Style Factory:")
@@ -791,6 +833,16 @@ class PreferencesWindow(QDialog):
         self.parent()._main_model.settings.style_factory = style_factory
         # Dynamically scale the window size
         self.adjustSize()
+
+    @pyqtSlot(int)
+    def on_dark_mode_changed(self, state: int) -> None:
+        """Enables or disables dark mode for the application.
+
+        Args:
+            state (int) : The state of the check box
+        """
+        logger.debug("Changing dark mode to: %s", state)
+        self.parent()._main_model.settings.dark_mode = bool(state)
 
     @pyqtSlot(str)
     def on_move_up(self, module: str) -> None:

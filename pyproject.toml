@@ -27,6 +27,7 @@ dependencies = [
     "matplotlib",
     "pyqt6",
     "pyyaml",
+    "QDarkStyle",
 ]
 
 [project.optional-dependencies]
