@@ -3,7 +3,7 @@
 import logging
 import qdarkstyle
 import PyQt6.QtWidgets
-from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication, QSettings
+from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication
 from PyQt6.QtWidgets import (
     QMainWindow,
     QToolButton,
@@ -27,9 +27,7 @@ from PyQt6.QtGui import QActionGroup
 import matplotlib as mpl
 from pathlib import Path
 from matplotlib import font_manager
-import matplotlib.pyplot as plt
 from .main_window import Ui_MainWindow
-from..contrib.mplwidget import MplWidget, MplCanvas
 from ..module.module import Module
 from ..assets.icons import Logos
 
@@ -943,7 +941,7 @@ class PreferencesWindow(QDialog):
 
     @pyqtSlot()
     def on_ok_button(self) -> None:
-        """Opens up a dialog to confirm the changes. which allows the user to revert the changes. """
+        """Opens up a dialog to confirm the changes. which allows the user to revert the changes."""
         logger.debug("Opening confirmation dialog")
         self.update_settings(self.new_settings)
         confirmation_dialog = ConfirmationDialog(self)
@@ -958,7 +956,8 @@ class PreferencesWindow(QDialog):
 
 class ConfirmationDialog(QDialog):
     """Opens up a dialog to confirm the changes which allows the user to revert the changes.
-       The dialog includes a timer that automatically closes the dialog after 15 seconds reverting the changes.
+    
+    The dialog includes a timer that automatically closes the dialog after 15 seconds reverting the changes.
     """
 
     DURATION = 10  # Seconds
