@@ -3,7 +3,7 @@
 import logging
 import qdarkstyle
 import PyQt6.QtWidgets
-from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication
+from PyQt6.QtCore import pyqtSlot, Qt, QTimer, QCoreApplication, QSettings
 from PyQt6.QtWidgets import (
     QMainWindow,
     QToolButton,
@@ -317,6 +317,7 @@ class MainView(QMainWindow):
         mpl.rcParams["font.sans-serif"] = self._main_model.settings.font
         mpl.rcParams["font.size"] = font_size
 
+        # Background color
         mpl.rcParams.update(
             {
                 "figure.facecolor": (0.0, 0.0, 0.0, 0.00),  # transparent
@@ -333,6 +334,7 @@ class MainView(QMainWindow):
 
         logger.debug(f"Setting plot color to: {color}")
 
+        # Text colors
         mpl.rcParams.update(
             {
                 "text.color": color,
@@ -669,6 +671,15 @@ class PreferencesWindow(QDialog):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
+        # Create a dict for the new and old settings
+        self.old_settings = {}
+        self.new_settings = {}
+
+        # Copy the settings
+        for key in parent._main_model.settings.settings.allKeys():
+            self.old_settings[key] = parent._main_model.settings.settings.value(key)
+            self.new_settings[key] = parent._main_model.settings.settings.value(key)
+
         # Make preferences window half the screen width
         self.setFixedWidth(int(QApplication.primaryScreen().size().width() / 2))
 
@@ -786,7 +797,7 @@ class PreferencesWindow(QDialog):
 
         # Add an OK button to close the dialog
         ok_button = QPushButton("OK", self)
-        ok_button.clicked.connect(self.accept)
+        ok_button.clicked.connect(self.on_ok_button)
         self.layout.addWidget(ok_button)
 
         self.adjustSize()
@@ -798,6 +809,19 @@ class PreferencesWindow(QDialog):
 
         self.update_module_order_table()
 
+    def update_settings(self, settings: dict) -> None:
+        """Updates the settings of the application with the given settings.
+
+        Args:
+            settings (dict) : The new settings
+        """
+        for key, value in settings.items():
+            logger.debug(f"Setting {key} to: {value}")
+            self.parent()._main_model.settings.settings.setValue(key, value)
+
+        # This is kind of dirty ...
+        self.parent()._main_model.settings.settings_changed.emit()
+
     @pyqtSlot(str)
     def on_font_changed(self, font: str) -> None:
         """Changes the font of the application to the selected font.
@@ -806,7 +830,7 @@ class PreferencesWindow(QDialog):
             font (str) : The selected font
         """
         logger.debug("Changing font to: %s", font)
-        self.parent()._main_model.settings.font = font
+        self.new_settings["font"] = font
         # Dynamically scale the window size
         self.adjustSize()
 
@@ -818,7 +842,7 @@ class PreferencesWindow(QDialog):
             font_size (str) : The selected font size
         """
         logger.debug("Changing font size to: %s", font_size)
-        self.parent()._main_model.settings.font_size = int(font_size)
+        self.new_settings["font_size"] = font_size
         # Dynamically scale the window size
         self.adjustSize()
 
@@ -830,7 +854,7 @@ class PreferencesWindow(QDialog):
             style_factory (str) : The selected style factory
         """
         logger.debug("Changing style factory to: %s", style_factory)
-        self.parent()._main_model.settings.style_factory = style_factory
+        self.new_settings["style_factory"] = style_factory
         # Dynamically scale the window size
         self.adjustSize()
 
@@ -842,7 +866,7 @@ class PreferencesWindow(QDialog):
             state (int) : The state of the check box
         """
         logger.debug("Changing dark mode to: %s", state)
-        self.parent()._main_model.settings.dark_mode = bool(state)
+        self.new_settings["dark_mode"] = bool(state)
 
     @pyqtSlot(str)
     def on_move_up(self, module: str) -> None:
@@ -859,7 +883,7 @@ class PreferencesWindow(QDialog):
                 module_order[index - 1],
                 module_order[index],
             )
-            self.parent()._main_model.settings.module_order = module_order
+            self.new_settings["module_order"] = module_order
             self.update_module_order_table()
 
     @pyqtSlot(str)
@@ -877,13 +901,13 @@ class PreferencesWindow(QDialog):
                 module_order[index + 1],
                 module_order[index],
             )
-            self.parent()._main_model.settings.module_order = module_order
+            self.new_settings["module_order"] = module_order
             self.update_module_order_table()
 
     def update_module_order_table(self):
         """Updates the module order table with the new module order."""
         self.module_order_table.clearContents()
-        module_order = self.parent()._main_model.settings.module_order
+        module_order = self.new_settings["module_order"]
 
         for i, module in enumerate(module_order):
             self.module_order_table.setItem(
@@ -916,3 +940,77 @@ class PreferencesWindow(QDialog):
         self.parent()._main_model.settings.reset_settings()
         # Dynamically scale the window size
         self.adjustSize()
+
+    @pyqtSlot()
+    def on_ok_button(self) -> None:
+        """Opens up a dialog to confirm the changes. which allows the user to revert the changes. """
+        logger.debug("Opening confirmation dialog")
+        self.update_settings(self.new_settings)
+        confirmation_dialog = ConfirmationDialog(self)
+
+        if confirmation_dialog.exec() == QDialog.DialogCode.Accepted:
+            logger.debug("Applying changes")
+            self.accept()
+        else:
+            logger.debug("Reverting changes")
+            self.update_settings(self.old_settings)
+            self.reject()
+
+class ConfirmationDialog(QDialog):
+    """Opens up a dialog to confirm the changes which allows the user to revert the changes.
+       The dialog includes a timer that automatically closes the dialog after 15 seconds reverting the changes.
+    """
+
+    DURATION = 10  # Seconds
+
+    def __init__(self, parent=None):
+        """Initializes the ConfirmationDialog."""
+        super().__init__(parent=parent)
+        self.setParent(parent)
+
+        self.setWindowTitle("Confirmation Dialog")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.timer_timeout)
+        self.timer.start(1000)
+
+        # Add label with countdown
+        self.remaining_time = self.DURATION  # Use a separate variable for countdown
+        self.countdown = QLabel(f"Reverting changes in {self.remaining_time} seconds")
+        self.layout.addWidget(self.countdown)
+
+        # Revert changes button
+        revert_button = QPushButton("Revert Changes", self)
+        revert_button.clicked.connect(self.revert)
+        self.layout.addWidget(revert_button)
+
+        # Add an OK button to close the dialog
+        ok_button = QPushButton("Apply", self)
+        ok_button.clicked.connect(self.apply)
+        self.layout.addWidget(ok_button)
+
+        # Show the dialog modally
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
+
+    def timer_timeout(self):
+        """Updates the countdown label and closes the dialog after the countdown is over."""
+        self.remaining_time -= 1
+        if self.remaining_time > 0:
+            self.countdown.setText(f"Reverting changes in {self.remaining_time} seconds")
+        else:
+            self.reject()
+
+    def apply(self):
+        """Applies the changes and closes the dialog."""
+        # Stop the timer
+        self.timer.stop()
+        self.accept()
+
+    def revert(self):
+        """Reverts the changes and closes the dialog."""
+        # Stop the timer
+        self.timer.stop()
+        self.reject()
+

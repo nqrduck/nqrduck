@@ -52,6 +52,16 @@ class SettingsManager(QObject):
             self.settings.setValue("dark_mode", False)
 
     @property
+    def settings(self) -> QSettings:
+        """The settings object."""
+        return self._settings
+    
+    @settings.setter
+    def settings(self, value: QSettings) -> None:
+        self._settings = value
+        self.settings_changed.emit()
+
+    @property
     def font(self) -> QFont:
         """The font used for the application."""
         font = self.settings.value("font", self.default_font)
