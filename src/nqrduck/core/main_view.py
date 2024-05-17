@@ -968,7 +968,7 @@ class ConfirmationDialog(QDialog):
         super().__init__(parent=parent)
         self.setParent(parent)
 
-        self.setWindowTitle("Confirmation Dialog")
+        self.setWindowTitle("Confirm Changes")
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
