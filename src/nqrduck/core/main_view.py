@@ -956,7 +956,7 @@ class PreferencesWindow(QDialog):
 
 class ConfirmationDialog(QDialog):
     """Opens up a dialog to confirm the changes which allows the user to revert the changes.
-    
+
     The dialog includes a timer that automatically closes the dialog after 15 seconds reverting the changes.
     """
 
