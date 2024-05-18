@@ -48,6 +48,18 @@ class SettingsManager(QObject):
             self.settings.setValue(
                 "module_order", [key for key in self.parent().loaded_modules.keys()]
             )
+        if not self.settings.contains("dark_mode"):
+            self.settings.setValue("dark_mode", False)
+
+    @property
+    def settings(self) -> QSettings:
+        """The settings object."""
+        return self._settings
+    
+    @settings.setter
+    def settings(self, value: QSettings) -> None:
+        self._settings = value
+        self.settings_changed.emit()
 
     @property
     def font(self) -> QFont:
@@ -83,6 +95,24 @@ class SettingsManager(QObject):
     def style_factory(self, value: str) -> None:
         self.settings.setValue("style_factory", value)
         self.settings_changed.emit()
+
+    @property
+    def dark_mode(self) -> bool:
+        """Whether dark mode is enabled."""
+        dark_mode = self.settings.value("dark_mode", False)
+        # On startup this value is a string 'false' or 'true' so we need to convert it to a bool
+        if dark_mode == "false":
+            dark_mode = False
+
+        logger.debug("Dark mode: %s", dark_mode)
+        return dark_mode
+    
+    @dark_mode.setter
+    def dark_mode(self, value: bool) -> None:
+        logger.debug("Setting dark mode to: %s", value)
+        self.settings.setValue("dark_mode", value)
+        self.settings_changed.emit()
+
 
     @property
     def module_order(self) -> list:
@@ -123,6 +153,7 @@ class SettingsManager(QObject):
         self.settings.setValue(
             "module_order", [key for key in self.parent().loaded_modules.keys()]
         )
+        self.settings.setValue("dark_mode", False)
         self.settings_changed.emit()
 
 

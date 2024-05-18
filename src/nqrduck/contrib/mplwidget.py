@@ -62,6 +62,10 @@ class MplWidget(QtWidgets.QWidget):
 
         self.setStyleSheet("background-color:transparent;")
 
+        self.redraw()
+
+    def redraw(self):
+        """Redraws the canvas."""
         # Set custom matplotlib parameters
         mpl.rcParams["figure.subplot.bottom"] = 0.2
         mpl.rcParams["axes.linewidth"] = 1.5

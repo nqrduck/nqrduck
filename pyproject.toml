@@ -7,7 +7,7 @@ allow-direct-references = true
 
 [project]
 name = "nqrduck"
-version = "0.0.9"
+version = "0.0.10"
 authors = [
   { name="jupfi", email="support@nqrduck.cool" },
 ]
@@ -27,6 +27,7 @@ dependencies = [
     "matplotlib",
     "pyqt6",
     "pyyaml",
+    "QDarkStyle",
 ]
 
 [project.optional-dependencies]

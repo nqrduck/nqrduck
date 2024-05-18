@@ -1,7 +1,7 @@
 """Contains the ModuleView class which is the base class for all module views."""
 
 from PyQt6.QtWidgets import QWidget, QFileDialog
-from PyQt6.QtCore import pyqtSignal, QObject
+from PyQt6.QtCore import pyqtSignal, QObject, pyqtSlot
 from nqrduck.module.module import Module
 
 
@@ -42,6 +42,14 @@ class ModuleView(QWidget):
     @module.setter
     def module(self, value):
         self._module = value
+
+    @pyqtSlot()
+    def on_settings_changed(self):
+        """Slot for when the settings have changed.
+        
+        This is implemented in the derived classes in case they need to update the view when the settings have changed.
+        """
+        pass
 
     class FileManager:
         """This class provides methods for opening and saving files.
