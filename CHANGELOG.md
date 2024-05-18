@@ -6,6 +6,7 @@
 - Added a on_settings_changed slot to the modules that is called when the settings are changed. This enables the different modules to react to changes in the settings. Right now the primary use is to update the Plots with the new color schemes (`8810c9837b82269f77bf7f1c88a2012c98645520`).
 - When changing the settings, the appearance of the GUI is not updated immediately. Instead the user first needs to apply the changes. Then a countdown start where the user can revert the changes. If the user does not revert the changes, the new settings are applied (`00c93da4b95cb508b8a03ab760202849a5224eb1`).
 - The splash screen now works with wayland (`8f5d8310e20f8ac031ca9211a555bccb06269903`).
+- Automatic desktop file creation for the GUI - this also fixes the window icon with wayland. Added startup arguments for version, uninstall and log level (`2e5d0782e73fd10b6a525516a32758cdf83d4d40`).
 
 ## Version 0.0.9 (05-05-2024)
 
