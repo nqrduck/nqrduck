@@ -47,10 +47,6 @@ class MainView(QMainWindow):
     def __init__(self, main_model, main_controller):
         """Initializes the MainView."""
         super().__init__()
-        # Use the splash screen
-        self.splash = SplashScreen()
-        self.splash.setFocus()
-        self.splash.show()
 
         self._main_controller = main_controller
         self._main_model = main_model
@@ -398,36 +394,6 @@ class NotificationDialog(QDialog):
         self.layout.addWidget(self.buttonBox)
 
         self.exec()
-
-
-class SplashScreen(QWidget):
-    """This class provides a simple splash screen for the application.
-
-    It shows the logo of the application for 2 seconds and then closes itself.
-    """
-
-    def __init__(self):
-        """Initializes the SplashScreen."""
-        super().__init__()
-        logger.debug("Showing Splash Screen")
-
-        self.main_layout = QHBoxLayout()
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.logo = Logos.Logo_full()
-        self.logo_label = QLabel()
-        self.logo_label.setPixmap(self.logo.pixmap(self.logo.availableSizes()[0]))
-        self.logo_label.setStyleSheet("border: 0px solid green")
-
-        self.main_layout.addWidget(self.logo_label)
-        self.setLayout(self.main_layout)
-
-        self.timer = QTimer()
-        self.timer.singleShot(2000, self.close)
-
-        # Set window properties
-        self.setWindowFlags(Qt.WindowType.SplashScreen)
-
 
 class AboutModules(QDialog):
     """This class provides a simple dialog for displaying information about the different modules.

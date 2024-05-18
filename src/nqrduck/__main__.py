@@ -7,10 +7,12 @@ import logging
 import logging.handlers
 import tempfile
 from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtCore import QTimer
 from .core.main_model import MainModel
 from .core.main_controller import MainController
 from .core.main_view import MainView
 from .core.install_wizard import DuckWizard
+from .core.splash_screen import SplashScreen
 
 logger = logging.getLogger(__name__)
 
@@ -26,23 +28,28 @@ class NQRduck(QApplication):
         """Initializes the NQRduck application."""
         super().__init__(sys_argv)
 
+        self.splash_screen = SplashScreen()
+
+        # Process events to show the splash screen
+        self.processEvents()
+
         self._main_model = MainModel()
         self._main_controller = MainController(self._main_model)
         self._main_view = MainView(self._main_model, self._main_controller)
 
-        # Wait for the splash screen to close before starting the rest of the application
-        self.processEvents()
+        # The splash screen is only shown if start application is called with a QTimer (?)
+        QTimer.singleShot(1000, self.start_application)
 
+    def start_application(self):
+        """Start the application."""
         # Here the modules are loaded and signals connected
         self._main_controller.load_modules(self._main_view)
-        
+
         # Start the wizard if no modules could be loaded
         if not self._main_model.loaded_modules:
             logger.warning("No modules loaded")
             # Start the install wizard if no modules are loaded
-            self._main_view.install_wizard = DuckWizard(
-                [], self._main_view
-            )
+            self._main_view.install_wizard = DuckWizard([], self._main_view)
             self._main_view.install_wizard.show()
             self._main_view.install_wizard.exec()
 
@@ -50,6 +57,8 @@ class NQRduck(QApplication):
         self._main_view.showMaximized()
 
         self._main_view.on_settings_changed()
+
+        self.splash_screen.close()
 
 
 def handle_exception(exc_type, exc_value, exc_traceback):
