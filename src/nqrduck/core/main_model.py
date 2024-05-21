@@ -7,6 +7,7 @@ from PyQt6.QtCore import QObject, pyqtSignal, QSettings
 from PyQt6.QtGui import QPixmap, QIcon
 import PyQt6.QtWidgets
 from ..module.module import Module
+from ..assets.icons import Logos
 
 logger = logging.getLogger(__name__)
 
@@ -182,9 +183,7 @@ class MainModel(QObject):
         self.settings = SettingsManager(parent=self)
 
         # Set Logo
-        self_path = Path(__file__).parent
-        logo_path = self_path / "resources/logo.png"
-        self.logo = QIcon(QPixmap(str(logo_path)))
+        self.logo = Logos.LabMallard_32x32()
 
         # Set default status bar message
         self.statusbar_message = "Ready"
