@@ -437,25 +437,26 @@ class DuckFormDropdownField(DuckFormField):
     """A form field for dropdowns."""
 
     def __init__(
-        self, text: str, tooltip: str, options: str, default_option: int = 0
+        self, text: str, tooltip: str, options: dict, default_option: int = 0
     ) -> None:
         """Initializes a dropdown field.
 
         Args:
             text (str): The text of the field.
             tooltip (str): The tooltip of the field.
-            options (str): The options that can be selected.
+            options (dict): The options that can be selected.
             default_option (int, optional): The default option. Defaults to 0.
         """
         super().__init__(text, tooltip)
+        self.options = options
         self.dropdown = QComboBox()
-        self.dropdown.addItems(options)
+        self.dropdown.addItems(options.keys())
         self.dropdown.setCurrentIndex(default_option)
         self.layout.addWidget(self.dropdown)
 
     def return_value(self):
         """Returns the selected option."""
-        self.dropdown.currentText()
+        return [self.dropdown.currentText(), self.options[self.dropdown.currentText()]]
 
 
 class DuckFormCheckboxField(DuckFormField):
