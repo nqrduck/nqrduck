@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.0.11 (27-05-2024)
+
+- Implemented additional customization for function selection form field (`b7fd4558a3083f6a8fbcceaa194c1696564baf7e`).
+
 ## Version 0.0.10 (18-05-2024)
 
 - Implemented setting for darkmode in the GUI (`f5445f13ed58684987c5b81967838b5423d43683`).
