@@ -56,6 +56,11 @@ class DuckFormField(QWidget):
         raise NotImplementedError
 
 
+class DuckLabelField(DuckFormField):
+    def __init__(self, text: str, tooltip: str, parent=None, vertical=False) -> None:
+        super().__init__(text, tooltip, parent, vertical)
+
+
 class DuckFormFloatField(DuckFormField):
     """A form field for float values."""
 
@@ -145,6 +150,8 @@ class DuckFormFunctionSelectionField(DuckFormField):
         functions,
         duration: float,
         default_function: int = 0,
+        view_mode: str = "both",
+        mode_selection: int = 0,
         parent=None,
     ) -> None:
         """Initializes a function selection field.
@@ -155,6 +162,8 @@ class DuckFormFunctionSelectionField(DuckFormField):
             functions (list): The list of functions that can be selected.
             duration (float): The duration of the function.
             default_function (int, optional): The default function. Defaults to 0.
+            view_mode (str, optional): The view mode of the function. Defaults to "both". Can be "time", "frequency" or "both".
+            mode_selection (int, optional): Whether the mode can be selected. 0 is disabled, 1 is enabled without option for both and 2 is enabled with option for both. Defaults to 0.
             parent ([type], optional): The parent widget. Defaults to None.
         """
         super().__init__(text, tooltip, parent=parent, vertical=True)
@@ -165,7 +174,28 @@ class DuckFormFunctionSelectionField(DuckFormField):
 
         self.duration = float(duration)
 
+        self.view_mode = view_mode
+        self.mode_selection = mode_selection
+
         self.form_layout = QVBoxLayout()
+
+        if mode_selection:
+            # Add mode selection
+            mode_layout = QHBoxLayout()
+            mode_label = QLabel("View mode:")
+            self.mode_dropdown = QComboBox()
+            if mode_selection == 1:
+                self.mode_dropdown.addItems(["Time", "Frequency"])
+            else:
+                self.mode_dropdown.addItems(["Time", "Frequency", "Both"])
+            self.mode_dropdown.setCurrentText(self.view_mode.capitalize())
+            self.mode_dropdown.currentTextChanged.connect(self.update_active_function)
+
+            mode_layout.addWidget(mode_label)
+            mode_layout.addWidget(self.mode_dropdown)
+            mode_layout.addStretch(1)
+            self.form_layout.addLayout(mode_layout)
+
         inner_layout = QHBoxLayout()
         for function in self.functions:
             logger.debug("Adding button for function %s", function.name)
@@ -176,6 +206,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
             inner_layout.addWidget(button)
 
         self.form_layout.addLayout(inner_layout)
+
         # The layout is already set in the parent class
         self.layout.addLayout(self.form_layout)
 
@@ -257,8 +288,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
                 "The expression you entered is invalid. Please enter a valid expression.",
             )
 
-        self.delete_active_function()
-        self.load_active_function()
+        self.update_active_function()
 
     @pyqtSlot()
     def on_advanced_settings_button_clicked(self) -> None:
@@ -285,8 +315,8 @@ class DuckFormFunctionSelectionField(DuckFormField):
         for f in self.functions:
             if f.name == function.name:
                 self.selected_function = f
-        self.delete_active_function()
-        self.load_active_function()
+
+        self.update_active_function()
 
     def delete_active_function(self) -> None:
         """This function is called when the active function is deleted.
@@ -313,21 +343,26 @@ class DuckFormFunctionSelectionField(DuckFormField):
 
         plot_layout = QHBoxLayout()
 
-        # Add plot for time domain
-        time_domain_layout = QVBoxLayout()
-        time_domain_label = QLabel("Time domain:")
-        time_domain_layout.addWidget(time_domain_label)
-        plot = self.selected_function.time_domain_plot(self.duration)
-        time_domain_layout.addWidget(plot)
-        plot_layout.addLayout(time_domain_layout)
+        if self.mode_selection:
+            self.view_mode = self.mode_dropdown.currentText().lower()
 
-        # Add plot for frequency domain
-        frequency_domain_layout = QVBoxLayout()
-        frequency_domain_label = QLabel("Frequency domain:")
-        frequency_domain_layout.addWidget(frequency_domain_label)
-        plot = self.selected_function.frequency_domain_plot(self.duration)
-        frequency_domain_layout.addWidget(plot)
-        plot_layout.addLayout(frequency_domain_layout)
+        if self.view_mode == "time" or self.view_mode == "both":
+            # Add plot for time domain
+            time_domain_layout = QVBoxLayout()
+            time_domain_label = QLabel("Time domain:")
+            time_domain_layout.addWidget(time_domain_label)
+            plot = self.selected_function.time_domain_plot(self.duration)
+            time_domain_layout.addWidget(plot)
+            plot_layout.addLayout(time_domain_layout)
+
+        if self.view_mode == "frequency" or self.view_mode == "both":
+            # Add plot for frequency domain
+            frequency_domain_layout = QVBoxLayout()
+            frequency_domain_label = QLabel("Frequency domain:")
+            frequency_domain_layout.addWidget(frequency_domain_label)
+            plot = self.selected_function.frequency_domain_plot(self.duration)
+            frequency_domain_layout.addWidget(plot)
+            plot_layout.addLayout(frequency_domain_layout)
 
         function_layout.addLayout(plot_layout)
 
@@ -337,7 +372,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
         for parameter in self.selected_function.parameters:
             parameter_label = QLabel(parameter.name)
             parameter_lineedit = DuckFloatEdit(str(parameter.value))
-            # Add the parameter_lineedit editingFinished signal to the paramter.set_value slot
+            # Add the parameter_lineedit editingFinished signal to the parameter.set_value slot
             parameter_lineedit.editingFinished.connect(
                 lambda: parameter.set_value(parameter_lineedit.text())
             )
@@ -363,6 +398,14 @@ class DuckFormFunctionSelectionField(DuckFormField):
         self.end_x_lineedit.setText(str(self.selected_function.end_x))
         self.expr_lineedit.setText(str(self.selected_function.expr))
 
+    def update_active_function(self) -> None:
+        """This function is called when the active function is updated.
+
+        It will update the active function with the new parameters.
+        """
+        self.delete_active_function()
+        self.load_active_function()
+
     def create_message_box(self, message: str, information: str) -> None:
         """Creates a message box with the given message and information and shows it.
 
@@ -384,6 +427,9 @@ class DuckFormFunctionSelectionField(DuckFormField):
             Function: The selected function.
         """
         logger.debug("Returning selected function: %s", self.selected_function)
+        if self.mode_selection:
+            return self.selected_function, self.mode_dropdown.currentText().lower()
+
         return self.selected_function
 
 
@@ -391,25 +437,26 @@ class DuckFormDropdownField(DuckFormField):
     """A form field for dropdowns."""
 
     def __init__(
-        self, text: str, tooltip: str, options: str, default_option: int = 0
+        self, text: str, tooltip: str, options: dict, default_option: int = 0
     ) -> None:
         """Initializes a dropdown field.
 
         Args:
             text (str): The text of the field.
             tooltip (str): The tooltip of the field.
-            options (str): The options that can be selected.
+            options (dict): The options that can be selected.
             default_option (int, optional): The default option. Defaults to 0.
         """
         super().__init__(text, tooltip)
+        self.options = options
         self.dropdown = QComboBox()
-        self.dropdown.addItems(options)
+        self.dropdown.addItems(options.keys())
         self.dropdown.setCurrentIndex(default_option)
         self.layout.addWidget(self.dropdown)
 
     def return_value(self):
         """Returns the selected option."""
-        self.dropdown.currentText()
+        return [self.dropdown.currentText(), self.options[self.dropdown.currentText()]]
 
 
 class DuckFormCheckboxField(DuckFormField):
