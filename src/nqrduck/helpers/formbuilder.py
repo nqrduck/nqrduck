@@ -17,7 +17,10 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QMessageBox,
 )
+from quackseq.functions import Function
 from .duckwidgets import DuckSpinBox, DuckFloatEdit
+from ..helpers.signalprocessing import SignalProcessing as sp
+from ..contrib.mplwidget import MplWidget
 
 logger = logging.getLogger(__name__)
 
@@ -351,7 +354,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
             time_domain_layout = QVBoxLayout()
             time_domain_label = QLabel("Time domain:")
             time_domain_layout.addWidget(time_domain_label)
-            plot = self.selected_function.time_domain_plot(self.duration)
+            plot = self.time_domain_plot(self.selected_function, self.duration)
             time_domain_layout.addWidget(plot)
             plot_layout.addLayout(time_domain_layout)
 
@@ -360,7 +363,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
             frequency_domain_layout = QVBoxLayout()
             frequency_domain_label = QLabel("Frequency domain:")
             frequency_domain_layout.addWidget(frequency_domain_label)
-            plot = self.selected_function.frequency_domain_plot(self.duration)
+            plot = self.frequency_domain_plot(self.selected_function, self.duration)
             frequency_domain_layout.addWidget(plot)
             plot_layout.addLayout(frequency_domain_layout)
 
@@ -431,6 +434,44 @@ class DuckFormFunctionSelectionField(DuckFormField):
             return self.selected_function, self.mode_dropdown.currentText().lower()
 
         return self.selected_function
+    
+    def frequency_domain_plot(self, function : Function, pulse_length: float) -> MplWidget:
+        """Plots the frequency domain of the function for the given pulse length.
+
+        Args:
+            function (Function): The function to plot.
+            pulse_length (float): The pulse length in seconds.
+
+        Returns:
+            MplWidget: The matplotlib widget containing the plot.
+        """
+        mpl_widget = MplWidget()
+        td = function.get_time_points(pulse_length)
+        yd = function.evaluate(pulse_length)
+        xdf, ydf = sp.fft(td, yd)
+        mpl_widget.canvas.ax.plot(xdf, abs(ydf))
+        mpl_widget.canvas.ax.set_xlabel("Frequency in Hz")
+        mpl_widget.canvas.ax.set_ylabel("Magnitude")
+        mpl_widget.canvas.ax.grid(True)
+        return mpl_widget
+
+    def time_domain_plot(self, function : Function, pulse_length: float) -> MplWidget:
+        """Plots the time domain of the function for the given pulse length.
+
+        Args:
+            function (Function): The function to plot.
+            pulse_length (float): The pulse length in seconds.
+
+        Returns:
+            MplWidget: The matplotlib widget containing the plot.
+        """
+        mpl_widget = MplWidget()
+        td = function.get_time_points(pulse_length)
+        mpl_widget.canvas.ax.plot(td, abs(function.evaluate(pulse_length)))
+        mpl_widget.canvas.ax.set_xlabel("Time in s")
+        mpl_widget.canvas.ax.set_ylabel("Magnitude")
+        mpl_widget.canvas.ax.grid(True)
+        return mpl_widget
 
 
 class DuckFormDropdownField(DuckFormField):
