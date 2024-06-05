@@ -206,13 +206,17 @@ class DuckSpinBox(QWidget):
         self.state_updated.emit(True, str(value))
         self.spin_box.setValue(value)
 
-    def set_value(self, value : int):
+    def set_value(self, value : int | float):
         """Sets the value of the QSpinBox.
 
         Args:
             value (int): The value that should be set.
         """
-        self.spin_box.setValue(int(value))
+        if isinstance(value, float):
+            self.spin_box.setValue(float(value))
+        else:
+            self.spin_box.setValue(int(value))
+            
         self.state_updated.emit(True, str(value))
 
     def value(self):
