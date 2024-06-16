@@ -45,6 +45,15 @@ class Logos(Icons):
             QIcon: The loaded logo.
         """
         return Icons.load_icon("logos", name)
+    
+    @staticmethod
+    def Pond():
+        """Returns the Pond screen logo as a QIcon.
+
+        Returns:
+            QIcon: The splash screen logo.
+        """
+        return Logos.get_logo("Pond_256_128.png")
 
     @staticmethod
     def ArrowLeft12x12():

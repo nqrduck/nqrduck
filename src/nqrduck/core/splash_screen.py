@@ -24,7 +24,7 @@ class SplashScreen(QSplashScreen):
         self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
         self.setWindowFlag(Qt.WindowType.SplashScreen)
 
-        self.logo = Logos.Logo_full()
+        self.logo = Logos.Pond()
 
         pixmap = QPixmap(self.logo.pixmap(self.logo.availableSizes()[0]))
 
