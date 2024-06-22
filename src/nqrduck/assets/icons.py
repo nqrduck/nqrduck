@@ -206,7 +206,7 @@ class Logos(Icons):
         return Logos.get_logo("Logo_full.png")
 
 
-class PulseParamters(Icons):
+class PulseParameters(Icons):
     """This class provides the pulse parameter assets for the different modules."""
 
     @staticmethod
@@ -228,7 +228,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The GateOff logo.
         """
-        return PulseParamters.get_pulseparameter("GateOff.png")
+        return PulseParameters.get_pulseparameter("GateOff.png")
 
     @staticmethod
     def GateOn():
@@ -237,7 +237,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The GateOn logo.
         """
-        return PulseParamters.get_pulseparameter("GateOn.png")
+        return PulseParameters.get_pulseparameter("GateOn.png")
 
     @staticmethod
     def RXOff():
@@ -246,7 +246,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The RXOff logo.
         """
-        return PulseParamters.get_pulseparameter("RXOff.png")
+        return PulseParameters.get_pulseparameter("RXOff.png")
 
     @staticmethod
     def RXOn():
@@ -255,7 +255,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The RXOn logo.
         """
-        return PulseParamters.get_pulseparameter("RXOn.png")
+        return PulseParameters.get_pulseparameter("RXOn.png")
 
     @staticmethod
     def TXCustom():
@@ -264,7 +264,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The TXCustom logo.
         """
-        return PulseParamters.get_pulseparameter("TXCustom.png")
+        return PulseParameters.get_pulseparameter("TXCustom.png")
 
     @staticmethod
     def TXGauss():
@@ -273,7 +273,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The TXGauss logo.
         """
-        return PulseParamters.get_pulseparameter("TXGauss.png")
+        return PulseParameters.get_pulseparameter("TXGauss.png")
 
     @staticmethod
     def TXOff():
@@ -282,7 +282,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The TXOff logo.
         """
-        return PulseParamters.get_pulseparameter("TXOff.png")
+        return PulseParameters.get_pulseparameter("TXOff.png")
 
     @staticmethod
     def TXRect():
@@ -291,7 +291,7 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The TXRect logo.
         """
-        return PulseParamters.get_pulseparameter("TXRect.png")
+        return PulseParameters.get_pulseparameter("TXRect.png")
 
     @staticmethod
     def TXSinc():
@@ -300,4 +300,4 @@ class PulseParamters(Icons):
         Returns:
             QIcon: The TXSinc logo.
         """
-        return PulseParamters.get_pulseparameter("TXSinc.png")
+        return PulseParameters.get_pulseparameter("TXSinc.png")
