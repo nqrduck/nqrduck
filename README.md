@@ -11,6 +11,7 @@
 ### Setup
 
 1. Clone the repository
+
 2. Create a virtual environment and activate it:
 
     ```bash
@@ -19,10 +20,12 @@
     ```
 
 You can install the  nqrduck core via PyPi or from the cloned repository.
+
 3. Install the package with `pip install .[all]` to install all available NQRduck modules inside the cloned repository or just `pip install "nqrduck[all]"` to install the core package from PyPi.
 Careful here you might need additional dependencies specified in the respective module repositories.
 If  you only want to  install some base  modules use `pip install .[base]` inside the cloned repository or with `pip install -U "nqrduck[base]"` .
 You can find the different modules [here](https://github.com/nqrduck).
+
 4. Run the program with `nqrduck`.
 
 ## Usage
