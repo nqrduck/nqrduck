@@ -16,6 +16,8 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QFormLayout,
     QMessageBox,
+    QTableWidget,
+    QTableWidgetItem,
 )
 from quackseq.functions import Function
 from .duckwidgets import DuckSpinBox, DuckFloatEdit
@@ -54,15 +56,55 @@ class DuckFormField(QWidget):
 
             self.layout.addWidget(self.label)
 
+
     def return_value(self):
         """This method should return the value of the form field."""
         raise NotImplementedError
 
-
-class DuckLabelField(DuckFormField):
+class DuckTableField(DuckFormField):
+    """A form field for tables.
+    
+    Every table has different options for columns. The rows are the values of the according columns.
+    """
     def __init__(self, text: str, tooltip: str, parent=None, vertical=False) -> None:
         super().__init__(text, tooltip, parent, vertical)
+        self.table = QTableWidget()
+        self.layout.addWidget(self.table)
 
+        self.fields = {}
+    
+    def add_column(self, option : "Option", fields: list[DuckFormField]):
+        """Adds a column to the table.
+
+        Args:
+            column_name (str): The name of the column.
+            fields (DuckFormField): The field to add.
+        """
+        column_name = option.name
+        logger.debug("Adding column %s to table", column_name)
+        logger.debug("Fields: %s", fields)
+        self.table.setColumnCount(self.table.columnCount() + 1)
+        self.table.setRowCount(len(fields))
+        self.table.setHorizontalHeaderLabels([field.label.text() for field in fields])
+        self.fields[option] = fields
+
+        for i, field in enumerate(fields):
+            logger.debug("Adding field %s to column %s", field, column_name)
+            self.table.setCellWidget(i, self.table.columnCount() - 1, field.widget)
+
+        # Resize everything
+        self.table.resizeColumnsToContents()
+        self.table.resizeRowsToContents()
+
+    def return_value(self):
+        """Returns the values of the table."""
+        values = []
+        for key, value in self.fields.items():
+            values.append([field.return_value() for field in value])
+
+        logger.debug("Returning values: %s", values)
+
+        return values
 
 class DuckFormFloatField(DuckFormField):
     """A form field for float values."""
@@ -87,12 +129,12 @@ class DuckFormFloatField(DuckFormField):
             slider (bool, optional): Whether to use a slider. Defaults to False.
         """
         super().__init__(text, tooltip)
-        self.float_edit = DuckSpinBox(
+        self.widget = DuckSpinBox(
             min_value=min_value, max_value=max_value, slider=slider, double_box=True
         )
-        self.float_edit.set_value(default)
+        self.widget.set_value(default)
         # The layout is already set in the parent class
-        self.layout.addWidget(self.float_edit)
+        self.layout.addWidget(self.widget)
         self.layout.addStretch(1)
 
     def return_value(self):
@@ -101,7 +143,7 @@ class DuckFormFloatField(DuckFormField):
         Returns:
             float: The value of the float field.
         """
-        return self.float_edit.value()
+        return self.widget.value()
 
 
 class DuckFormIntField(DuckFormField):
@@ -127,11 +169,11 @@ class DuckFormIntField(DuckFormField):
             slider (bool, optional): Whether to use a slider. Defaults to False.
         """
         super().__init__(text, tooltip)
-        self.int_edit = DuckSpinBox(
+        self.widget = DuckSpinBox(
             min_value=min_value, max_value=max_value, slider=slider, double_box=False
         )
         # The layout is already set in the parent class
-        self.layout.addWidget(self.int_edit)
+        self.layout.addWidget(self.widget)
         self.layout.addStretch(1)
 
     def return_value(self):
@@ -140,7 +182,7 @@ class DuckFormIntField(DuckFormField):
         Returns:
             int: The value of the integer field.
         """
-        return self.int_edit.value()
+        return self.widget.value()
 
 
 class DuckFormFunctionSelectionField(DuckFormField):
@@ -186,16 +228,16 @@ class DuckFormFunctionSelectionField(DuckFormField):
             # Add mode selection
             mode_layout = QHBoxLayout()
             mode_label = QLabel("View mode:")
-            self.mode_dropdown = QComboBox()
+            self.widget = QComboBox()
             if mode_selection == 1:
-                self.mode_dropdown.addItems(["Time", "Frequency"])
+                self.widget.addItems(["Time", "Frequency"])
             else:
-                self.mode_dropdown.addItems(["Time", "Frequency", "Both"])
-            self.mode_dropdown.setCurrentText(self.view_mode.capitalize())
-            self.mode_dropdown.currentTextChanged.connect(self.update_active_function)
+                self.widget.addItems(["Time", "Frequency", "Both"])
+            self.widget.setCurrentText(self.view_mode.capitalize())
+            self.widget.currentTextChanged.connect(self.update_active_function)
 
             mode_layout.addWidget(mode_label)
-            mode_layout.addWidget(self.mode_dropdown)
+            mode_layout.addWidget(self.widget)
             mode_layout.addStretch(1)
             self.form_layout.addLayout(mode_layout)
 
@@ -347,7 +389,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
         plot_layout = QHBoxLayout()
 
         if self.mode_selection:
-            self.view_mode = self.mode_dropdown.currentText().lower()
+            self.view_mode = self.widget.currentText().lower()
 
         if self.view_mode == "time" or self.view_mode == "both":
             # Add plot for time domain
@@ -431,7 +473,7 @@ class DuckFormFunctionSelectionField(DuckFormField):
         """
         logger.debug("Returning selected function: %s", self.selected_function)
         if self.mode_selection:
-            return self.selected_function, self.mode_dropdown.currentText().lower()
+            return self.selected_function, self.widget.currentText().lower()
 
         return self.selected_function
     
@@ -490,14 +532,14 @@ class DuckFormDropdownField(DuckFormField):
         """
         super().__init__(text, tooltip)
         self.options = options
-        self.dropdown = QComboBox()
-        self.dropdown.addItems(options.keys())
-        self.dropdown.setCurrentIndex(default_option)
-        self.layout.addWidget(self.dropdown)
+        self.widget = QComboBox()
+        self.widget.addItems(options.keys())
+        self.widget.setCurrentIndex(default_option)
+        self.layout.addWidget(self.widget)
 
     def return_value(self):
         """Returns the selected option."""
-        return [self.dropdown.currentText(), self.options[self.dropdown.currentText()]]
+        return [self.widget.currentText(), self.options[self.widget.currentText()]]
 
 
 class DuckFormCheckboxField(DuckFormField):
@@ -512,13 +554,13 @@ class DuckFormCheckboxField(DuckFormField):
             default (bool, optional): The default value of the checkbox. Defaults to False.
         """
         super().__init__(text, tooltip)
-        self.checkbox = QCheckBox()
-        self.checkbox.setChecked(default)
-        self.layout.addWidget(self.checkbox)
+        self.widget = QCheckBox()
+        self.widget.setChecked(default)
+        self.layout.addWidget(self.widget)
 
     def return_value(self):
         """Returns the value of the checkbox."""
-        return self.checkbox.isChecked()
+        return self.widget.isChecked()
 
 
 class DuckFormBuilder(QDialog):
@@ -582,7 +624,7 @@ class DuckFormBuilder(QDialog):
         """
         self.fields.append(field)
         if isinstance(field, DuckFormFloatField) or isinstance(field, DuckFormIntField):
-            self.numeric_layout.addRow(field.label, field.float_edit)
+            self.numeric_layout.addRow(field.label, field.widget)
         else:
             self.form_layout.addWidget(field)
 
