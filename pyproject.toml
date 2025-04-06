@@ -83,8 +83,8 @@ nqrduck = "nqrduck.__main__:main"
 
 [project.urls]
 "Homepage" = "https://nqrduck.cool"
-"Bug Tracker" = "https://github.com/nqrduck/nqrduck/issues"
-"Source Code" = "https://github.com/nqrduck/nqrduck"
+"Bug Tracker" = "https://git.private.coffee/nqrduck/nqrduck/issues"
+"Source Code" = "https://git.private.coffee/nqrduck/nqrduck"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nqrduck"]
