@@ -1,36 +1,32 @@
-name: Arch Tests
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+---
 jobs:
   build:
-
     container:
       image: archlinux:latest
-      options: --privileged
-
+      options: '--privileged'
     steps:
       - name: Install NodeJS
-      run: |
+        run: |
         pacman  -Sy nodejs npm
         node --version
         npm --version
 
-    - uses: actions/checkout@v3
-
-    - name: Install system and Python dependencies
-      run: |
+      - uses: actions/checkout@v3
+      - name: Install system and Python dependencies
+        run: |
         yes | pacman -Sy --needed python python-pip git python-pyqt5 xorg-server-xvfb libgl mesa libxkbcommon fontconfig xcb-util-cursor libegl expat
         pip install pytest --break-system-packages
 
-    - name: Install test module and dependencies
-      run: |
+      - name: Install test module and dependencies
+        run: |
         pip install nqrduck-module --break-system-packages
 
-    - name: Run all the tests
-      run: xvfb-run pytest tests/
+      - name: Run all the tests
+        run: xvfb-run pytest tests/
+name: Arch Tests
+'on':
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: null
