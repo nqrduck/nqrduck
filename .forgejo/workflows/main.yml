@@ -7,14 +7,14 @@ jobs:
     steps:
       - name: Install NodeJS
         run: |
-          pacman  -Sy nodejs npm
+          pacman  -Sy --needed --noconfirm nodejs npm
           node --version
           npm --version
 
       - uses: actions/checkout@v3
       - name: Install system and Python dependencies
         run: |
-          yes | pacman -Sy --needed python python-pip git python-pyqt5 xorg-server-xvfb libgl mesa libxkbcommon fontconfig xcb-util-cursor libegl expat
+          yes | pacman -Sy --needed --noconfirm python python-pip git python-pyqt5 xorg-server-xvfb libgl mesa libxkbcommon fontconfig xcb-util-cursor libegl expat
           pip install pytest --break-system-packages
 
       - name: Install test module and dependencies
