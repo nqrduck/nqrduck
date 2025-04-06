@@ -1,6 +1,7 @@
 name: Ubuntu Tests
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
   pull_request:
@@ -26,7 +27,7 @@ jobs:
         apt-get install -y nodejs
         node --version
         npm --version
-        
+
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
