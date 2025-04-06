@@ -15,23 +15,18 @@ jobs:
   #      uses: ./.github/workflows/ubuntu-python-package.yml  # use the callable tests job to run tests
 
   deploy:
-
-    runs-on: ubuntu-latest
-
-  #  needs: [test]
+    name: Publish to PyPI
+    container:
+      image: node:22-bookworm
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.11"
-
     - name: Install dependencies
-      run: |
-        sudo apt-get update
-        python -m pip install --upgrade pip
+        run: |
+          apt update
+          apt install -y python3 python3-venv
+          python -m pip install --upgrade pip
 
     - name: Publish to PyPI
       run: |
