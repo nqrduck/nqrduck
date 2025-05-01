@@ -16,6 +16,7 @@ jobs:
 
   deploy:
     name: Publish to PyPI
+    runs-on: docker
     container:
       image: node:22-bookworm
 
