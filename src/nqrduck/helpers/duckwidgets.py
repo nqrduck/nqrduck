@@ -139,7 +139,7 @@ class DuckSpinBox(QWidget):
 
     state_updated = pyqtSignal(bool, str)
 
-    def __init__(self, parent=None, min_value=None, max_value=None, slider = False, double_box = False):
+    def __init__(self, parent=None, min_value=None, max_value=None, slider = False, double_box = False, suffix = ""):
         """Initializes the DuckSpinBox.
 
         Args:
@@ -148,6 +148,7 @@ class DuckSpinBox(QWidget):
             max_value (int): The maximum value that is accepted.
             slider (bool): If True, a slider is added to the widget.
             double_box (bool): If True, a QDoubleSpinBox is used instead of a QSpinBox.
+            suffix (str): The suffix that is added to the value of the QSpinBox.
         """
         super().__init__(parent)
 
@@ -164,8 +165,12 @@ class DuckSpinBox(QWidget):
         if min_value is not None and max_value is not None:
             self.spin_box.setRange(min_value, max_value)
         else:
-            self.spin_box.setRange(-100000, 100000)
+            self.spin_box.setRange(-10000000, 10000000)
         self.spin_box.valueChanged.connect(self.on_value_changed)
+
+        if suffix:
+            self.spin_box.setSuffix(suffix)
+
 
         # This only can be an issue during development, better to catch it early
         assert not( slider is True and (min_value is None or max_value is None)), "If a slider is added, min_value and max_value must be set."
@@ -201,13 +206,17 @@ class DuckSpinBox(QWidget):
         self.state_updated.emit(True, str(value))
         self.spin_box.setValue(value)
 
-    def set_value(self, value):
+    def set_value(self, value : int | float):
         """Sets the value of the QSpinBox.
 
         Args:
             value (int): The value that should be set.
         """
-        self.spin_box.setValue(value)
+        if isinstance(value, float):
+            self.spin_box.setValue(float(value))
+        else:
+            self.spin_box.setValue(int(value))
+            
         self.state_updated.emit(True, str(value))
 
     def value(self):
