@@ -8,6 +8,7 @@ jobs:
     steps:
       - name: Install NodeJS
         run: |
+          pacman-key --init
           pacman -Syu --noconfirm archlinux-keyring
           pacman -Sy --needed --noconfirm nodejs npm git
           node --version
